@@ -7,44 +7,61 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200">
     <Border Background="#0A003A" CornerRadius="15" Padding="20">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="300" Width="*"/>
-                    <ColumnDefinition MinWidth="300" Width="*"/>
-                    <ColumnDefinition MinWidth="300" Width="*"/>
-                </Grid.ColumnDefinitions>
-
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal">
                 <!-- Transportation Method Section -->
-                <Border Grid.Column="0" Background="#1C0E49" CornerRadius="10" Padding="15" Margin="0,0,10,0">
-                    <StackPanel>
-                        <DockPanel Margin="0,0,0,15">
-                            <TextBlock Text="Tên phương tiện:" Foreground="#BCBEE0" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                            <TextBox Margin="10,0,0,0" Background="#24105F" Foreground="#E0E1F1" BorderBrush="#6D2FFF"/>
-                        </DockPanel>
-
-                        <DockPanel Margin="0,0,0,15">
-                            <TextBlock Text="Loại phương tiện:" Foreground="#BCBEE0" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                            <ComboBox Margin="10,0,0,0" Background="#24105F" Foreground="#E0E1F1" BorderBrush="#6D2FFF">
-                                <ComboBoxItem Content="Xe buýt"/>
-                            </ComboBox>
-                        </DockPanel>
-
-                        <DockPanel Margin="0,0,0,15">
-                            <TextBlock Text="Quy tắc khi lên xe:" Foreground="#BCBEE0" DockPanel.Dock="Left" VerticalAlignment="Center"/>
-                            <Button Content="Thêm quy tắc" DockPanel.Dock="Right" Margin="10,0,0,0" Padding="10,5"
+                <Border Background="#1C0E49" CornerRadius="10" Padding="15" Margin="0,0,10,0" 
+                        MinWidth="350" MaxWidth="500" Width="Auto">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,15">
+                            <Button Content="Tìm kiếm" DockPanel.Dock="Right" Margin="10,0,0,0" Padding="10,5"
                                     Background="#836EFB" Foreground="#E0E1F1" BorderThickness="0"/>
-                            <TextBox Margin="10,0,0,0" Background="#24105F" Foreground="#E0E1F1" BorderBrush="#6D2FFF"/>
+                            <TextBox Background="#24105F" Foreground="#E0E1F1" BorderBrush="#6D2FFF"/>
                         </DockPanel>
 
-                        <ListBox Background="Transparent" BorderBrush="#6D2FFF" MinHeight="200"
+                        <ListBox Background="Transparent" BorderBrush="#6D2FFF"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
-                    </StackPanel>
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Margin" Value="0,0,0,10"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBoxItem>
+                                <Border Background="#24105F" CornerRadius="5" Padding="15">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Xe buýt" Foreground="#E0E1F1" FontWeight="Bold" FontSize="14" 
+                                                     Margin="0,0,0,5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Loại phương tiện" Foreground="#9497CD" 
+                                                     Margin="0,0,0,5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Quy tắc: Không hút thuốc" Foreground="#9497CD" 
+                                                     TextWrapping="Wrap"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" 
+                                                  VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <Button Content="Sửa" Margin="0,0,10,0" Padding="15,5"
+                                                    Background="#836EFB" Foreground="#E0E1F1" BorderThickness="0"/>
+                                            <Button Content="Xóa" Padding="15,5"
+                                                    Background="#FB539B" Foreground="#E0E1F1" BorderThickness="0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </ListBoxItem>
+                        </ListBox>
+                    </DockPanel>
                 </Border>
 
                 <!-- Business Approval Section -->
-                <Border Grid.Column="1" Background="#1C0E49" CornerRadius="10" Padding="15" Margin="10,0">
+                <Border Background="#1C0E49" CornerRadius="10" Padding="15" Margin="10,0" 
+                        MinWidth="350" MaxWidth="500" Width="Auto">
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" Margin="0,0,0,15">
                             <Button Content="Duyệt tất cả" DockPanel.Dock="Right" Margin="10,0,0,0" Padding="10,5"
@@ -57,6 +74,12 @@
                         <ListBox Background="Transparent" BorderBrush="#6D2FFF"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Margin" Value="0,0,0,10"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             <ListBoxItem>
                                 <Border Background="#24105F" CornerRadius="5" Padding="15">
                                     <Grid>
@@ -66,12 +89,16 @@
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel Grid.Column="0">
-                                            <TextBlock Text="Phương Trang Bus" Foreground="#E0E1F1" FontWeight="Bold" FontSize="14" Margin="0,0,0,5"/>
-                                            <TextBlock Text="Bus Operator" Foreground="#9497CD" Margin="0,0,0,5"/>
-                                            <TextBlock Text="Ngày đăng ký: 2024-01-19" Foreground="#9497CD"/>
+                                            <TextBlock Text="Phương Trang Bus" Foreground="#E0E1F1" FontWeight="Bold" 
+                                                     FontSize="14" Margin="0,0,0,5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Bus Operator" Foreground="#9497CD" 
+                                                     Margin="0,0,0,5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Ngày đăng ký: 2024-01-19" Foreground="#9497CD" 
+                                                     TextWrapping="Wrap"/>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" 
+                                                  VerticalAlignment="Center" Margin="10,0,0,0">
                                             <Button Content="Duyệt" Margin="0,0,10,0" Padding="15,5"
                                                     Background="#836EFB" Foreground="#E0E1F1" BorderThickness="0"/>
                                             <Button Content="Từ chối" Padding="15,5"
@@ -85,42 +112,55 @@
                 </Border>
 
                 <!-- Time Schedule Section -->
-                <Border Grid.Column="2" Background="#1C0E49" CornerRadius="10" Padding="15" Margin="0,0,0,0">
+                <Border Background="#1C0E49" CornerRadius="10" Padding="15" Margin="0,0,0,0" 
+                        MinWidth="350" MaxWidth="500" Width="Auto">
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" Margin="0,0,0,15">
-                            <Button Content="Thêm mới" DockPanel.Dock="Left" Margin="0,0,10,0" Padding="10,5"
-                                    Background="#836EFB" Foreground="#E0E1F1" BorderThickness="0"/>
-                            <Button Content="Tìm kiếm" DockPanel.Dock="Right" Padding="10,5"
+                            <Button Content="Tìm kiếm" DockPanel.Dock="Right" Margin="10,0,0,0" Padding="10,5"
                                     Background="#836EFB" Foreground="#E0E1F1" BorderThickness="0"/>
                             <TextBox Background="#24105F" Foreground="#E0E1F1" BorderBrush="#6D2FFF"/>
                         </DockPanel>
 
-                        <DataGrid AutoGenerateColumns="False" 
-                                Background="Transparent" BorderBrush="#6D2FFF"
-                                RowBackground="#24105F" AlternatingRowBackground="#1C0E49"
-                                Foreground="#E0E1F1"
+                        <ListBox Background="Transparent" BorderBrush="#6D2FFF"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                HeadersVisibility="Column">
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#1C0E49"/>
-                                    <Setter Property="Foreground" Value="#E0E1F1"/>
-                                    <Setter Property="Padding" Value="10,5"/>
-                                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                    <Setter Property="BorderBrush" Value="#6D2FFF"/>
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Margin" Value="0,0,0,10"/>
                                 </Style>
-                            </DataGrid.Resources>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="Auto"/>
-                                <DataGridTextColumn Header="Thời gian bắt đầu" Binding="{Binding StartTime}" Width="*"/>
-                                <DataGridTextColumn Header="Thời gian kết thúc" Binding="{Binding EndTime}" Width="*"/>
-                                <DataGridTextColumn Header="Chức năng" Binding="{Binding Function}" Width="*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                            </ListBox.ItemContainerStyle>
+                            <ListBoxItem>
+                                <Border Background="#24105F" CornerRadius="5" Padding="15">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Lịch trình 001" Foreground="#E0E1F1" FontWeight="Bold" 
+                                                     FontSize="14" Margin="0,0,0,5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="8:00 - 17:00" Foreground="#9497CD" 
+                                                     Margin="0,0,0,5" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Hoạt động" Foreground="#9497CD" 
+                                                     TextWrapping="Wrap"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" 
+                                                  VerticalAlignment="Center" Margin="10,0,0,0">
+                                            <Button Content="Sửa" Margin="0,0,10,0" Padding="15,5"
+                                                    Background="#836EFB" Foreground="#E0E1F1" BorderThickness="0"/>
+                                            <Button Content="Xóa" Padding="15,5"
+                                                    Background="#FB539B" Foreground="#E0E1F1" BorderThickness="0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </ListBoxItem>
+                        </ListBox>
                     </DockPanel>
                 </Border>
-            </Grid>
+            </StackPanel>
         </ScrollViewer>
     </Border>
 </UserControl>

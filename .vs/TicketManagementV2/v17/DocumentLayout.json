@@ -3,32 +3,36 @@
   "WorkspaceRootPath": "E:\\SD1805-SOF102\\tank-travel-app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\adminview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
-      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\adminview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\loginview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\loginview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|e:\\sd1805-sof102\\tank-travel-app\\tiketmanagementv2\\viewmodel\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|e:\\sd1805-sof102\\tank-travel-app\\tiketmanagementv2\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\viewmodel\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\viewmodel\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|e:\\sd1805-sof102\\tank-travel-app\\tiketmanagementv2\\view\\censorview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\censorview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\adminview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\adminview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\loginview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
-      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\loginview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\homeview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
       "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\homeview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\adminview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\adminview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|e:\\sd1805-sof102\\tank-travel-app\\tiketmanagementv2\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\view\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|E:\\SD1805-SOF102\\tank-travel-app\\tiketmanagementv2\\helpers\\validationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -50,7 +54,45 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CensorView.xaml",
+              "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\CensorView.xaml",
+              "RelativeDocumentMoniker": "TiketManagementV2\\View\\CensorView.xaml",
+              "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\CensorView.xaml",
+              "RelativeToolTip": "TiketManagementV2\\View\\CensorView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-02-13T09:41:50.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "MainViewModel.cs",
+              "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\ViewModel\\MainViewModel.cs",
+              "RelativeDocumentMoniker": "TiketManagementV2\\ViewModel\\MainViewModel.cs",
+              "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\ViewModel\\MainViewModel.cs",
+              "RelativeToolTip": "TiketManagementV2\\ViewModel\\MainViewModel.cs",
+              "ViewState": "AQIAAIQAAAAAAAAAAAAswFsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T06:38:19.852Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginView.xaml.cs",
+              "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\LoginView.xaml.cs",
+              "RelativeDocumentMoniker": "TiketManagementV2\\View\\LoginView.xaml.cs",
+              "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\LoginView.xaml.cs",
+              "RelativeToolTip": "TiketManagementV2\\View\\LoginView.xaml.cs",
+              "ViewState": "AQIAAEkAAAAAAAAAAIAwwFYAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T03:55:49.296Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "AdminView.xaml",
               "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\AdminView.xaml",
               "RelativeDocumentMoniker": "TiketManagementV2\\View\\AdminView.xaml",
@@ -62,7 +104,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "HomeView.xaml.cs",
               "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\HomeView.xaml.cs",
               "RelativeDocumentMoniker": "TiketManagementV2\\View\\HomeView.xaml.cs",
@@ -75,7 +117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "AdminView.xaml.cs",
               "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\AdminView.xaml.cs",
               "RelativeDocumentMoniker": "TiketManagementV2\\View\\AdminView.xaml.cs",
@@ -83,63 +125,35 @@
               "RelativeToolTip": "TiketManagementV2\\View\\AdminView.xaml.cs",
               "ViewState": "AQIAABwAAAAAAAAAAAAIwB8AAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-13T06:15:10.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-13T06:15:10.898Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "LoginViewModel.cs",
               "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\ViewModel\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "TiketManagementV2\\ViewModel\\LoginViewModel.cs",
               "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\ViewModel\\LoginViewModel.cs",
               "RelativeToolTip": "TiketManagementV2\\ViewModel\\LoginViewModel.cs",
-              "ViewState": "AQIAAGgAAAAAAAAAAAAIwG8AAAARAAAA",
+              "ViewState": "AQIAABYAAAAAAAAAAAAQwFMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-13T06:00:37.995Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainViewModel.cs",
-              "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\ViewModel\\MainViewModel.cs",
-              "RelativeDocumentMoniker": "TiketManagementV2\\ViewModel\\MainViewModel.cs",
-              "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\ViewModel\\MainViewModel.cs",
-              "RelativeToolTip": "TiketManagementV2\\ViewModel\\MainViewModel.cs",
-              "ViewState": "AQIAAFYAAAAAAAAAAAAkwFsAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-13T06:38:19.852Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "HomeView.xaml",
               "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\HomeView.xaml",
               "RelativeDocumentMoniker": "TiketManagementV2\\View\\HomeView.xaml",
               "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\HomeView.xaml",
               "RelativeToolTip": "TiketManagementV2\\View\\HomeView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-02-13T06:05:47.206Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-13T06:05:47.206Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LoginView.xaml.cs",
-              "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\LoginView.xaml.cs",
-              "RelativeDocumentMoniker": "TiketManagementV2\\View\\LoginView.xaml.cs",
-              "ToolTip": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\View\\LoginView.xaml.cs",
-              "RelativeToolTip": "TiketManagementV2\\View\\LoginView.xaml.cs",
-              "ViewState": "AQIAACQAAAAAAAAAAAAowDQAAAAwAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-13T03:55:49.296Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "ValidationHelper.cs",
               "DocumentMoniker": "E:\\SD1805-SOF102\\tank-travel-app\\TiketManagementV2\\Helpers\\ValidationHelper.cs",
               "RelativeDocumentMoniker": "TiketManagementV2\\Helpers\\ValidationHelper.cs",
