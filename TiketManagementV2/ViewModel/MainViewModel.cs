@@ -89,6 +89,19 @@ namespace TiketManagementV2.ViewModel
         public MainViewModel(INotificationService notificationService)
         {
             _notificationService = notificationService;
+
+            // Khởi tạo commands
+            ShowHomeViewCommand = new RelayCommand(ExecuteShowHomeView);
+            ShowBankViewCommand = new RelayCommand(ExecuteShowBankView);
+            ShowProfileViewCommand = new RelayCommand(ExecuteShowProfileView);
+            ShowAccountViewCommand = new RelayCommand(ExecuteShowAccountView);
+            ShowCensorViewCommand = new RelayCommand(ExecuteShowCensorView);
+            ShowTicketViewCommand = new RelayCommand(ExecuteShowTicketView);
+            ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
+            ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
+            ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+            // Set view mặc định
+            ExecuteShowHomeView(null);
         }
 
         // Ví dụ sử dụng trong command hoặc method

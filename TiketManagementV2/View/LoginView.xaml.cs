@@ -53,12 +53,7 @@ namespace TiketManagementV2.View
                 string username = txtUser.Text.Trim();
                 string password = txtPass.Password.Trim();
 
-                bool isSuccess = checkviewModel.Login(username, password);
-
-                if (isSuccess)
-                {
-                    this.Close(); // Đóng cửa sổ đăng nhập
-                }
+                checkviewModel.Login(username, password);
             }
             catch (Exception ex)
             {

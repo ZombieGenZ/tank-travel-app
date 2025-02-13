@@ -24,7 +24,7 @@ namespace TiketManagementV2.ViewModel
             this.notificationService = notificationService;
         }
 
-        public bool Login(string username, string password)
+        public void Login(string username, string password)
         {
             // Kiểm tra email
             if (!ValidationHelper.IsValidEmail(username))
@@ -34,7 +34,7 @@ namespace TiketManagementV2.ViewModel
                     "Invalid email format! Please enter a valid email.",
                     NotificationType.Error
                 );
-                return false;
+                return;
             }
 
             // Kiểm tra mật khẩu
@@ -45,11 +45,12 @@ namespace TiketManagementV2.ViewModel
                     "Password cannot be empty!",
                     NotificationType.Error
                 );
-                return false;
+                return;
             }
 
-            // Kiểm tra đăng nhập
-            if (KiemTraDangNhap(username, password, out string role))
+            KiemTraDangNhap(username, password, out string role);
+
+            if (!string.IsNullOrEmpty(role))  // Kiểm tra role để xác định đăng nhập thành công
             {
                 // Hiển thị thông báo theo vai trò
                 string message = role == "admin"
@@ -60,15 +61,14 @@ namespace TiketManagementV2.ViewModel
 
                 // Chuyển đến giao diện phù hợp
                 NavigateToRoleView(role);
-
-                return true;
+                
             }
             else
             {
                 notificationService.ShowNotification("Error", "Incorrect username or password!", NotificationType.Error);
-                return false;
             }
         }
+
 
         private async Task<dynamic> GetLogin(string tenDangNhap, string matKhau)
         {
@@ -84,23 +84,18 @@ namespace TiketManagementV2.ViewModel
 
             return data;
         }
-
-        private bool KiemTraDangNhap(string tenDangNhap, string matKhau, out string role)
+        private void KiemTraDangNhap(string tenDangNhap, string matKhau, out string role)
         {
-
-
             role = string.Empty;
-            //if (tenDangNhap == "admin@example.com" && matKhau == "admin123")
-            //{
-            //    role = "admin";
-            //    return true;
-            //}
-            //else if (tenDangNhap == "user@example.com" && matKhau == "user123")
-            //{
-            //    role = "bus";
-            //    return true;
-            //}
-            return false;
+
+            if (tenDangNhap == "admin@example.com" && matKhau == "admin123")
+            {
+                role = "admin";
+            }
+            else if (tenDangNhap == "user@example.com" && matKhau == "user123")
+            {
+                role = "bus";
+            }
         }
 
         private void NavigateToRoleView(string role)

@@ -34,15 +34,6 @@ namespace TiketManagementV2.View
             var viewModel = new MainViewModel(notificationService);
             DataContext = viewModel;
 
-            // Nếu dùng Loaded event
-            this.Loaded += (s, e) =>
-            {
-                notificationService.ShowNotification(
-                    "Chào mừng",
-                    "Đăng nhập thành công vào trang Admin!",
-                    NotificationType.Success
-                );
-            };
         }
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
