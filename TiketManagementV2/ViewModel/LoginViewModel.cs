@@ -86,6 +86,10 @@ namespace TiketManagementV2.ViewModel
         }
         private void KiemTraDangNhap(string tenDangNhap, string matKhau, out string role)
         {
+            //dynamic data = await GetLogin(tenDangNhap, matKhau);
+
+
+
             role = string.Empty;
 
             if (tenDangNhap == "admin@example.com" && matKhau == "admin123")

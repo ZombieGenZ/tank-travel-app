@@ -24,13 +24,23 @@ namespace TiketManagementV2.Model
             };
         }
 
+        private void EnsureValidResponse(HttpResponseMessage response)
+        {
+            if ((int)response.StatusCode != 422 &&
+                response.StatusCode != System.Net.HttpStatusCode.Unauthorized &&
+                !response.IsSuccessStatusCode)
+            {
+                response.EnsureSuccessStatusCode();
+            }
+        }
+
         #region GET Methods
         public async Task<dynamic> GetAsync(string endpoint)
         {
             try
             {
                 var response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}");
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -52,7 +62,7 @@ namespace TiketManagementV2.Model
                 }
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -72,7 +82,7 @@ namespace TiketManagementV2.Model
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -100,7 +110,7 @@ namespace TiketManagementV2.Model
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -118,7 +128,7 @@ namespace TiketManagementV2.Model
             try
             {
                 var response = await _httpClient.PostAsync($"{_baseUrl}/{endpoint}", null);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -140,7 +150,7 @@ namespace TiketManagementV2.Model
                 }
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -158,7 +168,7 @@ namespace TiketManagementV2.Model
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync($"{_baseUrl}/{endpoint}", content);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
             }
@@ -186,7 +196,7 @@ namespace TiketManagementV2.Model
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -204,7 +214,7 @@ namespace TiketManagementV2.Model
             try
             {
                 var response = await _httpClient.PutAsync($"{_baseUrl}/{endpoint}", null);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -226,7 +236,7 @@ namespace TiketManagementV2.Model
                 }
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -244,7 +254,7 @@ namespace TiketManagementV2.Model
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _httpClient.PutAsync($"{_baseUrl}/{endpoint}", content);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
             }
@@ -272,7 +282,7 @@ namespace TiketManagementV2.Model
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -290,7 +300,7 @@ namespace TiketManagementV2.Model
             try
             {
                 var response = await _httpClient.DeleteAsync($"{_baseUrl}/{endpoint}");
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -312,7 +322,7 @@ namespace TiketManagementV2.Model
                 }
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -332,7 +342,7 @@ namespace TiketManagementV2.Model
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }
@@ -360,7 +370,7 @@ namespace TiketManagementV2.Model
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                EnsureValidResponse(response);
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
             }

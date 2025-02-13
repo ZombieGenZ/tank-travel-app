@@ -14,9 +14,6 @@ namespace TiketManagementV2.Helpers
         /// </summary>
         public static bool IsValidEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || email.Length < 5 || email.Length > 100)
-                return false;
-
             try
             {
                 string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
