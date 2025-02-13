@@ -27,7 +27,7 @@ namespace TiketManagementV2.View
     public partial class AdminView : Window
     {
 
-        public AdminView()
+        public AdminView(dynamic user)
         {
             InitializeComponent();
             var notificationService = new NotificationService();

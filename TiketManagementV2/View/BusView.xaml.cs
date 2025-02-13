@@ -19,7 +19,7 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class BusView : Window
     {
-        public BusView()
+        public BusView(dynamic user)
         {
             InitializeComponent();
         }

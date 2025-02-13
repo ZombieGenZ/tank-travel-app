@@ -206,12 +206,12 @@ namespace TiketManagementV2.View
 
                         if (userData.user.permission == 2)
                         {
-                            nextView = new AdminView(); // Giao diện dành cho Admin
+                            nextView = new AdminView(userData.user); // Giao diện dành cho Admin
                             nextView.Show();
                         }
                         else if (userData.user.permission == 1)
                         {
-                            nextView = new BusView(); // Giao diện dành cho Bus Operator
+                            nextView = new BusView(userData.user); // Giao diện dành cho Bus Operator
                             nextView.Show();
                         }
                         else
