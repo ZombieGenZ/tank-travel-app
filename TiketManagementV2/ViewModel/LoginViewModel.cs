@@ -104,31 +104,31 @@ namespace TiketManagementV2.ViewModel
 
         private void NavigateToRoleView(string role)
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Window nextView;
+            //Application.Current.Dispatcher.Invoke(() =>
+            //{
+            //    Window nextView;
 
-                if (role == "admin")
-                {
-                    nextView = new AdminView(); // Giao diện dành cho Admin
-                }
-                else
-                {
-                    nextView = new BusView(); // Giao diện dành cho Bus Operator
-                }
+            //    if (role == "admin")
+            //    {
+            //        nextView = new AdminView(); // Giao diện dành cho Admin
+            //    }
+            //    else
+            //    {
+            //        nextView = new BusView(); // Giao diện dành cho Bus Operator
+            //    }
 
-                nextView.Show();
+            //    nextView.Show();
 
-                // Đóng cửa sổ đăng nhập
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is LoginView)
-                    {
-                        window.Close();
-                        break;
-                    }
-                }
-            });
+            //    // Đóng cửa sổ đăng nhập
+            //    foreach (Window window in Application.Current.Windows)
+            //    {
+            //        if (window is LoginView)
+            //        {
+            //            window.Close();
+            //            break;
+            //        }
+            //    }
+            //});
         }
     }
 }

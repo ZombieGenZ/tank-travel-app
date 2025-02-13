@@ -13,6 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using TiketManagementV2.Model;
+using TiketManagementV2.Services;
+using TiketManagementV2.ViewModel;
+using static TiketManagementV2.ViewModel.MainViewModel;
 
 namespace TiketManagementV2.View
 {
@@ -22,12 +26,20 @@ namespace TiketManagementV2.View
     public partial class HomeView : UserControl
     {
         private DispatcherTimer timer;
+        //private readonly NotificationService notificationService;
+        //private ApiServices _service;
+        private dynamic _user;
 
-        public HomeView()
+        public HomeView(dynamic user)
         {
             InitializeComponent();
+            _user = user;
             ClockText.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
-
+            StartClock();
+            //notificationService = new NotificationService();  // Initialize the field
+            //var viewModel = new MainViewModel(notificationService, user);
+            //DataContext = viewModel;
+            //_service = new ApiServices();
         }
 
         private void StartClock()

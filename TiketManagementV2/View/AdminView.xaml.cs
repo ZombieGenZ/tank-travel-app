@@ -16,6 +16,7 @@ using System.Runtime;
 using System.Windows.Interop;
 using TiketManagementV2.ViewModel;
 using TiketManagementV2.Services;
+using TiketManagementV2.Model;
 
 namespace TiketManagementV2.View
 {
@@ -26,14 +27,16 @@ namespace TiketManagementV2.View
 
     public partial class AdminView : Window
     {
-
+        private ApiServices _service;
+        private dynamic _user;
         public AdminView(dynamic user)
         {
             InitializeComponent();
             var notificationService = new NotificationService();
-            var viewModel = new MainViewModel(notificationService);
+            _user = user;
+            var viewModel = new MainViewModel(notificationService, _user);
             DataContext = viewModel;
-
+            _service = new ApiServices();
         }
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
@@ -48,8 +51,15 @@ namespace TiketManagementV2.View
             this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
+        private async void btnClose_Click(object sender, RoutedEventArgs e)
         {
+            bool remember = Properties.Settings.Default.remember_login;
+
+            if (!remember)
+            {
+                await DeleteLogout();
+            }
+
             Application.Current.Shutdown();
         }
 
@@ -73,13 +83,37 @@ namespace TiketManagementV2.View
 
         private void btnProfile_Click(object sender, RoutedEventArgs e)
         {
-            // Xử lý sự kiện khi click vào nút Profile
-            // Ví dụ: Mở trang profile
             userDropdown.IsOpen = false;
         }
 
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        private async Task<bool> DeleteLogout()
         {
+            try
+            {
+                var logoutBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token
+                };
+
+                await _service.DeleteWithBodyAsync("api/users/logout", logoutBody);
+
+                Properties.Settings.Default.access_token = "";
+                Properties.Settings.Default.refresh_token = "";
+                Properties.Settings.Default.Save();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        private async void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            await DeleteLogout();
+
             LoginView loginView = new LoginView();
             loginView.Show();
             this.Close();

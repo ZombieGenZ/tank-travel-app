@@ -28,11 +28,14 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Ellipse Width="60" Height="60">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="/Images/ducanh.jpg"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
+                    <Button Background="Transparent" BorderThickness="0"
+                            Command="{Binding ChangeProfileImageCommand}">
+                        <Ellipse Width="60" Height="60">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding PathUser}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Button>
 
                     <StackPanel Grid.Column="1" 
                           Margin="20,0,0,0"
@@ -51,116 +54,91 @@
 
             <!-- Form Content -->
             <ScrollViewer Grid.Row="1" 
-                      Padding="30"
-                      VerticalScrollBarVisibility="Auto">
+                          Padding="30"
+                          VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- Personal Information Section -->
                     <Border Background="#251361" 
-                        CornerRadius="15"
-                        Padding="25"
-                        Margin="0,0,0,20">
+                            CornerRadius="15"
+                            Padding="25"
+                            Margin="0,0,0,20">
                         <StackPanel>
                             <TextBlock Text="Personal Information" 
-                                 FontSize="18" 
-                                 FontWeight="SemiBold"
-                                 Foreground="#E0E1F1"
-                                 Margin="0,0,0,20"/>
+                                     FontSize="18" 
+                                     FontWeight="SemiBold"
+                                     Foreground="#E0E1F1"
+                                     Margin="0,0,0,20"/>
 
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <!-- First Name -->
-                                <StackPanel Grid.Column="0" Margin="0,0,15,20">
-                                    <TextBlock Text="First Name"
-                                         Foreground="#8A8D9F"
-                                         FontSize="13"
-                                         Margin="0,0,0,8"/>
+                                <!-- Display Name -->
+                                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                                    <TextBlock Text="Display Name"
+                                              Foreground="#8A8D9F"
+                                              FontSize="13"
+                                              Margin="0,0,0,8"/>
                                     <Border Background="#2d1873" 
-                                        CornerRadius="8">
-                                        <TextBox x:Name="txtFirstName"
-                                           FontSize="14"
-                                           FontWeight="Medium"
-                                           FontFamily="Montserrat"                            
-                                           Foreground="White"
-                                           CaretBrush="LightGray"
-                                           BorderThickness="0"
-                                           Height="40"
-                                           VerticalContentAlignment="Center"
-                                           Padding="15,0"
-                                           Background="Transparent"/>
-                                    </Border>
-                                </StackPanel>
-
-                                <!-- Last Name -->
-                                <StackPanel Grid.Column="1" Margin="15,0,0,20">
-                                    <TextBlock Text="Last Name"
-                                         Foreground="#8A8D9F"
-                                         FontSize="13"
-                                         Margin="0,0,0,8"/>
-                                    <Border Background="#2d1873" 
-                                        CornerRadius="8">
-                                        <TextBox x:Name="txtLastName"
-                                           FontSize="14"
-                                           FontWeight="Medium"
-                                           FontFamily="Montserrat"                            
-                                           Foreground="White"
-                                           CaretBrush="LightGray"
-                                           BorderThickness="0"
-                                           Height="40"
-                                           VerticalContentAlignment="Center"
-                                           Padding="15,0"
-                                           Background="Transparent"/>
+                                            CornerRadius="8">
+                                        <TextBox Text="{Binding CurrentUserAccount.DisplayName, UpdateSourceTrigger=PropertyChanged}"
+                                                FontSize="14"
+                                                FontWeight="Medium"
+                                                FontFamily="Montserrat"                            
+                                                Foreground="White"
+                                                CaretBrush="LightGray"
+                                                BorderThickness="0"
+                                                Height="40"
+                                                VerticalContentAlignment="Center"
+                                                Padding="15,0"
+                                                Background="Transparent"/>
                                     </Border>
                                 </StackPanel>
 
                                 <!-- Email -->
-                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,15,0">
+                                <StackPanel Grid.Row="1" Margin="0,0,0,20">
                                     <TextBlock Text="Email"
-                                         Foreground="#8A8D9F"
-                                         FontSize="13"
-                                         Margin="0,0,0,8"/>
+                                              Foreground="#8A8D9F"
+                                              FontSize="13"
+                                              Margin="0,0,0,8"/>
                                     <Border Background="#2d1873" 
-                                        CornerRadius="8">
-                                        <TextBox x:Name="txtEmail"
-                                           FontSize="14"
-                                           FontWeight="Medium"
-                                           FontFamily="Montserrat"                            
-                                           Foreground="White"
-                                           CaretBrush="LightGray"
-                                           BorderThickness="0"
-                                           Height="40"
-                                           VerticalContentAlignment="Center"
-                                           Padding="15,0"
-                                           Background="Transparent"/>
+                                            CornerRadius="8">
+                                        <TextBox Text="{Binding CurrentUserAccount.Email, UpdateSourceTrigger=PropertyChanged}"
+                                                FontSize="14"
+                                                FontWeight="Medium"
+                                                FontFamily="Montserrat"                            
+                                                Foreground="White"
+                                                CaretBrush="LightGray"
+                                                BorderThickness="0"
+                                                Height="40"
+                                                VerticalContentAlignment="Center"
+                                                Padding="15,0"
+                                                Background="Transparent"/>
                                     </Border>
                                 </StackPanel>
 
                                 <!-- Phone -->
-                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="15,0,0,0">
+                                <StackPanel Grid.Row="2">
                                     <TextBlock Text="Phone Number"
-                                         Foreground="#8A8D9F"
-                                         FontSize="13"
-                                         Margin="0,0,0,8"/>
+                                              Foreground="#8A8D9F"
+                                              FontSize="13"
+                                              Margin="0,0,0,8"/>
                                     <Border Background="#2d1873" 
-                                        CornerRadius="8">
-                                        <TextBox x:Name="txtPhone"
-                                           FontSize="14"
-                                           FontWeight="Medium"
-                                           FontFamily="Montserrat"                            
-                                           Foreground="White"
-                                           CaretBrush="LightGray"
-                                           BorderThickness="0"
-                                           Height="40"
-                                           VerticalContentAlignment="Center"
-                                           Padding="15,0"
-                                           Background="Transparent"/>
+                                            CornerRadius="8">
+                                        <TextBox Text="{Binding CurrentUserAccount.Phone, UpdateSourceTrigger=PropertyChanged}"
+                                                FontSize="14"
+                                                FontWeight="Medium"
+                                                FontFamily="Montserrat"                            
+                                                Foreground="White"
+                                                CaretBrush="LightGray"
+                                                BorderThickness="0"
+                                                Height="40"
+                                                VerticalContentAlignment="Center"
+                                                Padding="15,0"
+                                                Background="Transparent"/>
                                     </Border>
                                 </StackPanel>
                             </Grid>
@@ -172,6 +150,7 @@
                                             HorizontalAlignment="Right">
                         <Button x:Name="btnCancel"
                                             Content="Cancel"
+                                            Command="{Binding CancelProfileCommand}"
                                             Width="120"
                                             Height="40"
                                             Margin="0,0,15,0"
@@ -213,15 +192,16 @@
                         </Button>
 
                         <Button x:Name="btnUpdate"
-            Content="Save Changes"
-            Width="120"
-            Height="40"
-            Background="#6C5DD3"
-            BorderThickness="0"
-            Foreground="White"
-            FontSize="14"
-            FontFamily="Montserrat"
-            FontWeight="SemiBold">
+                                Content="Save Changes"
+                                Command="{Binding SaveProfileCommand}"
+                                Width="120"
+                                Height="40"
+                                Background="#6C5DD3"
+                                BorderThickness="0"
+                                Foreground="White"
+                                FontSize="14"
+                                FontFamily="Montserrat"
+                                FontWeight="SemiBold">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
