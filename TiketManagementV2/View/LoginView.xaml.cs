@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -31,12 +32,100 @@ namespace TiketManagementV2.View
 
         public LoginView()
         {
+            _service = new ApiServices();
+            CheckLogin();
             InitializeComponent();
             checkviewModel = new LoginViewModel(new NotificationService()); // Inject NotificationService
             notificationService = new NotificationService();  // Initialize the field
             var viewModel = new MainViewModel(notificationService);
-            _service = new ApiServices();
             DataContext = viewModel;
+        }
+
+        private string FormatDate(DateTime date)
+        {
+            var second = date.Second.ToString("D2");
+            var minute = date.Minute.ToString("D2");
+            var hour = date.Hour.ToString("D2");
+            var day = date.Day.ToString("D2");
+            var month = date.Month.ToString("D2");
+            var year = date.Year;
+
+            return $"{hour}:{minute}:{second} {day}/{month}/{year}";
+        }
+
+        private async void CheckLogin()
+        {
+            bool rememberLogin = Properties.Settings.Default.remember_login;
+            string access_token = Properties.Settings.Default.access_token;
+            string refresh_token = Properties.Settings.Default.refresh_token;
+
+            if (string.IsNullOrWhiteSpace(access_token) || string.IsNullOrWhiteSpace(refresh_token) || !rememberLogin)
+            {
+                return;
+            }
+
+            dynamic userData = await GetUserData(access_token, refresh_token);
+
+            if (userData == null)
+            {
+                notificationService.ShowNotification(
+                    "Error",
+                    "Error connecting to server!",
+                    NotificationType.Error
+                );
+                return;
+            }
+
+            if (userData.user.penalty != null)
+            {
+                notificationService.ShowNotification(
+                    "Error",
+                    $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
+                    NotificationType.Error
+                );
+                return;
+            }
+
+            access_token = userData.authenticate.access_token;
+            refresh_token = userData.authenticate.refresh_token;
+
+            Properties.Settings.Default.access_token = access_token;
+            Properties.Settings.Default.refresh_token = refresh_token;
+            Properties.Settings.Default.Save();
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Window nextView;
+
+                if (userData.user.permission == 2)
+                {
+                    nextView = new AdminView(userData.user); // Giao diện dành cho Admin
+                    nextView.Show();
+                }
+                else if (userData.user.permission == 1)
+                {
+                    nextView = new BusView(userData.user); // Giao diện dành cho Bus Operator
+                    nextView.Show();
+                }
+                else
+                {
+                    notificationService.ShowNotification(
+                        "Error",
+                        "YOU ARE A USER? GET OUT",
+                        NotificationType.Warning
+                    );
+                }
+
+                // Đóng cửa sổ đăng nhập
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is LoginView)
+                    {
+                        window.Close();
+                        break;
+                    }
+                }
+            });
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -77,8 +166,6 @@ namespace TiketManagementV2.View
         {
             try
             {
-                _service = new ApiServices();
-
                 Dictionary<string, string> getUserDataHeader = new Dictionary<string, string>()
                 {
                     { "Authorization", $"Bearer {access_token}" }
@@ -101,7 +188,6 @@ namespace TiketManagementV2.View
 
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            int? role = null;
             try
             {
                 string username = txtUser.Text.Trim();
@@ -162,6 +248,16 @@ namespace TiketManagementV2.View
                     return;
                 }
 
+                if (data.message == "Please change your temporary password before logging in")
+                {
+                    notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
                 if (data.message == "Login failed")
                 {
                     notificationService.ShowNotification(
@@ -177,6 +273,7 @@ namespace TiketManagementV2.View
                     string access_token = data.authenticate.access_token;
                     string refresh_token = data.authenticate.refresh_token;
 
+                    Properties.Settings.Default.remember_login = RememberLogin.IsChecked ?? false;
                     Properties.Settings.Default.access_token = access_token;
                     Properties.Settings.Default.refresh_token = refresh_token;
                     Properties.Settings.Default.Save();
@@ -188,6 +285,16 @@ namespace TiketManagementV2.View
                         notificationService.ShowNotification(
                             "Error",
                             "Error connecting to server!",
+                            NotificationType.Error
+                        );
+                        return;
+                    }
+
+                    if (userData.user.penalty != null)
+                    {
+                        notificationService.ShowNotification(
+                            "Error",
+                            $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
                             NotificationType.Error
                         );
                         return;
@@ -240,12 +347,6 @@ namespace TiketManagementV2.View
                         NotificationType.Success
                     );
                 }
-
-                notificationService.ShowNotification(
-                    "Error",
-                    "Error connecting to server!",
-                    NotificationType.Error
-                );
             }
             catch (Exception ex)
             {

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TiketManagementV2.Commands;
+using TiketManagementV2.Helpers;
+using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.View;
 
@@ -12,13 +15,53 @@ namespace TiketManagementV2.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private UserAccount _currentUserAccount;
+        private string _pathUser;
+        private string _originalDisplayName;
+        private string _originalEmail;
+        private string _originalPhone;
+        private string _originalPathUser;
+        private dynamic _user;
+
+        private string _revenue;
+        public string Revenue
+        {
+            get => _revenue;
+            set => SetProperty(ref _revenue, value);
+        }
+
+        private ApiServices _service;
+
+        public UserAccount CurrentUserAccount
+        {
+            get => _currentUserAccount;
+            set => SetProperty(ref _currentUserAccount, value);
+        }
+
+        public string PathUser
+        {
+            get => _pathUser;
+            set => SetProperty(ref _pathUser, value);
+        }
+
+        public class UserAccount
+        {
+            public string DisplayName { get; set; }
+        }
+
+
         private object _currentView;
         public object CurrentView
         {
             get => _currentView;
             set => SetProperty(ref _currentView, value);
         }
+        //ProfileView
+        public ICommand SaveProfileCommand { get; }
+        public ICommand CancelProfileCommand { get; }
+        public ICommand ChangeProfileImageCommand { get; }
 
+        //giao diện
         public ICommand ShowHomeViewCommand { get; }
         public ICommand ShowBankViewCommand { get; }
         public ICommand ShowProfileViewCommand { get; }
@@ -30,25 +73,9 @@ namespace TiketManagementV2.ViewModel
         public ICommand ShowNotificationViewCommand { get; }
         // Thêm các command khác
 
-        public MainViewModel()
-        {
-            // Khởi tạo commands
-            ShowHomeViewCommand = new RelayCommand(ExecuteShowHomeView);
-            ShowBankViewCommand = new RelayCommand(ExecuteShowBankView);
-            ShowProfileViewCommand = new RelayCommand(ExecuteShowProfileView);
-            ShowAccountViewCommand = new RelayCommand(ExecuteShowAccountView);
-            ShowCensorViewCommand = new RelayCommand(ExecuteShowCensorView);
-            ShowTicketViewCommand = new RelayCommand(ExecuteShowTicketView);
-            ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
-            ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
-            ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
-            // Set view mặc định
-            ExecuteShowHomeView(null);
-        }
-
         private void ExecuteShowHomeView(object obj)
         {
-            CurrentView = new HomeView();
+            CurrentView = new HomeView(_user);
         }
         private void ExecuteShowBankView (object obj)
         {
@@ -56,7 +83,7 @@ namespace TiketManagementV2.ViewModel
         }
         private void ExecuteShowProfileView(object obj)
         {
-            CurrentView = new ProfileView();
+            CurrentView = new ProfileView(_user);
         }
 
         private void ExecuteShowAccountView(object obj)
@@ -85,10 +112,88 @@ namespace TiketManagementV2.ViewModel
         }
         private readonly INotificationService _notificationService;
 
-        // Constructor với DI
         public MainViewModel(INotificationService notificationService)
         {
+            //_service = new ApiServices();
+
+            //_notificationService = notificationService;
+
+            //CurrentUserAccount = new UserAccount
+            //{
+            //    DisplayName = "Người dùng"
+            //};
+            //PathUser = "/Images/ducanh.jpg";
+
+            ////Khởi tạo commands cho profile
+            //SaveProfileCommand = new RelayCommand(ExecuteSaveProfile);
+            //CancelProfileCommand = new RelayCommand(ExecuteCancelProfile);
+            //ChangeProfileImageCommand = new RelayCommand(ExecuteChangeProfileImage);
+
+
+            ////Khởi tạo commands
+            //ShowHomeViewCommand = new RelayCommand(ExecuteShowHomeView);
+            //ShowBankViewCommand = new RelayCommand(ExecuteShowBankView);
+            //ShowProfileViewCommand = new RelayCommand(ExecuteShowProfileView);
+            //ShowAccountViewCommand = new RelayCommand(ExecuteShowAccountView);
+            //ShowCensorViewCommand = new RelayCommand(ExecuteShowCensorView);
+            //ShowTicketViewCommand = new RelayCommand(ExecuteShowTicketView);
+            //ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
+            //ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
+            //ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+
+            ////Set view mặc định
+            //ExecuteShowHomeView(null);
+        }
+
+        private async Task<dynamic> GetRevenue()
+        {
+            try
+            {
+                Dictionary<string, string> statisticsHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var statisticsBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                };
+
+                dynamic data = await _service.PostWithHeaderAndBodyAsync("api/statistical/get-revenue-statistics", statisticsHeader, statisticsBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public MainViewModel(INotificationService notificationService, dynamic user)
+        {
+            _service = new ApiServices();
+
+            _user = user;
             _notificationService = notificationService;
+
+
+
+            CurrentUserAccount = new UserAccount
+            {
+                DisplayName = user.display_name
+            };
+            PathUser = user.avatar.url;
+
+            //Revenue = "0";
+            //_Deals = "0";
+
+            //LoadRevenue();
+
+            // Khởi tạo commands cho profile
+            SaveProfileCommand = new RelayCommand(ExecuteSaveProfile);
+            CancelProfileCommand = new RelayCommand(ExecuteCancelProfile);
+            ChangeProfileImageCommand = new RelayCommand(ExecuteChangeProfileImage);
+
 
             // Khởi tạo commands
             ShowHomeViewCommand = new RelayCommand(ExecuteShowHomeView);
@@ -100,9 +205,31 @@ namespace TiketManagementV2.ViewModel
             ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
             ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
             ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+
             // Set view mặc định
             ExecuteShowHomeView(null);
         }
+
+        //private async void LoadRevenue()
+        //{
+        //    dynamic data = await GetRevenue();
+
+        //    if (data == null)
+        //    {
+        //        _notificationService.ShowNotification(
+        //            "Error",
+        //            "Error connecting to server!",
+        //            NotificationType.Error
+        //        );
+        //        return;
+        //    }
+
+        //    Properties.Settings.Default.access_token = data.authenticate.access_token;
+        //    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+        //    Properties.Settings.Default.Save();
+
+        //    Revenue = data.result;
+        //}
 
         // Ví dụ sử dụng trong command hoặc method
         private ICommand _saveCommand;
@@ -155,6 +282,41 @@ namespace TiketManagementV2.ViewModel
             }
         }
 
+        private void ExecuteSaveProfile(object obj)
+        {
+            // Lưu các giá trị hiện tại làm giá trị gốc
+            _originalDisplayName = CurrentUserAccount.DisplayName;
+            //_originalEmail = CurrentUserAccount.Email;
+            //_originalPhone = CurrentUserAccount.Phone;
+            _originalPathUser = PathUser;
 
+            _notificationService.ShowNotification(
+                "Thành công",
+                "Đã lưu thông tin profile!",
+                NotificationType.Success
+            );
+        }
+
+        private void ExecuteCancelProfile(object obj)
+        {
+            // Khôi phục về giá trị gốc
+            CurrentUserAccount.DisplayName = _originalDisplayName;
+            //CurrentUserAccount.Email = _originalEmail;
+            //CurrentUserAccount.Phone = _originalPhone;
+            PathUser = _originalPathUser;
+        }
+
+        private void ExecuteChangeProfileImage(object obj)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                PathUser = openFileDialog.FileName;
+            }
+        }
     }
 }

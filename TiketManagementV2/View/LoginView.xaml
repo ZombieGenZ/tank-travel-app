@@ -183,6 +183,16 @@
                                         AlignmentX="Left"/>
                         </PasswordBox.Background>
                     </PasswordBox>
+                    <CheckBox x:Name="RememberLogin"
+                              Content="Remember Login"
+                              HorizontalAlignment="Left"
+                              Margin="0,15,0,0"
+                              VerticalAlignment="Center"
+                              Foreground="DarkGray"
+                              FontFamily="Montserrat"
+                              FontSize="12"
+                              FontWeight="Medium">
+                    </CheckBox>
                     <Button x:Name="btnLogin"                          
                             BorderThickness="0"
                             Content="LOG IN"
@@ -190,7 +200,7 @@
                             FontSize="12"
                             FontFamily="Montserrat"
                             Cursor="Hand"                           
-                            Margin="0,50,0,0"
+                            Margin="0,30,0,0"
                             Click="btnLogin_Click">
                         <Button.Style>
                             <Style TargetType="Button">
@@ -213,6 +223,7 @@
                             </ControlTemplate>
                         </Button.Template>
                     </Button>
+
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,15,0,0">
@@ -231,6 +242,7 @@
                                Margin="8,0,0,0"/>
                     </StackPanel>
                 </StackPanel>
+
             </Grid>
         </Border>
     </Border>

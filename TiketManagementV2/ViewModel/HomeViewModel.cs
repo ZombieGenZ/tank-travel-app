@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TiketManagementV2.Model;
+using TiketManagementV2.Services;
 
 namespace TiketManagementV2.ViewModel
 {
+
     public class HomeViewModel : ViewModelBase
     {
-        private string _welcomeMessage;
-        public string WelcomeMessage
+        private dynamic _user;
+        private string _revenue;
+        private string _Deals;
+        private ApiServices _service;
+        public string Revenue
         {
-            get => _welcomeMessage;
-            set => SetProperty(ref _welcomeMessage, value);
+            get => _revenue;
+            set => SetProperty(ref _revenue, value);
         }
-
         public HomeViewModel()
         {
-            WelcomeMessage = "Welcome to Dashboard!";
+            _service = new ApiServices();
         }
+
     }
 }

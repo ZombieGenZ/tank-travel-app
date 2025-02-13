@@ -66,28 +66,28 @@
                                     Padding="15">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="34" 
-                                                    FontSize="24" 
-                                                    FontWeight="Bold" 
-                                                    Foreground="White"/>
+                            <TextBlock Text="{Binding Deals}" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"/>
                         </StackPanel>
                         <TextBlock Text="Deals" 
-                                                Foreground="White"/>
+                                   Foreground="White"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Won Card -->
                 <Border Grid.Column="1" 
-                                    Background="{StaticResource color5}"
-                                    CornerRadius="15"
-                                    Margin="5,0"
-                                    Padding="15">
+                        Background="{StaticResource color5}"
+                        CornerRadius="15"
+                        Margin="5,0"
+                        Padding="15">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="20" 
-                                                     FontSize="24" 
-                                                     FontWeight="Bold" 
-                                                     Foreground="White"/>
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"/>
                         </StackPanel>
                         <TextBlock Text="Tickets booked" 
                                                 Foreground="White"/>
@@ -102,14 +102,14 @@
                                     Padding="15">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="100000000" 
-                                                     FontSize="24" 
-                                                     FontWeight="Bold" 
-                                                     Foreground="White"/>
+                            <TextBlock Text="{Binding Revenue}" 
+                                       FontSize="24" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"/>
                             <TextBlock Text="VND" 
-                                                   Foreground="White"
-                                                   FontWeight="Medium"
-                                                   Margin="4,4,0,0"/>
+                                       Foreground="White"
+                                       FontWeight="Medium"
+                                       Margin="4,4,0,0"/>
                         </StackPanel>
                         <TextBlock Text="revenue" 
                                                 Foreground="White"/>
@@ -132,32 +132,15 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Top Business" 
+                        <TextBlock Text="Business Censorship" 
                                                 FontSize="20" 
                                                 FontWeight="Bold" 
                                                 Foreground="White"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" 
-                                            Orientation="Horizontal">
-                        <Path Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" 
-                                          Fill="White" 
-                                          Width="16" 
-                                          Height="16"
-                                          Margin="0,0,10,0"/>
-                        <Border Background="#333333" 
-                                            CornerRadius="15" 
-                                            Padding="10,5">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="All" 
-                                                        Foreground="White"/>
-                                <Path Data="M7 10l5 5 5-5z" 
-                                                  Fill="White" 
-                                                  Width="12" 
-                                                  Height="12"
-                                                  Margin="5,0,0,0"/>
-                            </StackPanel>
-                        </Border>
+                                Orientation="Horizontal">
+                        
                     </StackPanel>
                 </Grid>
 
@@ -171,9 +154,84 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Background="#2A2A2A" 
-                                                CornerRadius="15" 
-                                                Margin="5" 
-                                                Padding="15">
+                                    CornerRadius="15" 
+                                    Margin="5" 
+                                     Padding="15">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Ellipse Width="40" 
+                                                             Height="40" 
+                                                             Fill="#444444"/>
+                                        <Path Data="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" 
+                                                          Fill="White" 
+                                                          Width="16" 
+                                                          Height="16"
+                                                          HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <TextBlock Text="{Binding Name}" 
+                                                             FontWeight="Bold" 
+                                                             Foreground="White"/>
+                                    <TextBlock Text="{Binding Role}" 
+                                                             Foreground="#8B8B8B" 
+                                                             TextWrapping="Wrap" 
+                                                             Margin="0,5,0,10"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Email" 
+                                                            Background="#444444" 
+                                                            Foreground="White" 
+                                                            Padding="15,5" 
+                                                            Margin="0,0,5,0"/>
+                                        <Button Content="Call" 
+                                                            Background="#444444" 
+                                                            Foreground="White" 
+                                                            Padding="15,5"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+
+            <Grid Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="vehicle inspection" 
+                                                FontSize="20" 
+                                                FontWeight="Bold" 
+                                                Foreground="White"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal">
+
+                    </StackPanel>
+                </Grid>
+
+                <!-- Leads Cards -->
+                <ItemsControl Grid.Row="1">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#2A2A2A" 
+                                    CornerRadius="15" 
+                                    Margin="5" 
+                                     Padding="15">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,10">
                                         <Ellipse Width="40" 
