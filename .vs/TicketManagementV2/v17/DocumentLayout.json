@@ -1,0 +1,124 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\tiketmanagementv2\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\viewmodel\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|c:\\users\\admin\\documents\\zalo received files\\tiketmanagementv3\\tiketmanagementv3\\tiketmanagementv2\\tiketmanagementv2\\helpers\\validationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\helpers\\validationhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|c:\\users\\admin\\documents\\zalo received files\\tiketmanagementv3\\tiketmanagementv3\\tiketmanagementv2\\tiketmanagementv2\\view\\loginview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\loginview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\tiketmanagementv2\\view\\adminview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\adminview.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|c:\\users\\admin\\documents\\zalo received files\\tiketmanagementv3\\tiketmanagementv3\\tiketmanagementv2\\tiketmanagementv2\\view\\logview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\logview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|c:\\users\\admin\\documents\\zalo received files\\tiketmanagementv3\\tiketmanagementv3\\tiketmanagementv2\\tiketmanagementv2\\view\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{71978D98-C25E-40B5-B3AA-D23241B513C7}|TiketManagementV2\\TicketManagementV2.csproj|solutionrelative:tiketmanagementv2\\view\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:611123559:0:{83107a3e-496a-485e-b455-16ddb978e55e}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "LogView.xaml",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\LogView.xaml",
+              "RelativeDocumentMoniker": "TiketManagementV2\\View\\LogView.xaml",
+              "ToolTip": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\LogView.xaml",
+              "RelativeToolTip": "TiketManagementV2\\View\\LogView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-02-13T04:56:44.86Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AdminView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\AdminView.xaml.cs",
+              "RelativeDocumentMoniker": "TiketManagementV2\\View\\AdminView.xaml.cs",
+              "ToolTip": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\AdminView.xaml.cs",
+              "RelativeToolTip": "TiketManagementV2\\View\\AdminView.xaml.cs",
+              "ViewState": "AQIAADwAAAAAAAAAAAAowCEAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T04:08:06.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\ViewModel\\LoginViewModel.cs",
+              "RelativeDocumentMoniker": "TiketManagementV2\\ViewModel\\LoginViewModel.cs",
+              "ToolTip": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\ViewModel\\LoginViewModel.cs",
+              "RelativeToolTip": "TiketManagementV2\\ViewModel\\LoginViewModel.cs",
+              "ViewState": "AQIAAFMAAAAAAAAAAAAIwFMAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T03:51:36.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "LoginView.xaml",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\LoginView.xaml",
+              "RelativeDocumentMoniker": "TiketManagementV2\\View\\LoginView.xaml",
+              "ToolTip": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\LoginView.xaml",
+              "RelativeToolTip": "TiketManagementV2\\View\\LoginView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-02-13T05:00:27.991Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ValidationHelper.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\Helpers\\ValidationHelper.cs",
+              "RelativeDocumentMoniker": "TiketManagementV2\\Helpers\\ValidationHelper.cs",
+              "ToolTip": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\Helpers\\ValidationHelper.cs",
+              "RelativeToolTip": "TiketManagementV2\\Helpers\\ValidationHelper.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAAwCUAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T05:11:39.128Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\LoginView.xaml.cs",
+              "RelativeDocumentMoniker": "TiketManagementV2\\View\\LoginView.xaml.cs",
+              "ToolTip": "C:\\Users\\ADMIN\\Documents\\Zalo Received Files\\TiketManagementV3\\TiketManagementV3\\TiketManagementV2\\TiketManagementV2\\View\\LoginView.xaml.cs",
+              "RelativeToolTip": "TiketManagementV2\\View\\LoginView.xaml.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAgwEMAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-13T03:55:49.296Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
