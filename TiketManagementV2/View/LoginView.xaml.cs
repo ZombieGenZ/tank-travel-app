@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -26,7 +27,7 @@ namespace TiketManagementV2.View
     {
         private readonly NotificationService notificationService;
         private readonly LoginViewModel checkviewModel;
-
+        private ApiServices _service;
 
         public LoginView()
         {
@@ -34,6 +35,7 @@ namespace TiketManagementV2.View
             checkviewModel = new LoginViewModel(new NotificationService()); // Inject NotificationService
             notificationService = new NotificationService();  // Initialize the field
             var viewModel = new MainViewModel(notificationService);
+            _service = new ApiServices();
             DataContext = viewModel;
         }
 
@@ -54,15 +56,39 @@ namespace TiketManagementV2.View
         {
             try
             {
-                ApiServices service = new ApiServices();
-
                 var loginBody = new
                 {
                     email = tenDangNhap,
                     password = matKhau
                 };
 
-                dynamic data = await service.PostWithBodyAsync("api/users/login-manage", loginBody);
+                dynamic data = await _service.PostWithBodyAsync("api/users/login-manage", loginBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task<dynamic> GetUserData(string access_token, string refresh_token)
+        {
+            try
+            {
+                _service = new ApiServices();
+
+                Dictionary<string, string> getUserDataHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var getUserDataBody = new
+                {
+                    refresh_token = refresh_token
+                };
+
+                dynamic data = await _service.PostWithHeaderAndBodyAsync("api/users/get-user-infomation", getUserDataHeader, getUserDataBody);
 
                 return data;
             }
@@ -136,7 +162,7 @@ namespace TiketManagementV2.View
                     return;
                 }
 
-                if (data.messgae == "Login failed")
+                if (data.message == "Login failed")
                 {
                     notificationService.ShowNotification(
                         "Error",
@@ -146,10 +172,79 @@ namespace TiketManagementV2.View
                     return;
                 }
 
+                if (data.message == "Login successful!")
+                {
+                    string access_token = data.authenticate.access_token;
+                    string refresh_token = data.authenticate.refresh_token;
+
+                    Properties.Settings.Default.access_token = access_token;
+                    Properties.Settings.Default.refresh_token = refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    dynamic userData = await GetUserData(access_token, refresh_token);
+
+                    if (userData == null)
+                    {
+                        notificationService.ShowNotification(
+                            "Error",
+                            "Error connecting to server!",
+                            NotificationType.Error
+                        );
+                        return;
+                    }
+
+                    access_token = userData.authenticate.access_token;
+                    refresh_token = userData.authenticate.refresh_token;
+
+                    Properties.Settings.Default.access_token = access_token;
+                    Properties.Settings.Default.refresh_token = refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Window nextView;
+
+                        if (userData.user.permission == 2)
+                        {
+                            nextView = new AdminView(); // Giao diện dành cho Admin
+                            nextView.Show();
+                        }
+                        else if (userData.user.permission == 1)
+                        {
+                            nextView = new BusView(); // Giao diện dành cho Bus Operator
+                            nextView.Show();
+                        }
+                        else
+                        {
+                            notificationService.ShowNotification(
+                                "Error",
+                                "YOU ARE A USER? GET OUT",
+                                NotificationType.Warning
+                            );
+                        }
+
+                        // Đóng cửa sổ đăng nhập
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            if (window is LoginView)
+                            {
+                                window.Close();
+                                break;
+                            }
+                        }
+                    });
+
+                    notificationService.ShowNotification(
+                        "Success",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+                }
+
                 notificationService.ShowNotification(
-                    "Success",
-                    (string)data.message,
-                    NotificationType.Success
+                    "Error",
+                    "Error connecting to server!",
+                    NotificationType.Error
                 );
             }
             catch (Exception ex)
