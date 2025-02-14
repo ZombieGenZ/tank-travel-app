@@ -1,5 +1,7 @@
 .vs/
-.vs
+TiketManagementV2/.vs/
 Debug/
 Release/
 obj/
+.suo
+*.suo
