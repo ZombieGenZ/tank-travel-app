@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              xmlns:local="clr-namespace:TiketManagementV2.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border Grid.Column="1"
-                        Grid.RowSpan="2"
-                        Background="#200F53"
-                        CornerRadius="15">
+            Grid.RowSpan="2"
+            Background="#200F53"
+            CornerRadius="15">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -51,7 +52,7 @@
             </Grid>
 
             <!-- Stats Cards -->
-            <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid Grid.Row="1" Margin="10,0,10,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -84,7 +85,7 @@
                         Padding="15">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="20" 
+                            <TextBlock Text="{Binding Ticket}" 
                                        FontSize="24" 
                                        FontWeight="Bold" 
                                        Foreground="White"/>
@@ -112,13 +113,12 @@
                                        Margin="4,4,0,0"/>
                         </StackPanel>
                         <TextBlock Text="Revenue" 
-                                                Foreground="White"/>
+                                    Foreground="White"/>
                     </StackPanel>
                 </Border>
             </Grid>
-
-            <!-- New Leads Section -->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2"
+                  Margin="10,0,10,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -130,61 +130,105 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Grid.Column="0">
                         <TextBlock Text="Business Censorship" 
-                                                FontSize="20" 
-                                                FontWeight="Bold" 
-                                                Foreground="White"/>
+                      FontSize="20" 
+                      FontWeight="Bold" 
+                      Foreground="White"/>
                     </StackPanel>
-
-                    <StackPanel Grid.Column="1" 
-                                Orientation="Horizontal">
-                        
-                    </StackPanel>
+                    <Button x:Name="btnSeeMoreBus"
+                Grid.Column="1" 
+                Click="btnSeeMoreBus_Click"
+                Background="Transparent" 
+                BorderThickness="0"
+                Content="SEE MORE"
+                Command="{Binding ShowCensorViewCommand}"
+                Margin="0,0,10,0"
+                Cursor="Hand"
+                Foreground="White"
+                FontWeight="Bold"/>
                 </Grid>
 
+                <!-- No Data Message -->
+                <TextBlock Grid.Row="1" 
+               Text="Không có yêu cầu" 
+               FontSize="16"
+               Foreground="White"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Visibility="{Binding HasItems, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+
                 <!-- Leads Cards -->
-                <ItemsControl Grid.Row="1">
+                <ItemsControl Grid.Row="1" 
+                  ItemsSource="{Binding BusinessItems}"
+                  Visibility="{Binding HasItems, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="4"/>
+                            <UniformGrid Columns="3"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#2A2A2A" 
-                                    CornerRadius="15" 
-                                    Margin="5" 
-                                     Padding="15">
+                            <Border Background="#1B1464" 
+                        CornerRadius="15" 
+                        Margin="5" 
+                        Padding="10">
                                 <StackPanel>
-                                    <Grid Margin="0,0,0,10">
-                                        <Ellipse Width="40" 
-                                                             Height="40" 
-                                                             Fill="#444444"/>
-                                        <Path Data="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" 
-                                                          Fill="White" 
-                                                          Width="16" 
-                                                          Height="16"
-                                                          HorizontalAlignment="Right"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" 
+                                     FontWeight="Bold" 
+                                     FontSize="19"
+                                     Foreground="White"/>
+                                        <Border Grid.Column="1" 
+                                    Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                    CornerRadius="5"
+                                    Padding="8,4"
+                                    Margin="0,0,0,5">
+                                            <TextBlock Text="{Binding StatusText}"
+                                         Foreground="White"
+                                         FontSize="12"
+                                         FontWeight="SemiBold"/>
+                                        </Border>
                                     </Grid>
-                                    <TextBlock Text="{Binding Name}" 
-                                                             FontWeight="Bold" 
-                                                             Foreground="White"/>
-                                    <TextBlock Text="{Binding Role}" 
-                                                             Foreground="#8B8B8B" 
-                                                             TextWrapping="Wrap" 
-                                                             Margin="0,5,0,10"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="Email" 
-                                                            Background="#444444" 
-                                                            Foreground="White" 
-                                                            Padding="15,5" 
-                                                            Margin="0,0,5,0"/>
-                                        <Button Content="Call" 
-                                                            Background="#444444" 
-                                                            Foreground="White" 
-                                                            Padding="15,5"/>
+                                    <TextBlock Text="{Binding Email}" 
+                                   Foreground="#B8B9CF" 
+                                   FontSize="15"
+                                   TextWrapping="Wrap" 
+                                   Margin="0,5,10,10"/>
+                                    <TextBlock Text="{Binding PhoneNumber}"
+                                   Foreground="#B8B9CF"
+                                   FontSize="15"
+                                   Margin="0,0,10,15"/>
+                                    <!-- Action Buttons -->
+                                    <StackPanel Orientation="Horizontal" 
+                                  HorizontalAlignment="Left"
+                                  Margin="0,20,0,0"
+                                  Visibility="{Binding IsActionRequired, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Button Content="Đồng ý"
+                                    FontSize="15"
+                                    Command="{Binding DataContext.AcceptCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"
+                                    Background="{StaticResource color5}"
+                                    Foreground="White"
+                                    Width="90"
+                                    Height="35"
+                                    Margin="0,0,10,0"
+                                    Cursor="Hand"
+                                    Style="{StaticResource RoundedButton}"/>
+                                        <Button Content="Từ chối"
+                                    FontSize="15"
+                                    Command="{Binding DataContext.RejectCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"
+                                    Background="{StaticResource color4}"
+                                    Foreground="White"
+                                    Width="90"
+                                    Height="35"
+                                    Cursor="Hand"
+                                    Style="{StaticResource RoundedButton}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
@@ -193,7 +237,8 @@
                 </ItemsControl>
             </Grid>
 
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="3"
+                  Margin="10,0,10,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -231,7 +276,7 @@
                             <Border Background="#2A2A2A" 
                                     CornerRadius="15" 
                                     Margin="5" 
-                                     Padding="15">
+                                     Padding="20">
                                 <StackPanel>
                                     <Grid Margin="0,0,0,10">
                                         <Ellipse Width="40" 
@@ -244,22 +289,19 @@
                                                           HorizontalAlignment="Right"/>
                                     </Grid>
                                     <TextBlock Text="{Binding Name}" 
-                                                             FontWeight="Bold" 
-                                                             Foreground="White"/>
-                                    <TextBlock Text="{Binding Role}" 
-                                                             Foreground="#8B8B8B" 
-                                                             TextWrapping="Wrap" 
-                                                             Margin="0,5,0,10"/>
+                                               FontWeight="Bold" 
+                                               FontSize="17"
+                                               Foreground="White"/>
+                                    <TextBlock Text="{Binding Email}" 
+                                               Foreground="#8B8B8B" 
+                                               TextWrapping="Wrap" 
+                                               Margin="0,5,0,10"/>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="Email" 
-                                                            Background="#444444" 
-                                                            Foreground="White" 
-                                                            Padding="15,5" 
-                                                            Margin="0,0,5,0"/>
-                                        <Button Content="Call" 
-                                                            Background="#444444" 
-                                                            Foreground="White" 
-                                                            Padding="15,5"/>
+                                                Background="#444444" 
+                                                Foreground="White" 
+                                                Padding="15,5" 
+                                                Margin="0,0,5,0"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
@@ -267,6 +309,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
+            
         </Grid>
     </Border>
 </UserControl>

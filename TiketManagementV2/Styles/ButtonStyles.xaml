@@ -174,7 +174,7 @@
                         <ContentPresenter Grid.Column="1"
                                             Margin="10,0,0,0"
                                             VerticalAlignment="Center"
-                                            HorizontalAlignment="Left"/>
+                                            HorizontalAlignment="Center"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
@@ -186,6 +186,20 @@
                             <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#28AEED"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--RoundedButton-->
+    <Style x:Key="RoundedButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="5" 
+                        Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

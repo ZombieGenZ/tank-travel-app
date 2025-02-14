@@ -348,7 +348,7 @@ namespace TiketManagementV2.View
                     );
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 notificationService.ShowNotification(
                     "Error",
