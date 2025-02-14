@@ -111,7 +111,7 @@
                                        FontWeight="Medium"
                                        Margin="4,4,0,0"/>
                         </StackPanel>
-                        <TextBlock Text="revenue" 
+                        <TextBlock Text="Revenue" 
                                                 Foreground="White"/>
                     </StackPanel>
                 </Border>

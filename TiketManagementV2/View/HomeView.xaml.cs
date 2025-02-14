@@ -38,8 +38,8 @@ namespace TiketManagementV2.View
             ClockText.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
             StartClock();
             //notificationService = new NotificationService();  // Initialize the field
-            //var viewModel = new MainViewModel(notificationService, user);
-            //DataContext = viewModel;
+            var viewModel = new HomeViewModel(user);
+            DataContext = viewModel;
         }
 
         private void StartClock()

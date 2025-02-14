@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\pc\Desktop\document\SOF102\Project\TANK-Travel\tank-travel-app\TiketManagementV2\App.xaml
-16734373836
+16107589938
 
-27761226218
-161491223527
+27-382918918
+16-1884837754
 MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\UIColors.xaml;View\AccountView.xaml;View\AdminView.xaml;View\BankView.xaml;View\BusView.xaml;View\CensorView.xaml;View\ChartView.xaml;View\HomeView.xaml;View\LoginView.xaml;View\LogView.xaml;View\NotificationMessage.xaml;View\NotificationView.xaml;View\ProfileView.xaml;View\TicketView.xaml;
 
-True
+False
 
