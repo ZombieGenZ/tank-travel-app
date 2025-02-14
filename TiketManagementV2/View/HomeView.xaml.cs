@@ -28,18 +28,18 @@ namespace TiketManagementV2.View
         private DispatcherTimer timer;
         //private readonly NotificationService notificationService;
         //private ApiServices _service;
-        private dynamic _user;
+        //private dynamic _user;
 
         public HomeView(dynamic user)
         {
             InitializeComponent();
-            _user = user;
+            //_service = new ApiServices();
+            //_user = user;
             ClockText.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
             StartClock();
             //notificationService = new NotificationService();  // Initialize the field
             //var viewModel = new MainViewModel(notificationService, user);
             //DataContext = viewModel;
-            //_service = new ApiServices();
         }
 
         private void StartClock()
