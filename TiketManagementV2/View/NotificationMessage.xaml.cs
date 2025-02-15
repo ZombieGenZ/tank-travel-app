@@ -21,6 +21,8 @@ namespace TiketManagementV2.View
     public partial class NotificationMessage : Window
     {
         Rect _ScreenArea = SystemParameters.WorkArea;
+        private static List<NotificationMessage> _openNotifications = new List<NotificationMessage>();
+
 
         public string Header { get; set; }
         public string Message { get; set; }
@@ -57,11 +59,23 @@ namespace TiketManagementV2.View
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            // Positioning to the bottom right corner
-            this.Left = _ScreenArea.Right - this.Width;
-            this.Top = _ScreenArea.Top + 150;
+            double notificationHeight = this.Height + 10; // Khoảng cách giữa các thông báo
+            double startY = _ScreenArea.Bottom - notificationHeight; // Bắt đầu từ góc dưới cùng
 
-            // Slide in window
+            // Đảm bảo thông báo mới không đè lên nhau
+            foreach (var notification in _openNotifications)
+            {
+                startY -= notificationHeight;
+            }
+
+            // vị trí cho cửa sổ
+            this.Left = _ScreenArea.Right - this.Width;
+            this.Top = startY;
+
+            // Thêm vào danh sách
+            _openNotifications.Add(this);
+
+            // Slide in window animation
             Storyboard slidein = (Storyboard)this.Resources["WindowSlideInAnimation"];
             slidein.Begin();
         }
@@ -82,8 +96,23 @@ namespace TiketManagementV2.View
         }
         private void WindowSlideOutAnimation_Completed(object sender, EventArgs e)
         {
-            // after slide out close the window
+            double closedNotificationTop = this.Top;
+            _openNotifications.Remove(this);
             this.Close();
+            foreach (var notification in _openNotifications)
+            {
+                if (notification.Top < closedNotificationTop)
+                {
+                    DoubleAnimation moveDown = new DoubleAnimation
+                    {
+                        To = notification.Top + this.Height + 10,
+                        Duration = TimeSpan.FromMilliseconds(300),
+                        EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+                    };
+
+                    notification.BeginAnimation(Window.TopProperty, moveDown);
+                }
+            }
         }
     }
 }

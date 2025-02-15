@@ -33,12 +33,37 @@ namespace TiketManagementV2.View
         public LoginView()
         {
             _service = new ApiServices();
-            CheckLogin();
             InitializeComponent();
+            LoadingControl.Visibility = Visibility.Visible;
             checkviewModel = new LoginViewModel(new NotificationService()); // Inject NotificationService
             notificationService = new NotificationService();  // Initialize the field
             var viewModel = new MainViewModel(notificationService);
             DataContext = viewModel;
+
+            InitializeLoginCheck();
+        }
+
+        private void InitializeLoginCheck()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await CheckLogin();
+                }
+                catch (Exception ex)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        notificationService?.ShowNotification(
+                            "Error",
+                            "An error occurred while checking login status",
+                            NotificationType.Error
+                        );
+                        LoadingControl.Visibility = Visibility.Collapsed;
+                    });
+                }
+            });
         }
 
         private string FormatDate(DateTime date)
@@ -53,58 +78,66 @@ namespace TiketManagementV2.View
             return $"{hour}:{minute}:{second} {day}/{month}/{year}";
         }
 
-        private async void CheckLogin()
+        private async Task CheckLogin()
         {
             bool rememberLogin = Properties.Settings.Default.remember_login;
             string access_token = Properties.Settings.Default.access_token;
             string refresh_token = Properties.Settings.Default.refresh_token;
 
-            if (string.IsNullOrWhiteSpace(access_token) || string.IsNullOrWhiteSpace(refresh_token) || !rememberLogin)
+            if (string.IsNullOrWhiteSpace(access_token) ||
+                string.IsNullOrWhiteSpace(refresh_token) ||
+                !rememberLogin)
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                });
                 return;
             }
 
             dynamic userData = await GetUserData(access_token, refresh_token);
 
-            if (userData == null)
-            {
-                notificationService.ShowNotification(
-                    "Error",
-                    "Error connecting to server!",
-                    NotificationType.Error
-                );
-                return;
-            }
-
-            if (userData.user.penalty != null)
-            {
-                notificationService.ShowNotification(
-                    "Error",
-                    $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
-                    NotificationType.Error
-                );
-                return;
-            }
-
-            access_token = userData.authenticate.access_token;
-            refresh_token = userData.authenticate.refresh_token;
-
-            Properties.Settings.Default.access_token = access_token;
-            Properties.Settings.Default.refresh_token = refresh_token;
-            Properties.Settings.Default.Save();
-
             Application.Current.Dispatcher.Invoke(() =>
             {
+                if (userData == null)
+                {
+                    notificationService.ShowNotification(
+                        "Error",
+                        "Error connecting to server!",
+                        NotificationType.Error
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (userData.user.penalty != null)
+                {
+                    notificationService.ShowNotification(
+                        "Error",
+                        $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
+                        NotificationType.Error
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                access_token = userData.authenticate.access_token;
+                refresh_token = userData.authenticate.refresh_token;
+
+                Properties.Settings.Default.access_token = access_token;
+                Properties.Settings.Default.refresh_token = refresh_token;
+                Properties.Settings.Default.Save();
+
                 Window nextView;
 
                 if (userData.user.permission == 2)
                 {
-                    nextView = new AdminView(userData.user); // Giao diện dành cho Admin
+                    nextView = new AdminView(userData.user);
                     nextView.Show();
                 }
                 else if (userData.user.permission == 1)
                 {
-                    nextView = new BusView(userData.user); // Giao diện dành cho Bus Operator
+                    nextView = new BusView(userData.user);
                     nextView.Show();
                 }
                 else
@@ -114,9 +147,11 @@ namespace TiketManagementV2.View
                         "YOU ARE A USER? GET OUT",
                         NotificationType.Warning
                     );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
                 }
 
-                // Đóng cửa sổ đăng nhập
+                // Close login window
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window is LoginView)
@@ -188,6 +223,7 @@ namespace TiketManagementV2.View
 
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
+            LoadingControl.Visibility = Visibility.Visible;
             try
             {
                 string username = txtUser.Text.Trim();
@@ -196,30 +232,35 @@ namespace TiketManagementV2.View
                 if (string.IsNullOrWhiteSpace(username))
                 {
                     notificationService.ShowNotification(
-                        "Error",
+                        "Warning",
                         "Username cannot be empty!",
-                        NotificationType.Error
+                        NotificationType.Warning
                     );
+                    txtUser.Focus();
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(password))
                 {
                     notificationService.ShowNotification(
-                        "Error",
+                        "Warning",
                         "Password cannot be empty!",
-                        NotificationType.Error
+                        NotificationType.Warning
                     );
+                    txtPass.Focus();
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
                 if (!ValidationHelper.IsValidEmail(username))
                 {
                     notificationService.ShowNotification(
-                        "Error",
+                        "Warning",
                         "Invalid email format! Please enter a valid email.",
-                        NotificationType.Error
+                        NotificationType.Warning
                     );
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -232,6 +273,7 @@ namespace TiketManagementV2.View
                         "Error connecting to server!",
                         NotificationType.Error
                     );
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -239,22 +281,23 @@ namespace TiketManagementV2.View
                 {
                     foreach (dynamic item in data.errors)
                     {
+                       if (item.Value.msg == "Please change your temporary password before logging in")
+                       {
+                            ChangePasswordView view = new ChangePasswordView(txtUser.Text, txtPass.Password);
+                            view.ShowDialog();
+
+                            txtUser.Text = "";
+                            txtPass.Password = "";
+
+                            return;
+                       }
                        notificationService.ShowNotification(
-                            "Error",
+                            "Warning",
                             (string)item.Value.msg,
                             NotificationType.Warning
                         );
                     }
-                    return;
-                }
-
-                if (data.message == "Please change your temporary password before logging in")
-                {
-                    notificationService.ShowNotification(
-                        "Error",
-                        data.message,
-                        NotificationType.Error
-                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -265,6 +308,7 @@ namespace TiketManagementV2.View
                         data.message,
                         NotificationType.Error
                     );
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -287,6 +331,7 @@ namespace TiketManagementV2.View
                             "Error connecting to server!",
                             NotificationType.Error
                         );
+                        LoadingControl.Visibility = Visibility.Collapsed;
                         return;
                     }
 
@@ -297,6 +342,7 @@ namespace TiketManagementV2.View
                             $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
                             NotificationType.Error
                         );
+                        LoadingControl.Visibility = Visibility.Collapsed;
                         return;
                     }
 
@@ -328,7 +374,11 @@ namespace TiketManagementV2.View
                                 "YOU ARE A USER? GET OUT",
                                 NotificationType.Warning
                             );
+                            LoadingControl.Visibility = Visibility.Collapsed;
+                            return;
                         }
+
+                        LoadingControl.Visibility = Visibility.Collapsed;
 
                         // Đóng cửa sổ đăng nhập
                         foreach (Window window in Application.Current.Windows)

@@ -1,11 +1,13 @@
 ﻿
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\App.xaml;;
+FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\Controls\CircularLoadingControl.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\MainWindow.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\AccountView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\AdminView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\BankView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\BusView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\CensorView.xaml;;
+FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\ChangePasswordView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\ChartView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\HomeView.xaml;;
 FE:\SD1805-SOF102\tank-travel-app\TiketManagementV2\View\LoginView.xaml;;

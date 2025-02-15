@@ -204,4 +204,13 @@
             </Setter.Value>
         </Setter>
     </Style>
+<!--change password button-->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="#462AD8"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#28AEED"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
