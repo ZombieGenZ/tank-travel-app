@@ -25,12 +25,13 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class HomeView : UserControl
     {
+        private MainViewModel _mainViewModel;
         private DispatcherTimer timer;
         //private readonly NotificationService notificationService;
         //private ApiServices _service;
         //private dynamic _user;
 
-        public HomeView(dynamic user)
+        public HomeView(dynamic user, MainViewModel mainViewModel)
         {
             InitializeComponent();
             //_service = new ApiServices();
@@ -38,8 +39,10 @@ namespace TiketManagementV2.View
             ClockText.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
             StartClock();
             //notificationService = new NotificationService();  // Initialize the field
-            var viewModel = new HomeViewModel(user);
+
+            var viewModel = new HomeViewModel(user, mainViewModel);
             DataContext = viewModel;
+            _mainViewModel = mainViewModel;
         }
 
         private void StartClock()
@@ -53,6 +56,11 @@ namespace TiketManagementV2.View
         private void Timer_Tick(object sender, EventArgs e)
         {
             ClockText.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
+        }
+
+        private void btnSeeMoreBus_Click(object sender, RoutedEventArgs e)
+        {
+            _mainViewModel.CurrentView = new CensorView();
         }
     }
 }

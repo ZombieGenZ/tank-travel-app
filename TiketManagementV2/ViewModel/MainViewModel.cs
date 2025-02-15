@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TiketManagementV2.Commands;
 using TiketManagementV2.Helpers;
@@ -15,6 +16,7 @@ namespace TiketManagementV2.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        public Frame MainFrame { get; }
         private UserAccount _currentUserAccount;
         private string _pathUser;
         private string _originalDisplayName;
@@ -49,8 +51,7 @@ namespace TiketManagementV2.ViewModel
             public string DisplayName { get; set; }
         }
 
-
-        private object _currentView;
+        public object _currentView;
         public object CurrentView
         {
             get => _currentView;
@@ -66,7 +67,7 @@ namespace TiketManagementV2.ViewModel
         public ICommand ShowBankViewCommand { get; }
         public ICommand ShowProfileViewCommand { get; }
         public ICommand ShowAccountViewCommand { get; }
-        public ICommand ShowCensorViewCommand { get; }
+        public ICommand ShowCensorViewCommand { get; } 
         public ICommand ShowTicketViewCommand { get; }
         public ICommand ShowChartViewCommand { get; }
         public ICommand ShowLogViewCommand { get; }
@@ -75,7 +76,7 @@ namespace TiketManagementV2.ViewModel
 
         private void ExecuteShowHomeView(object obj)
         {
-            CurrentView = new HomeView(_user);
+            CurrentView = new HomeView(_user, this);
         }
         private void ExecuteShowBankView (object obj)
         {
@@ -110,7 +111,7 @@ namespace TiketManagementV2.ViewModel
         {
             CurrentView = new NotificationView();
         }
-        private readonly INotificationService _notificationService;
+        public readonly INotificationService _notificationService;
 
         public MainViewModel(INotificationService notificationService)
         {

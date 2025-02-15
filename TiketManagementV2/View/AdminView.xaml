@@ -300,8 +300,7 @@
                             CornerRadius="10">
                         <Frame x:Name="MainFrame"
                                NavigationUIVisibility="Hidden"
-                               Content="{Binding CurrentView}"
-                               />
+                               Content="{Binding CurrentView}"/>
                     </Border>
                 </Grid>
             </Border>

@@ -22,6 +22,9 @@ namespace TiketManagementV2.View
         public BusView(dynamic user)
         {
             InitializeComponent();
+            Properties.Settings.Default.access_token = "";
+            Properties.Settings.Default.refresh_token = "";
+            Properties.Settings.Default.Save();
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
