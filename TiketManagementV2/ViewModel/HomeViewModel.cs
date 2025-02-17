@@ -11,6 +11,7 @@ using TiketManagementV2.Commands;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.View;
+using static TiketManagementV2.ViewModel.HomeViewModel;
 
 namespace TiketManagementV2.ViewModel
 {
@@ -177,7 +178,23 @@ namespace TiketManagementV2.ViewModel
 
             public string VehicleType
             {
-                get => _vehicleType;
+                get
+                {
+                    if (_vehicleType == "0")
+                    {
+                        return "Bus";
+                    }
+                    if (_vehicleType == "1")
+                    {
+                        return "Train";
+                    }
+                    if (_vehicleType == "2")
+                    {
+                        return "Plane";
+                    }
+
+                    return "Unknown";
+                }
                 set
                 {
                     _vehicleType = value;
@@ -187,7 +204,22 @@ namespace TiketManagementV2.ViewModel
 
             public string SeatType
             {
-                get => _seatType;
+                get
+                {
+                    if (_seatType == "0")
+                    {
+                        return "Seating seat";
+                    }
+                    if (_seatType == "1")
+                    {
+                        return "Sleeper seat";
+                    }
+                    if (_seatType == "2")
+                    {
+                        return "Hybrid seat";
+                    }
+                    return "Unknown";
+                }
                 set
                 {
                     _seatType = value;
@@ -299,22 +331,192 @@ namespace TiketManagementV2.ViewModel
             _service = new ApiServices();
             session_time = DateTime.Now.ToString("o");
             _businessItems = new ObservableCollection<BusinessItem>();
+            VehicleItems = new ObservableCollection<VehicleItem>();
             _businessItems.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(HasItems));
+            };
+            VehicleItems.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(HasVehicleItems));
             };
 
             LoadRevenue();
             LoadDeals();
             LoadTicket();
             LoadBusinessRegistration();
+            LoadVehicleRegistration();
             //ShowCensorViewCommand = new RelayCommand(ExecuteShowCensorView);
 
             AcceptCommand = new RelayCommandGeneric<BusinessItem>(OnAccept);
             RejectCommand = new RelayCommandGeneric<BusinessItem>(OnReject);
+            AcceptVehicleCommand = new RelayCommandGeneric<VehicleItem>(OnAcceptVehicle);
+            RejectVehicleCommand = new RelayCommandGeneric<VehicleItem>(OnRejectVehicle);
         }
 
-        private async void OnAccept(BusinessItem item)
+        private async void OnAcceptVehicle(VehicleItem item)
+        {
+            if (item != null)
+            {
+                dynamic data = await CensorVehicleRegistration(item.Id, true);
+
+                if (data.message == "You must log in to use this function" || data.message == "Invalid refresh token")
+                {
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "You do not have permission to perform this action")
+                {
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Input data error")
+                {
+                    foreach (dynamic items in data.errors)
+                    {
+                        _mainViewModel._notificationService.ShowNotification(
+                            "Error",
+                            (string)items.Value.msg,
+                             NotificationType.Warning
+                        );
+                    }
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Failed to approve vehicle")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Error",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Vehicle approved successfully!")
+                {
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Successfully",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    item.Status = "Approved";
+                }
+            }
+        }
+
+        private async void OnRejectVehicle(VehicleItem item)
+        {
+            if (item != null)
+            {
+                dynamic data = await CensorVehicleRegistration(item.Id, false);
+
+                if (data.message == "You must log in to use this function" || data.message == "Invalid refresh token")
+                {
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "You do not have permission to perform this action")
+                {
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Input data error")
+                {
+                    foreach (dynamic items in data.errors)
+                    {
+                        _mainViewModel._notificationService.ShowNotification(
+                            "Error",
+                            (string)items.Value.msg,
+                             NotificationType.Warning
+                        );
+                    }
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Failed to approve vehicle")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Error",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Vehicle approved successfully!")
+                {
+                    _mainViewModel._notificationService.ShowNotification(
+                        "Successfully",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    item.Status = "Rejected";
+                }
+            }
+        }
+
+        private async void OnAccept(BusinessItem item)  
         {
             if (item != null)
             {
@@ -368,7 +570,7 @@ namespace TiketManagementV2.ViewModel
 
                     _mainViewModel._notificationService.ShowNotification(
                         "Error",
-                        (string)data.messsage,
+                        (string)data.message,
                         NotificationType.Warning
                     );
 
@@ -382,7 +584,7 @@ namespace TiketManagementV2.ViewModel
                 {
                     _mainViewModel._notificationService.ShowNotification(
                         "Successfully",
-                        (string)data.messsage,
+                        (string)data.message,
                         NotificationType.Success
                     );
 
@@ -391,7 +593,6 @@ namespace TiketManagementV2.ViewModel
                     Properties.Settings.Default.Save();
 
                     item.Status = "Approved";
-                    return;
                 }
             }
         }
@@ -450,7 +651,7 @@ namespace TiketManagementV2.ViewModel
 
                     _mainViewModel._notificationService.ShowNotification(
                         "Error",
-                        (string)data.messsage,
+                        (string)data.message,
                         NotificationType.Warning
                     );
 
@@ -464,7 +665,7 @@ namespace TiketManagementV2.ViewModel
                 {
                     _mainViewModel._notificationService.ShowNotification(
                         "Successfully",
-                        (string)data.messsage,
+                        (string)data.message,
                         NotificationType.Success
                     );
 
@@ -702,6 +903,110 @@ namespace TiketManagementV2.ViewModel
                 };
 
                 dynamic data = await _service.PutWithHeaderAndBodyAsync("api/business-registration/censor", businessRegistrationHeader, businessRegistrationBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task<dynamic> GetVehicleRegistration()
+        {
+            try
+            {
+                Dictionary<string, string> vehicleRegistrationHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var vehicleRegistrationBody = new
+                {
+                    session_time = session_time,
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    current = 0
+                };
+
+                dynamic data = await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle-registration", vehicleRegistrationHeader, vehicleRegistrationBody);
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async void LoadVehicleRegistration()
+        {
+            dynamic data = await GetVehicleRegistration();
+
+            if (data == null)
+            {
+                //_notificationService.ShowNotification(
+                //    "Error",
+                //    "Error connecting to server!",
+                //    NotificationType.Error
+                //);
+                return;
+            }
+            int count = 0;
+
+            foreach (dynamic item in data.result.vehicle)
+            {
+                if (count > 2)
+                {
+                    return;
+                }
+
+                VehicleItems.Add(new VehicleItem()
+                {
+                    Id = item._id,
+                    VehicleType = (string)item.vehicle_type,
+                    SeatType = (string)item.seat_type,
+                    Seats = (int)item.seats,
+                    Rules = item.rules,
+                    Amenities = item.amenities,
+                    LicensePlate = item.license_plate,
+                    VehicleImage = item.preview[0].url
+                });
+
+                count++;
+            }
+
+            //BusinessItems = new ObservableCollection<BusinessItem>
+            //{
+            //    new BusinessItem { Name = "nguyễn văn a", Email = "abc@gmail.com", PhoneNumber = "0123456789"},
+            //    new BusinessItem { Name = "nguyễn văn a", Email = "abc@gmail.com", PhoneNumber = "0123456789"},
+            //    new BusinessItem { Name = "nguyễn văn a", Email = "abc@gmail.com", PhoneNumber = "0123456789"},
+
+            //};
+
+            //Ticket = data.result;
+        }
+
+        private async Task<dynamic> CensorVehicleRegistration(string id, bool decision)
+        {
+            try
+            {
+                Dictionary<string, string> businessRegistrationHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var businessRegistrationBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    vehicle_id = id,
+                    decision = decision
+                };
+
+                dynamic data = await _service.PutWithHeaderAndBodyAsync("api/vehicle/censor-vehicle", businessRegistrationHeader, businessRegistrationBody);
 
                 return data;
             }

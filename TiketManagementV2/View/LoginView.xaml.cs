@@ -113,11 +113,6 @@ namespace TiketManagementV2.View
 
                 if (userData.user.penalty != null)
                 {
-                    notificationService.ShowNotification(
-                        "Error",
-                        $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
-                        NotificationType.Error
-                    );
                     LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
@@ -143,11 +138,6 @@ namespace TiketManagementV2.View
                 }
                 else
                 {
-                    notificationService.ShowNotification(
-                        "Error",
-                        "YOU ARE A USER? GET OUT",
-                        NotificationType.Warning
-                    );
                     LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
