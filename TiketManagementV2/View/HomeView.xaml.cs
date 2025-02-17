@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
+using System.Globalization;
 using TiketManagementV2.ViewModel;
 using static TiketManagementV2.ViewModel.MainViewModel;
 
@@ -59,60 +60,75 @@ namespace TiketManagementV2.View
 
         private void btnSeeMoreBus_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.CurrentView = new CensorView();
+            _mainViewModel.CurrentView = new BusCensorView();
         }
 
-        private void TextBlock_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (currentPopup != null)
+            {
+                currentPopup.IsOpen = false;
+                currentPopup = null;
+            }
+        }
+
+        private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
         {
             var textBlock = sender as TextBlock;
-            if (textBlock != null)
+            if (textBlock != null && textBlock.Text.Length > 0)
             {
-                // Đóng popup cũ nếu đang mở
-                if (currentPopup != null)
+                // Kiểm tra xem text có bị cắt không
+                var formattedText = new FormattedText(
+                    textBlock.Text,
+                    CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch),
+                    textBlock.FontSize,
+                    textBlock.Foreground,
+                    VisualTreeHelper.GetDpi(textBlock).PixelsPerDip);
+
+                // Chỉ hiện popup nếu text bị cắt
+                if (formattedText.Width > textBlock.ActualWidth)
                 {
-                    currentPopup.IsOpen = false;
+                    var popup = new Popup
+                    {
+                        StaysOpen = true,
+                        AllowsTransparency = true,
+                        Placement = PlacementMode.Mouse,
+                        // Điều chỉnh vị trí popup
+                        HorizontalOffset = 5,
+                        VerticalOffset = 5
+                    };
+
+                    var border = new Border();
+                    border.Style = (Style)FindResource("DetailPopupStyle");
+
+                    var popupText = new TextBlock
+                    {
+                        Text = textBlock.Text,
+                        Foreground = Brushes.White,
+                        TextWrapping = TextWrapping.Wrap,
+                        MaxWidth = 280 // Để lại margin cho border
+                    };
+
+                    border.Child = popupText;
+                    popup.Child = border;
+
+                    // Đóng popup cũ
+                    if (currentPopup != null)
+                    {
+                        currentPopup.IsOpen = false;
+                    }
+
+                    popup.IsOpen = true;
+                    currentPopup = popup;
                 }
-
-                // Tạo popup mới
-                var popup = new Popup
-                {
-                    StaysOpen = false,
-                    AllowsTransparency = true,
-                    Placement = PlacementMode.Mouse
-                };
-
-                // Tạo nội dung cho popup
-                var border = new Border
-                {
-                    Background = (Brush)FindResource("#2D2179"),
-                    BorderBrush = (Brush)FindResource("#413293"),
-                    BorderThickness = new Thickness(1),
-                    CornerRadius = new CornerRadius(8),
-                    Padding = new Thickness(12),
-                    MaxWidth = 300
-                };
-
-                var popupText = new TextBlock
-                {
-                    Text = textBlock.Text,
-                    Foreground = Brushes.White,
-                    TextWrapping = TextWrapping.Wrap
-                };
-
-                border.Child = popupText;
-                popup.Child = border;
-
-                // Mở popup
-                popup.IsOpen = true;
-                currentPopup = popup;
-
-                // Đóng popup khi click ra ngoài
-                popup.MouseLeave += (s, args) =>
-                {
-                    popup.IsOpen = false;
-                    currentPopup = null;
-                };
             }
+        }
+
+        private void btnSeeMoreVehicle_Click(object sender, RoutedEventArgs e)
+        {
+            _mainViewModel.CurrentView = new VehicleCensorView();
         }
     }
 }

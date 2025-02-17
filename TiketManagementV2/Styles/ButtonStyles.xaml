@@ -230,39 +230,147 @@
         </Setter>
     </Style>
 
-<!-- Style Resources cho Popup -->
-    <Style x:Key="TruncateTextBlockStyle" TargetType="TextBlock">
+    <SolidColorBrush x:Key="PopupBackgroundBrush" Color="#2D2179"/>
+    <SolidColorBrush x:Key="PopupBorderBrush" Color="#413293"/>
+
+    <!-- Style cho TextBlock với ellipsis và popup khi hover -->
+    <Style x:Key="EllipsisTextBlockStyle" TargetType="TextBlock">
+        <!-- Thuộc tính cơ bản -->
         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-        <Setter Property="MaxWidth" Value="150"/>
-        <Setter Property="ToolTipService.ShowDuration" Value="20000"/>
+        <Setter Property="MaxWidth" Value="70"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Cursor" Value="Hand"/>
+
+        <!-- Hiệu ứng khi hover -->
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="TextDecorations" Value="Underline"/>
             </Trigger>
         </Style.Triggers>
     </Style>
-    <!-- Style cho Popup -->
+
+    <!-- Style cho popup -->
     <Style x:Key="DetailPopupStyle" TargetType="Border">
-        <Setter Property="Background" Value="#2D2179"/>
-        <Setter Property="BorderBrush" Value="#413293"/>
+        <Setter Property="Background" Value="{StaticResource PopupBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PopupBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="12"/>
         <Setter Property="MaxWidth" Value="300"/>
+        <!-- Thêm margin để tránh popup bị che khi ở gần cạnh -->
+        <Setter Property="Margin" Value="5"/>
     </Style>
     
+<!--button censor-->
+    <Style x:Key="ButtonCensor"
+            TargetType="Button">
+        <Setter Property="Background" Value="#773DFF"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Height="30"
+                            CornerRadius="15"
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#836EFB"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     
-    <ControlTemplate x:Key="DetailPopupTemplate">
-        <Popup x:Name="DetailPopup" 
-           StaysOpen="False" 
-           AllowsTransparency="True" 
-           Placement="Mouse">
-            <Border Style="{StaticResource DetailPopupStyle}">
-                <TextBlock x:Name="PopupText" 
-                      Foreground="White" 
-                      TextWrapping="Wrap"/>
-            </Border>
-        </Popup>
-    </ControlTemplate>
+<!--button load more-->
+    <Style x:Key="TextBlockLoadMore"
+            TargetType="TextBlock">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="LightGray"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Style cho các nút trong DataGrid -->
+    <Style x:Key="DataGridRowButton" TargetType="Button">
+        <Setter Property="Margin" Value="2,0"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!-- Style cho nút Accept -->
+    <Style x:Key="AcceptButton" TargetType="Button" BasedOn="{StaticResource DataGridRowButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <fa:IconImage Icon="Check" Foreground="White" Width="16" Height="16"/>
+                            <ContentPresenter Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource color5}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource color2}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <!-- Style cho nút Reject -->
+    <Style x:Key="RejectButton" TargetType="Button" BasedOn="{StaticResource DataGridRowButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <fa:IconImage Icon="Close" Foreground="White" Width="16" Height="16"/>
+                            <ContentPresenter Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource color7}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource color4}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+<!--không hiện bóng button khi hover-->
+    <Style x:Key="hoverbutton"
+            TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="Transparent">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

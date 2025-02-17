@@ -290,18 +290,18 @@
                       Foreground="White"/>
                     </StackPanel>
 
-                    <Button x:Name="btnSeeMoreVehicleBus"
-                Grid.Column="1" 
-                Click="btnSeeMoreBus_Click"
-                Background="Transparent" 
-                BorderThickness="0"
-                Content="SEE MORE"
-                Command="{Binding ShowCensorViewCommand}"
-                Margin="0,0,10,0"
-                Foreground="White"
-                FontWeight="Bold"
-                Style="{StaticResource TextButton}"
-                OverridesDefaultStyle="True"/>
+                    <Button x:Name="btnSeeMoreVehicle"
+                            Grid.Column="1" 
+                            Click="btnSeeMoreVehicle_Click"
+                            Background="Transparent" 
+                            BorderThickness="0"
+                            Content="SEE MORE"
+                            Command="{Binding ShowCensorViewCommand}"
+                            Margin="0,0,10,0"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            Style="{StaticResource TextButton}"
+                            OverridesDefaultStyle="True"/>
                 </Grid>
 
                 <!-- No Data Message -->
@@ -315,9 +315,10 @@
               Margin="0,40,0,0"/>
 
                 <!-- Vehicle Cards -->
+                <!-- Vehicle Cards -->
                 <ItemsControl Grid.Row="1" 
-                ItemsSource="{Binding VehicleItems}"
-                Visibility="{Binding HasVehicleItems, Converter={StaticResource BoolToVisibilityConverter}}">
+            ItemsSource="{Binding VehicleItems}"
+            Visibility="{Binding HasVehicleItems, Converter={StaticResource BoolToVisibilityConverter}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="3"/>
@@ -326,47 +327,63 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border Background="#1B1464" 
-                        CornerRadius="15" 
-                        Margin="5" 
-                        Padding="10">
+                    CornerRadius="15" 
+                    Margin="5" 
+                    Padding="10">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
-                                        <!-- Phần header -->
                                         <RowDefinition Height="*"/>
-                                        <!-- Phần thông tin -->
                                         <RowDefinition Height="Auto"/>
-                                        <!-- Phần nút -->
                                     </Grid.RowDefinitions>
 
-                                    <!-- Header với ảnh và biển số -->
+                                    <!-- Header với ảnh, biển số và số ghế -->
                                     <Grid Grid.Row="0">
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Width="50" 
-                                                   Height="50" 
-                                                   Margin="0,0,10,0"
-                                                   Source="{Binding VehicleImage}"/>
+                                        <!-- Image -->
+                                        <Image Grid.Column="0"
+                               Width="50" 
+                               Height="50" 
+                               Margin="0,0,10,0"
+                               Source="{Binding VehicleImage}"/>
+
+                                        <!-- License Plate and Seats -->
+                                        <StackPanel Grid.Column="1" 
+                                  Orientation="Vertical"
+                                  VerticalAlignment="Center">
                                             <TextBlock Text="{Binding LicensePlate}" 
-                                                       FontWeight="Bold" 
-                                                       FontSize="19"
-                                                       Foreground="White"
-                                                       VerticalAlignment="Center"/>
+                                     FontWeight="Bold" 
+                                     FontSize="19"
+                                     Foreground="White"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Seats: "
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"/>
+                                                <TextBlock Text="{Binding Seats}"
+                                         Style="{StaticResource EllipsisTextBlockStyle}"
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"
+                                         MouseEnter="TextBlock_MouseEnter"
+                                         MouseLeave="TextBlock_MouseLeave"/>
+                                            </StackPanel>
                                         </StackPanel>
 
-                                        <Border Grid.Column="1" 
-                                                Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
-                                                CornerRadius="5"
-                                                Padding="8,4"
-                                                Margin="0,0,0,5">
+                                        <!-- Status -->
+                                        <Border Grid.Column="2" 
+                                Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                CornerRadius="5"
+                                Padding="8 4"
+                                Height="25"
+                                VerticalAlignment="Top">
                                             <TextBlock Text="{Binding StatusText}"
-                                                       Foreground="White"
-                                                       FontSize="12"
-                                                       FontWeight="SemiBold"/>
+                                     Foreground="White"
+                                     FontSize="12"
+                                     FontWeight="SemiBold"/>
                                         </Border>
                                     </Grid>
 
@@ -381,35 +398,26 @@
                                         <StackPanel Grid.Column="0" Margin="0,0,5,0">
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="Vehicle Type: "
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"/>
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"/>
                                                 <TextBlock Text="{Binding VehicleType}" 
-                                                             Style="{StaticResource TruncateTextBlockStyle}"
-                                                             Foreground="#B8B9CF"
-                                                             FontSize="15"
-                                                             PreviewMouseDown="TextBlock_PreviewMouseDown"/>
+                                         Style="{StaticResource EllipsisTextBlockStyle}"
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"
+                                         MouseEnter="TextBlock_MouseEnter"
+                                         MouseLeave="TextBlock_MouseLeave"/>
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                                 <TextBlock Text="Seat Type: "
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"/>
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"/>
                                                 <TextBlock Text="{Binding SeatType}"
-                                                           Style="{StaticResource TruncateTextBlockStyle}"
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"
-                                                           PreviewMouseDown="TextBlock_PreviewMouseDown"/>
-                                            </StackPanel>
-
-                                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                                <TextBlock Text="Seats: "
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"/>
-                                                <TextBlock Text="{Binding Seats}"
-                                                           Style="{StaticResource TruncateTextBlockStyle}"
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"
-                                                           PreviewMouseDown="TextBlock_PreviewMouseDown"/>
+                                         Style="{StaticResource EllipsisTextBlockStyle}"
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"
+                                         MouseEnter="TextBlock_MouseEnter"
+                                         MouseLeave="TextBlock_MouseLeave"/>
                                             </StackPanel>
                                         </StackPanel>
 
@@ -417,58 +425,58 @@
                                         <StackPanel Grid.Column="1" Margin="5,0,0,0">
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="Rules: "
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"/>
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"/>
                                                 <TextBlock Text="{Binding Rules}"
-                                                           Style="{StaticResource TruncateTextBlockStyle}"
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"
-                                                           PreviewMouseDown="TextBlock_PreviewMouseDown"/>
+                                         Style="{StaticResource EllipsisTextBlockStyle}"
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"
+                                         MouseEnter="TextBlock_MouseEnter"
+                                         MouseLeave="TextBlock_MouseLeave"/>
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                                                 <TextBlock Text="Amenities: "
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"/>
+                                         Foreground="#B8B9CF"
+                                         FontSize="15"/>
                                                 <TextBlock Text="{Binding Amenities}"
-                                                           Style="{StaticResource TruncateTextBlockStyle}"
-                                                           Foreground="#B8B9CF"
-                                                           FontSize="15"
-                                                           PreviewMouseDown="TextBlock_PreviewMouseDown"/>
+                                          Style="{StaticResource EllipsisTextBlockStyle}"
+                                          Foreground="#B8B9CF"
+                                          FontSize="15"
+                                          MouseEnter="TextBlock_MouseEnter"
+                                          MouseLeave="TextBlock_MouseLeave"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
-                                    
-                                    
 
                                     <!-- Nút Accept/Reject -->
                                     <StackPanel Grid.Row="2" 
-                                                Orientation="Horizontal" 
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Bottom"
-                                                Margin="0,10,0,0"
-                                                Visibility="{Binding IsActionRequired, Converter={StaticResource BoolToVisibilityConverter}}">
+                              Orientation="Horizontal" 
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Bottom"
+                              Margin="0,10,0,0"
+                              Visibility="{Binding IsActionRequired, Converter={StaticResource BoolToVisibilityConverter}}">
                                         <Button Content="Accept"
-                                                FontSize="15"
-                                                Command="{Binding DataContext.AcceptVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                CommandParameter="{Binding}"
-                                                Background="{StaticResource color5}"
-                                                Foreground="White"
-                                                Width="90"
-                                                Height="35"
-                                                Margin="0,0,10,0"
-                                                Cursor="Hand"
-                                                Style="{StaticResource RoundedButton}"/>
+                                FontSize="15"
+                                Command="{Binding DataContext.AcceptVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}"
+                                Background="{StaticResource color5}"
+                                Foreground="White"
+                                Width="90"
+                                Height="35"
+                                Margin="0,0,10,0"
+                                Cursor="Hand"
+                                Style="{StaticResource RoundedButton}"/>
                                         <Button Content="Reject"
-                                                FontSize="15"
-                                                Command="{Binding DataContext.RejectVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                CommandParameter="{Binding}"
-                                                Background="{StaticResource color4}"
-                                                Foreground="White"
-                                                Width="90"
-                                                Height="35"
-                                                Cursor="Hand"
-                                                Style="{StaticResource RoundedButton}"/>
+                                FontSize="15"
+                                Command="{Binding DataContext.RejectVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding}"
+                                Background="{StaticResource color4}"
+                                Foreground="White"
+                                Width="90"
+                                Height="35"
+                                Cursor="Hand"
+                                Style="{StaticResource RoundedButton}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>

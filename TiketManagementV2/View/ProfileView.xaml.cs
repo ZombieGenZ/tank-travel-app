@@ -17,9 +17,6 @@ using TiketManagementV2.ViewModel;
 
 namespace TiketManagementV2.View
 {
-    /// <summary>
-    /// Interaction logic for ProfileView.xaml
-    /// </summary>
     public partial class ProfileView : UserControl
     {
         public ProfileView(dynamic user)

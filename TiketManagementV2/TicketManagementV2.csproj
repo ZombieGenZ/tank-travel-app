@@ -74,10 +74,11 @@
     <Compile Include="Model\ApiServices.cs" />
     <Compile Include="Services\INotificationService.cs" />
     <Compile Include="Services\NotificationService.cs" />
-    <Compile Include="ViewModel\CensorViewModel.cs" />
+    <Compile Include="ViewModel\BusCensorViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\VehicleCensorViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
@@ -88,11 +89,11 @@
     <Compile Include="View\BankView.xaml.cs">
       <DependentUpon>BankView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\BusCensorView.xaml.cs">
+      <DependentUpon>BusCensorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BusView.xaml.cs">
       <DependentUpon>BusView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\CensorView.xaml.cs">
-      <DependentUpon>CensorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ChangePasswordView.xaml.cs">
       <DependentUpon>ChangePasswordView.xaml</DependentUpon>
@@ -124,6 +125,9 @@
     <Compile Include="View\TicketView.xaml.cs">
       <DependentUpon>TicketView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\VehicleCensorView.xaml.cs">
+      <DependentUpon>VehicleCensorView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\CircularLoadingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -144,6 +148,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles\DatagridStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\ScrollBarStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\UIColors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -160,11 +172,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\BusView.xaml">
+    <Page Include="View\BusCensorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CensorView.xaml">
+    <Page Include="View\BusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -205,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TicketView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VehicleCensorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

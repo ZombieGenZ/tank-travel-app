@@ -74,6 +74,8 @@ namespace TiketManagementV2.ViewModel
         public ICommand ShowChartViewCommand { get; }
         public ICommand ShowLogViewCommand { get; }
         public ICommand ShowNotificationViewCommand { get; }
+        public ICommand ShowBusCensorViewCommand { get; }
+        public ICommand ShowVehicleCensorViewCommand { get; }
 
         //command bus
         public ICommand ShowHomeBusViewCommand { get; }
@@ -96,10 +98,6 @@ namespace TiketManagementV2.ViewModel
         {
             CurrentView = new AccountView();
         }
-        private void ExecuteShowCensorView(object obj)
-        {
-            CurrentView = new CensorView();
-        }
         private void ExecuteShowTicketView(object obj)
         {
             CurrentView = new TicketView();
@@ -116,7 +114,14 @@ namespace TiketManagementV2.ViewModel
         {
             CurrentView = new NotificationView();
         }
-
+        private void ExecuteShowBusCensorView(object obj)
+        {
+            CurrentView = new BusCensorView();
+        }
+        private void ExecuteShowVehicleCensorView(object obj)
+        {
+            CurrentView = new VehicleCensorView();
+        }
         //BUS VIEW
         private void ExecuteShowHomeBusView(object obj)
         {
@@ -214,11 +219,12 @@ namespace TiketManagementV2.ViewModel
             ShowBankViewCommand = new RelayCommand(ExecuteShowBankView);
             ShowProfileViewCommand = new RelayCommand(ExecuteShowProfileView);
             ShowAccountViewCommand = new RelayCommand(ExecuteShowAccountView);
-            ShowCensorViewCommand = new RelayCommand(ExecuteShowCensorView);
             ShowTicketViewCommand = new RelayCommand(ExecuteShowTicketView);
             ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
             ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
             ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+            ShowBusCensorViewCommand = new RelayCommand(ExecuteShowBusCensorView);
+            ShowVehicleCensorViewCommand = new RelayCommand(ExecuteShowVehicleCensorView);
             //command bus
             ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
 
