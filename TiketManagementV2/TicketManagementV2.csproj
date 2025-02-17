@@ -74,6 +74,7 @@
     <Compile Include="Model\ApiServices.cs" />
     <Compile Include="Services\INotificationService.cs" />
     <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="ViewModel\CensorViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
