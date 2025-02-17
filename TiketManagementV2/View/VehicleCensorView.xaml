@@ -21,20 +21,20 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal"
-        VerticalAlignment="Top"
-        HorizontalAlignment="Right"
-        Grid.Column="1">
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
                 <Grid>
                     <TextBox x:Name="SearchTextBox"
-             Width="300"
-             Height="24"
-             FontSize="13"
-             Background="Transparent"
-             Foreground="{StaticResource plainTextColor3}"
-             BorderBrush="{StaticResource plainTextColor3}"
-             BorderThickness="0,0,0,1"
-             VerticalContentAlignment="Center"
-             TextChanged="SearchTextBox_TextChanged"/>
+                             Width="300"
+                             Height="24"
+                             FontSize="13"
+                             Background="Transparent"
+                             Foreground="{StaticResource plainTextColor3}"
+                             BorderBrush="{StaticResource plainTextColor3}"
+                             BorderThickness="0,0,0,1"
+                             VerticalContentAlignment="Center"
+                             TextChanged="SearchTextBox_TextChanged"/>
 
                     <TextBlock x:Name="SearchPlaceholder"
                Text="Search..."

@@ -12,7 +12,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition/>
-            <!-- Thêm hàng mới cho nút Load More -->
         </Grid.RowDefinitions>
 
         <!-- Thanh tìm kiếm -->
@@ -70,9 +69,9 @@
 
         <!-- DataGrid hiển thị danh sách -->
         <Border Grid.Row="1"
-        Background="#200F53"
-        CornerRadius="10" 
-        Padding="10">
+                Background="#200F53"
+                CornerRadius="10" 
+                Padding="10">
             <Grid>
                 <!-- DataGrid -->
                 <DataGrid ItemsSource="{Binding FilteredUsers}" 

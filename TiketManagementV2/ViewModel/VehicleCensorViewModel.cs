@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using TiketManagementV2.Model;
 
 namespace TiketManagementV2.ViewModel
 {
@@ -12,6 +15,9 @@ namespace TiketManagementV2.ViewModel
         private ObservableCollection<Vehicle> _filteredVehicles;
         private bool _canLoadMore;
         private string _searchText;
+        private string session_time;
+        private int current = 0;
+        private ApiServices _service;
 
         public ObservableCollection<Vehicle> Vehicles { get; set; }
         public ObservableCollection<Vehicle> FilteredVehicles
@@ -54,11 +60,15 @@ namespace TiketManagementV2.ViewModel
 
         public VehicleCensorViewModel()
         {
-            Vehicles = new ObservableCollection<Vehicle>
-            {
-                new Vehicle {VehicleType = "Train", LicensePlate = "ABC-123", SeatType = "Luxury", Seats = 50, Rules = "No smoking", Amenities = "Wifi"},
-                new Vehicle {VehicleType = "Bus", LicensePlate = "DEF-456", SeatType = "Standard", Seats = 40, Rules = "No eating", Amenities = "TV"},
-            };
+            session_time = DateTime.Now.ToString("o");
+            _service = new ApiServices();
+            //Vehicles = new ObservableCollection<Vehicle>
+            //{
+            //    new Vehicle {VehicleType = "Train", LicensePlate = "ABC-123", SeatType = "Luxury", Seats = 50, Rules = "No smoking", Amenities = "Wifi"},
+            //    new Vehicle {VehicleType = "Bus", LicensePlate = "DEF-456", SeatType = "Standard", Seats = 40, Rules = "No eating", Amenities = "TV"},
+            //};
+
+            Vehicles = new ObservableCollection<Vehicle>();
 
             FilteredVehicles = new ObservableCollection<Vehicle>(Vehicles.Take(_itemsToLoad));
             CanLoadMore = Vehicles.Count > _itemsToLoad;
@@ -67,6 +77,47 @@ namespace TiketManagementV2.ViewModel
             AcceptCommand = new RelayCommand(AcceptVehicle);
             RejectCommand = new RelayCommand(RejectVehicle);
             LoadMoreCommand = new RelayCommand(_ => LoadMore());
+        }
+
+        private async Task<dynamic> GetVehicleData()
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> getVehicleDataHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var getVehicleDataBody = new
+                {
+                    refresh_token,
+                    session_time,
+                    current
+                };
+
+                dynamic data = await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle-registration", getVehicleDataHeader, getVehicleDataBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async void LoadVehicle()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private void FilterVehicles()
