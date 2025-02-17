@@ -88,7 +88,7 @@
                                  Command="{Binding ShowTicketViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="TicketAlt" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Ticket Management" Style="{StaticResource menuButtonText}"/>
+                            <TextBlock Text="vehicle Management" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
                     <RadioButton Style="{StaticResource menuButton}"
