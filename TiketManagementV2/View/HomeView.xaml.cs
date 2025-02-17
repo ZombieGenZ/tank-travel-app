@@ -60,7 +60,7 @@ namespace TiketManagementV2.View
 
         private void btnSeeMoreBus_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.CurrentView = new BusCensorView();
+            _mainViewModel.CurrentView = new BusCensorView(_mainViewModel._notificationService);
         }
 
         private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
@@ -128,7 +128,7 @@ namespace TiketManagementV2.View
 
         private void btnSeeMoreVehicle_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.CurrentView = new VehicleCensorView();
+            _mainViewModel.CurrentView = new VehicleCensorView(_mainViewModel._notificationService);
         }
     }
 }

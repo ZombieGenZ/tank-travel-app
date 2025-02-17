@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TiketManagementV2.Model;
+using TiketManagementV2.Services;
+using static TiketManagementV2.ViewModel.HomeViewModel;
+using static TiketManagementV2.ViewModel.VehicleCensorViewModel;
 
 namespace TiketManagementV2.ViewModel
 {
@@ -18,8 +21,14 @@ namespace TiketManagementV2.ViewModel
         private string session_time;
         private int current = 0;
         private ApiServices _service;
+        private INotificationService _notificationService;
 
-        public ObservableCollection<Vehicle> Vehicles { get; set; }
+        private ObservableCollection<Vehicle> _vehicles;
+        public ObservableCollection<Vehicle> Vehicles
+        {
+            get { return _vehicles; }
+            set { _vehicles = value; OnPropertyChanged(nameof(Vehicles)); }
+        }
         public ObservableCollection<Vehicle> FilteredVehicles
         {
             get { return _filteredVehicles; }
@@ -48,18 +57,127 @@ namespace TiketManagementV2.ViewModel
         public ICommand RejectCommand { get; }
         public ICommand LoadMoreCommand { get; }
 
-        public class Vehicle
+        public class Vehicle : INotifyPropertyChanged
         {
-            public string VehicleType { get; set; }
-            public string LicensePlate { get; set; }
-            public string SeatType { get; set; }
-            public int Seats { get; set; }
-            public string Rules { get; set; }
-            public string Amenities { get; set; }
+            private string id;
+            private string vehicleType;
+            private string licensePlate;
+            private string seatType;
+            private int seats;
+            private string rules;
+            private string amenities;
+
+
+            public string Id
+            {
+                get => id;
+                set
+                {
+                    id = value;
+                    OnPropertyChanged(nameof(id));
+                }
+            }
+            public string VehicleType
+            {
+                get
+                {
+                    if (vehicleType == "0")
+                    {
+                        return "Bus";
+                    }
+                    if (vehicleType == "1")
+                    {
+                        return "Train";
+                    }
+                    if (vehicleType == "2")
+                    {
+                        return "Plane";
+                    }
+
+                    return "Unknown";
+                }
+                set
+                {
+                    vehicleType = value;
+                    OnPropertyChanged(nameof(VehicleType));
+                }
+            }
+
+            public string LicensePlate
+            {
+                get => licensePlate;
+                set
+                {
+                    licensePlate = value;
+                    OnPropertyChanged(nameof(LicensePlate));
+                }
+            }
+
+            public string SeatType
+            {
+                get
+                {
+                    if (seatType == "0")
+                    {
+                        return "Seating seat";
+                    }
+                    if (seatType == "1")
+                    {
+                        return "Sleeper seat";
+                    }
+                    if (seatType == "2")
+                    {
+                        return "Hybrid seat";
+                    }
+                    return "Unknown";
+                }
+                set
+                {
+                    seatType = value;
+                    OnPropertyChanged(nameof(SeatType));
+                }
+            }
+
+            public int Seats
+            {
+                get => seats;
+                set
+                {
+                    seats = value;
+                    OnPropertyChanged(nameof(Seats));
+                }
+            }
+
+            public string Rules
+            {
+                get => rules;
+                set
+                {
+                    rules = value;
+                    OnPropertyChanged(nameof(Rules));
+                }
+            }
+
+            public string Amenities
+            {
+                get => amenities;
+                set
+                {
+                    amenities = value;
+                    OnPropertyChanged(nameof(Amenities));
+                }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
-        public VehicleCensorViewModel()
+        public VehicleCensorViewModel(INotificationService notificationService)
         {
+            _notificationService = notificationService;
             session_time = DateTime.Now.ToString("o");
             _service = new ApiServices();
             //Vehicles = new ObservableCollection<Vehicle>
@@ -77,6 +195,8 @@ namespace TiketManagementV2.ViewModel
             AcceptCommand = new RelayCommand(AcceptVehicle);
             RejectCommand = new RelayCommand(RejectVehicle);
             LoadMoreCommand = new RelayCommand(_ => LoadMore());
+
+            LoadVehicle();
         }
 
         private async Task<dynamic> GetVehicleData()
@@ -112,11 +232,78 @@ namespace TiketManagementV2.ViewModel
         {
             try
             {
+                dynamic data = await GetVehicleData();
 
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "You must log in to use this function" || data.message == "Invalid refresh token" || data.message == "You do not have permission to perform this action")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                if (data.message == "Input data error")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Input data error",
+                            (string)item.Value.msg,
+                            NotificationType.Warning
+                        );
+                    }
+                    return;
+                }
+
+                if (data.message == "Failed to get vehicle information")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    return;
+                }
+
+                foreach (dynamic item in data.result.vehicle)
+                {
+                    Vehicles.Add(new Vehicle()
+                    {
+                        Id = item._id,
+                        Amenities = item.amenities,
+                        LicensePlate = item.license_plate,
+                        Rules = item.rules,
+                        SeatType = (string)item.seat_type,
+                        Seats = (int)item.seats,
+                        VehicleType = item.vehicle_type
+                    });
+                }
+                FilterVehicles();
             }
             catch (Exception ex)
             {
-
+                _notificationService.ShowNotification(
+                    "Error",
+                    ex.Message,
+                    NotificationType.Error
+                );
+                return;
             }
         }
 
@@ -154,23 +341,192 @@ namespace TiketManagementV2.ViewModel
             CanLoadMore = FilteredVehicles.Count < Vehicles.Count;
         }
 
-        private void AcceptVehicle(object obj)
+        private async Task<dynamic> CensorVehicleRegistration(string id, bool decision)
+        {
+            try
+            {
+                Dictionary<string, string> businessRegistrationHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var businessRegistrationBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    vehicle_id = id,
+                    decision = decision
+                };
+
+                dynamic data = await _service.PutWithHeaderAndBodyAsync("api/vehicle/censor-vehicle", businessRegistrationHeader, businessRegistrationBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+        private async void AcceptVehicle(object obj)
         {
             if (obj is Vehicle vehicle)
             {
-                // Xử lý chấp nhận phương tiện
-                Vehicles.Remove(vehicle);
-                FilterVehicles();
+                dynamic data = await CensorVehicleRegistration(vehicle.Id, true);
+
+                if (data.message == "You must log in to use this function" || data.message == "Invalid refresh token")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "You do not have permission to perform this action")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Input data error")
+                {
+                    foreach (dynamic items in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Error",
+                            (string)items.Value.msg,
+                             NotificationType.Warning
+                        );
+                    }
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Failed to approve vehicle")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Error",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Vehicle approved successfully!")
+                {
+                    _notificationService.ShowNotification(
+                        "Successfully",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    Vehicles.Remove(vehicle);
+                    FilterVehicles();
+                }
             }
         }
 
-        private void RejectVehicle(object obj)
+        private async void RejectVehicle(object obj)
         {
             if (obj is Vehicle vehicle)
             {
-                // Xử lý từ chối phương tiện
-                Vehicles.Remove(vehicle);
-                FilterVehicles();
+                dynamic data = await CensorVehicleRegistration(vehicle.Id, false);
+
+                if (data.message == "You must log in to use this function" || data.message == "Invalid refresh token")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "You do not have permission to perform this action")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Input data error")
+                {
+                    foreach (dynamic items in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Error",
+                            (string)items.Value.msg,
+                             NotificationType.Warning
+                        );
+                    }
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Failed to approve vehicle")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Error",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                    return;
+                }
+
+                if (data.message == "Vehicle approved successfully!")
+                {
+                    _notificationService.ShowNotification(
+                        "Successfully",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    Vehicles.Remove(vehicle);
+                    FilterVehicles();
+                }
             }
         }
 
