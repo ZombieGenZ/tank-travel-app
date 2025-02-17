@@ -176,7 +176,9 @@ namespace TiketManagementV2.ViewModel
         }
 
         public VehicleCensorViewModel(INotificationService notificationService)
+        public VehicleCensorViewModel(INotificationService notificationService)
         {
+            _notificationService = notificationService;
             _notificationService = notificationService;
             session_time = DateTime.Now.ToString("o");
             _service = new ApiServices();
@@ -298,6 +300,12 @@ namespace TiketManagementV2.ViewModel
             }
             catch (Exception ex)
             {
+                _notificationService.ShowNotification(
+                    "Error",
+                    ex.Message,
+                    NotificationType.Error
+                );
+                return;
                 _notificationService.ShowNotification(
                     "Error",
                     ex.Message,
