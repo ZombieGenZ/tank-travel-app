@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TiketManagementV2.View"
         mc:Ignorable="d"
-        Title="NotificationMessage" Height="70" Width="300"
+        Title="NotificationMessage" MinHeight="70" MaxHeight="150" Width="300"
         Icon="/Images/TANK_logo_rmbg.ico"
+        SizeToContent="Height"
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
@@ -43,7 +44,7 @@
             <ThicknessAnimation
                 Storyboard.TargetName="_Border"
                 Storyboard.TargetProperty="Margin"
-                From="350 0 0 0"
+                From="300 0 0 0"
                 To="0 0 0 0"
                 Duration="0:0:0.5"
                 ></ThicknessAnimation>
@@ -55,7 +56,7 @@
               Storyboard.TargetName="_Border"
               Storyboard.TargetProperty="Margin"
               From="0 0 0 0"
-              To="350 0 0 0"
+              To="300 0 0 0"
               Duration="0:0:0.5"
               ></ThicknessAnimation>
         </Storyboard>
@@ -67,7 +68,7 @@
                 FillBehavior="HoldEnd"
                 Storyboard.TargetName="_Rectangle"
                 Storyboard.TargetProperty="Width"
-                From="350"
+                From="300"
                 To="0"
                 Duration="0:0:6"
                 />
@@ -82,52 +83,64 @@
         Background="{Binding Gradient}"
         CornerRadius="5">
         <StackPanel VerticalAlignment="Bottom">
-            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                <Image
-                    Width="30"
-                    Height="30"
-                    Margin="20,0"
-                    Source="{Binding ImagePath}"
-                    d:Source="/Images/Error_Icon.png"
-                    Stretch="Fill" />
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- For first image -->
+                    <ColumnDefinition Width="180"/>
+                    <!-- For text -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- For spacing -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- For close button -->
+                </Grid.ColumnDefinitions>
 
-                <StackPanel Margin="0,3,0,0">
-                    <TextBlock
-                        FontFamily="#Poppins"
-                        FontSize="22"
-                        FontWeight="Medium"
-                        Foreground="#F4F4F4"
-                        d:Text="Error !"
-                        Text="{Binding Header}" />
+                <Image Grid.Column="0"
+                       Width="30"
+                       Height="30"
+                       Margin="20,0"
+                       Source="{Binding ImagePath}"
+                       d:Source="/Images/Error_Icon.png"
+                       Stretch="Fill" />
 
+                <StackPanel Grid.Column="1" 
+                            Margin="0,3,0,0">
                     <TextBlock
-                        FontFamily="#Poppins"
-                        FontSize="11"
-                        FontWeight="Light"
-                        Foreground="#F4F4F4"
-                        d:Text="An Unexpected Problem has occured."
-                        Text="{Binding Message}"
-                        />
+                                FontFamily="#Poppins"
+                                FontSize="22"
+                                FontWeight="Medium"
+                                Foreground="#F4F4F4"
+                                d:Text="Error !"
+                                Text="{Binding Header}"
+                                TextWrapping="Wrap"
+                                MaxWidth="180" />
+                                            <TextBlock
+                                FontFamily="#Poppins"
+                                FontSize="11"
+                                FontWeight="Light"
+                                Foreground="#F4F4F4"
+                                Margin="0,5,0,0"
+                                d:Text="An Unexpected Problem has occured."
+                                Text="{Binding Message}"
+                                TextWrapping="Wrap"
+                                MaxWidth="180" />
                 </StackPanel>
 
-                <Image
-                    x:Name="_Close"
-                    Width="30"
-                    Height="30"
-                    Margin="0 -10 0 0"
-                    HorizontalAlignment="Right"
-                    Cursor="Hand"
-                    Source="/Images/Close_Icon.png"
-                    Stretch="Fill"
-                    MouseDown="_Close_MouseDown"
-                    Opacity="0"
-                    />
-
-
-            </StackPanel>
+                <Image x:Name="_Close"
+                       Grid.Column="3"
+                       Width="30"
+                       Height="30"
+                       Margin="0,0,10,0"
+                       VerticalAlignment="Center"
+                       Cursor="Hand"
+                       Source="/Images/Close_Icon.png"
+                       Stretch="Fill"
+                       MouseDown="_Close_MouseDown"
+                       Opacity="0"/>
+            </Grid>
             <Rectangle
                 x:Name="_Rectangle"
-                Width="350"
+                Width="300"
                 Height="4"
                 HorizontalAlignment="Left"
                 d:Fill="#F24A50"

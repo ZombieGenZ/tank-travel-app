@@ -34,6 +34,12 @@ namespace TiketManagementV2.ViewModel
             set => SetProperty(ref _businessItems, value);
         }
         //public bool HasItems => BusinessItems?.Any() ?? false;
+        private ObservableCollection<VehicleItem> _vehicleItems;
+        public ObservableCollection<VehicleItem> VehicleItems
+        {
+            get => _vehicleItems;
+            set => SetProperty(ref _vehicleItems, value);
+        }
         private bool _hasItems;
         public bool HasItems
         {
@@ -42,6 +48,17 @@ namespace TiketManagementV2.ViewModel
             {
                 _hasItems = value;
                 OnPropertyChanged(nameof(HasItems));
+            }
+        }
+
+        private bool _hasVehicleItems;
+        public bool HasVehicleItems
+        {
+            get => VehicleItems?.Any() ?? false;
+            private set
+            {
+                _hasVehicleItems = value;
+                OnPropertyChanged(nameof(HasVehicleItems));
             }
         }
         public class BusinessItem : INotifyPropertyChanged
@@ -108,15 +125,140 @@ namespace TiketManagementV2.ViewModel
             {
                 get
                 {
-                    if (Status == "Pending") return "Đang chờ";
-                    if (Status == "Approved") return "Đã chấp nhận";
-                    if (Status == "Rejected") return "Đã từ chối";
+                    if (Status == "Pending") return "Pending";
+                    if (Status == "Approved") return "Approved";
+                    if (Status == "Rejected") return "Rejected";
                     return Status;
                 }
             }
 
             public bool IsActionRequired => Status == "Pending";
 
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public class VehicleItem : INotifyPropertyChanged
+        {
+            private string _id;
+            private string _licensePlate;
+            private string _vehicleType;
+            private string _seatType;
+            private int _seats;
+            private string _rules;
+            private string _amenities;
+            private string _vehicleImage;
+            private string _status = "Pending";
+
+            public string Id
+            {
+                get => _id;
+                set
+                {
+                    _id = value;
+                    OnPropertyChanged(nameof(Id));
+                }
+            }
+
+            public string LicensePlate
+            {
+                get => _licensePlate;
+                set
+                {
+                    _licensePlate = value;
+                    OnPropertyChanged(nameof(LicensePlate));
+                }
+            }
+
+            public string VehicleType
+            {
+                get => _vehicleType;
+                set
+                {
+                    _vehicleType = value;
+                    OnPropertyChanged(nameof(VehicleType));
+                }
+            }
+
+            public string SeatType
+            {
+                get => _seatType;
+                set
+                {
+                    _seatType = value;
+                    OnPropertyChanged(nameof(SeatType));
+                }
+            }
+
+            public int Seats
+            {
+                get => _seats;
+                set
+                {
+                    _seats = value;
+                    OnPropertyChanged(nameof(Seats));
+                }
+            }
+
+            public string Rules
+            {
+                get => _rules;
+                set
+                {
+                    _rules = value;
+                    OnPropertyChanged(nameof(Rules));
+                }
+            }
+
+            public string Amenities
+            {
+                get => _amenities;
+                set
+                {
+                    _amenities = value;
+                    OnPropertyChanged(nameof(Amenities));
+                }
+            }
+
+            public string VehicleImage
+            {
+                get => _vehicleImage;
+                set
+                {
+                    _vehicleImage = value;
+                    OnPropertyChanged(nameof(VehicleImage));
+                }
+            }
+
+            public string Status
+            {
+                get => _status;
+                set
+                {
+                    _status = value;
+                    OnPropertyChanged(nameof(Status));
+                    OnPropertyChanged(nameof(StatusText));
+                    OnPropertyChanged(nameof(IsActionRequired));
+                }
+            }
+
+            public string StatusText
+            {
+                get
+                {
+                    if (Status == "Pending") return "Pending";
+                    if (Status == "Approved") return "Approved";
+                    if (Status == "Rejected") return "Rejected";
+                    return Status;
+                }
+            }
+
+            public bool IsActionRequired => Status == "Pending";
 
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -147,6 +289,9 @@ namespace TiketManagementV2.ViewModel
         //public ICommand ShowCensorViewCommand { get; }
         public ICommand AcceptCommand { get; }
         public ICommand RejectCommand { get; }
+        public ICommand AcceptVehicleCommand { get; }
+        public ICommand RejectVehicleCommand { get; }
+
         private MainViewModel _mainViewModel;
         public HomeViewModel(dynamic user, MainViewModel mainViewModel)
         {
@@ -168,10 +313,7 @@ namespace TiketManagementV2.ViewModel
             AcceptCommand = new RelayCommandGeneric<BusinessItem>(OnAccept);
             RejectCommand = new RelayCommandGeneric<BusinessItem>(OnReject);
         }
-        //private void ExecuteShowCensorView(object obj)
-        //{
-        //    CurrentView = new CensorView();
-        //}
+
         private async void OnAccept(BusinessItem item)
         {
             if (item != null)

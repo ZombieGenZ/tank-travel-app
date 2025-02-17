@@ -13,7 +13,6 @@
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

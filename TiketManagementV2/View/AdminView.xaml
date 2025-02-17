@@ -204,6 +204,7 @@
                                 </Button>
 
                                 <Popup x:Name="userDropdown" 
+                                       Closed="userDropdown_Closed"
                                        PlacementTarget="{Binding ElementName=btnDropdown}"
                                        Placement="Bottom"
                                        StaysOpen="False" 

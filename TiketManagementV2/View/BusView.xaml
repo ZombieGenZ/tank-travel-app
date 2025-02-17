@@ -53,7 +53,7 @@
                     <RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource color1}"
                                  IsChecked="True"
-                                 Command="{Binding ShowHomeViewCommand}">
+                                 Command="{Binding ShowHomeBusViewCommand}">
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"/>
@@ -65,22 +65,6 @@
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Bank" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Bank" Style="{StaticResource menuButtonText}"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color3}"
-                                 Command="{Binding ShowAccountViewCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <fa:IconImage Icon="UserGroup" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Account Management" Style="{StaticResource menuButtonText}"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color4}"
-                                 Command="{Binding ShowCensorViewCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <fa:IconImage Icon="Check" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="censor" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
                     <RadioButton Style="{StaticResource menuButton}"
@@ -97,14 +81,6 @@
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="ChartLine" Style="{StaticResource menuButtonIcon}"/>
                             <TextBlock Text="Chart" Style="{StaticResource menuButtonText}"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color7}"
-                                 Command="{Binding ShowLogViewCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Log" Style="{StaticResource menuButtonText}"/>
                         </StackPanel>
                     </RadioButton>
 

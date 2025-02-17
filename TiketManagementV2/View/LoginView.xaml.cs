@@ -34,7 +34,7 @@ namespace TiketManagementV2.View
         {
             _service = new ApiServices();
             InitializeComponent();
-            LoadingControl.Visibility = Visibility.Visible;
+            LoadingControl.Visibility = Visibility.Collapsed;
             checkviewModel = new LoginViewModel(new NotificationService()); // Inject NotificationService
             notificationService = new NotificationService();  // Initialize the field
             var viewModel = new MainViewModel(notificationService);
@@ -45,6 +45,7 @@ namespace TiketManagementV2.View
 
         private void InitializeLoginCheck()
         {
+            LoadingControl.Visibility = Visibility.Visible;
             Task.Run(async () =>
             {
                 try
@@ -232,7 +233,7 @@ namespace TiketManagementV2.View
                 if (string.IsNullOrWhiteSpace(username))
                 {
                     notificationService.ShowNotification(
-                        "Warning",
+                        "Input data error",
                         "Username cannot be empty!",
                         NotificationType.Warning
                     );
@@ -244,7 +245,7 @@ namespace TiketManagementV2.View
                 if (string.IsNullOrWhiteSpace(password))
                 {
                     notificationService.ShowNotification(
-                        "Warning",
+                        "Input data error",
                         "Password cannot be empty!",
                         NotificationType.Warning
                     );
@@ -256,7 +257,7 @@ namespace TiketManagementV2.View
                 if (!ValidationHelper.IsValidEmail(username))
                 {
                     notificationService.ShowNotification(
-                        "Warning",
+                        "Input data error",
                         "Invalid email format! Please enter a valid email.",
                         NotificationType.Warning
                     );
@@ -283,6 +284,7 @@ namespace TiketManagementV2.View
                     {
                        if (item.Value.msg == "Please change your temporary password before logging in")
                        {
+                            LoadingControl.Visibility = Visibility.Collapsed;
                             ChangePasswordView view = new ChangePasswordView(txtUser.Text, txtPass.Password);
                             view.ShowDialog();
 
@@ -292,7 +294,7 @@ namespace TiketManagementV2.View
                             return;
                        }
                        notificationService.ShowNotification(
-                            "Warning",
+                            "Input data error",
                             (string)item.Value.msg,
                             NotificationType.Warning
                         );
@@ -338,9 +340,9 @@ namespace TiketManagementV2.View
                     if (userData.user.penalty != null)
                     {
                         notificationService.ShowNotification(
-                            "Error",
+                            "Banned",
                             $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
-                            NotificationType.Error
+                            NotificationType.Warning
                         );
                         LoadingControl.Visibility = Visibility.Collapsed;
                         return;
@@ -412,7 +414,5 @@ namespace TiketManagementV2.View
         {
             Application.Current.Shutdown();
         }
-
-
     }
 }

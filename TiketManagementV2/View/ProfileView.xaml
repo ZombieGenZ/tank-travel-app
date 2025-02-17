@@ -29,7 +29,8 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Background="Transparent" BorderThickness="0"
-                            Command="{Binding ChangeProfileImageCommand}">
+                            Command="{Binding ChangeProfileImageCommand}"
+                            Style="{StaticResource TextButton}">
                         <Ellipse Width="60" Height="60">
                             <Ellipse.Fill>
                                 <ImageBrush ImageSource="{Binding PathUser}"/>

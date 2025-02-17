@@ -99,6 +99,9 @@
     <Compile Include="View\ChartView.xaml.cs">
       <DependentUpon>ChartView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\HomeBusView.xaml.cs">
+      <DependentUpon>HomeBusView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -169,6 +172,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ChartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HomeBusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -201,7 +201,8 @@
                             FontFamily="Montserrat"
                             Cursor="Hand"                           
                             Margin="0,30,0,0"
-                            Click="btnLogin_Click">
+                            Click="btnLogin_Click"
+                            IsDefault="True">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="#462AD8"/>

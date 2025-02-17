@@ -20,11 +20,6 @@ using TiketManagementV2.Model;
 
 namespace TiketManagementV2.View
 {
-    /// <summary>
-    /// Interaction logic for AdminView.xaml
-    /// </summary>
-
-
     public partial class AdminView : Window
     {
         private ApiServices _service;
@@ -76,9 +71,8 @@ namespace TiketManagementV2.View
         }
         private void btnDropdown_Click(object sender, RoutedEventArgs e)
         {
-            if (userDropdown.IsOpen == false)
-                userDropdown.IsOpen = true;
-            else userDropdown.IsOpen = false;
+            userDropdown.IsOpen = true;
+            btnDropdown.IsEnabled = false; // Khóa nút khi dropdown mở
         }
 
         private void btnProfile_Click(object sender, RoutedEventArgs e)
@@ -119,6 +113,9 @@ namespace TiketManagementV2.View
             this.Close();
         }
 
-
+        private void userDropdown_Closed(object sender, EventArgs e)
+        {
+            btnDropdown.IsEnabled = true; // Mở khóa nút khi dropdown đóng
+        }
     }
 }

@@ -72,6 +72,9 @@ namespace TiketManagementV2.ViewModel
         public ICommand ShowChartViewCommand { get; }
         public ICommand ShowLogViewCommand { get; }
         public ICommand ShowNotificationViewCommand { get; }
+
+        //command bus
+        public ICommand ShowHomeBusViewCommand { get; }
         // Thêm các command khác
 
         private void ExecuteShowHomeView(object obj)
@@ -110,6 +113,12 @@ namespace TiketManagementV2.ViewModel
         private void ExecuteShowNotificationView(object obj)
         {
             CurrentView = new NotificationView();
+        }
+
+        //BUS VIEW
+        private void ExecuteShowHomeBusView(object obj)
+        {
+            CurrentView = new HomeBusView();
         }
         public readonly INotificationService _notificationService;
 
@@ -206,9 +215,18 @@ namespace TiketManagementV2.ViewModel
             ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
             ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
             ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+            //command bus
+            ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
 
             // Set view mặc định
-            ExecuteShowHomeView(null);
+            if (user.permission == 2)
+            {
+                ExecuteShowHomeView(null);
+            }
+            else if(user.permission == 1)
+            {
+                ExecuteShowHomeBusView(null);
+            }
         }
 
         //private async void LoadRevenue()
@@ -244,8 +262,8 @@ namespace TiketManagementV2.ViewModel
                     {
                         // Logic để save
                         _notificationService.ShowNotification(
-                            "Thành công",
-                            "Đã lưu dữ liệu thành công!",
+                            "success",
+                            "Data saved successfully!",
                             NotificationType.Success
                         );
                     }
@@ -253,7 +271,7 @@ namespace TiketManagementV2.ViewModel
                     {
                         _notificationService.ShowNotification(
                             ex.Message,
-                            "Lỗi",
+                            "error",
                             NotificationType.Error
                         );
                     }
@@ -270,7 +288,7 @@ namespace TiketManagementV2.ViewModel
                 _notificationService.ShowNotification(
                     "Thông tin",
                     "Đã xử lý thành công!",
-                    NotificationType.Info
+                    NotificationType.Success
                 );
             }
             catch

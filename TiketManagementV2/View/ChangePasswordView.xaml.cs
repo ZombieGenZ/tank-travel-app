@@ -31,6 +31,7 @@ namespace TiketManagementV2.View
         {
             _service = new ApiServices();
             InitializeComponent();
+            LoadingControl.Visibility = Visibility.Hidden;
             notificationService = new NotificationService();  // Initialize the field
             var viewModel = new MainViewModel(notificationService);
             DataContext = viewModel;
@@ -63,7 +64,7 @@ namespace TiketManagementV2.View
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            this.Close();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -76,6 +77,7 @@ namespace TiketManagementV2.View
 
         private async void btnConfirm_Click(object sender, RoutedEventArgs e)
         {
+            LoadingControl.Visibility = Visibility.Visible;
             if (string.IsNullOrEmpty(txtNewPassword.Password))
             {
                 notificationService.ShowNotification(
@@ -84,6 +86,7 @@ namespace TiketManagementV2.View
                     NotificationType.Warning
                 );
                 txtNewPassword.Focus();
+                LoadingControl.Visibility = Visibility.Hidden;
                 return;
             }
 
@@ -95,6 +98,7 @@ namespace TiketManagementV2.View
                     NotificationType.Warning
                 );
                 txtConfirmPassword.Focus();
+                LoadingControl.Visibility = Visibility.Hidden;
                 return;
             }
 
@@ -107,6 +111,7 @@ namespace TiketManagementV2.View
                 );
                 txtConfirmPassword.Password = "";
                 txtConfirmPassword.Focus();
+                LoadingControl.Visibility = Visibility.Hidden;
                 return;
             }
 
@@ -119,6 +124,7 @@ namespace TiketManagementV2.View
                     "Error connecting to server!",
                     NotificationType.Error
                 );
+                LoadingControl.Visibility = Visibility.Hidden;
                 return;
             }
 
@@ -132,6 +138,7 @@ namespace TiketManagementV2.View
                          NotificationType.Warning
                      );
                 }
+                LoadingControl.Visibility = Visibility.Hidden;
                 return;
             }
 
@@ -142,6 +149,7 @@ namespace TiketManagementV2.View
                     (string)data.message,
                     NotificationType.Success
                 );
+                LoadingControl.Visibility = Visibility.Hidden;
                 this.Close();
                 return;
             }
