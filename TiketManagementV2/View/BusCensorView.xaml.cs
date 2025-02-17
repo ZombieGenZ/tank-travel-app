@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
 
 namespace TiketManagementV2.View
@@ -21,7 +22,7 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class BusCensorView : UserControl
     {
-        public BusCensorView()
+        public BusCensorView(INotificationService notificationService)
         {
             InitializeComponent();
             var viewModel = new BusCensorViewModel();

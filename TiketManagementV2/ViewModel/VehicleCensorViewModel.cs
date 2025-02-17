@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TiketManagementV2.Model;
+using TiketManagementV2.Services;
 
 namespace TiketManagementV2.ViewModel
 {
@@ -18,6 +19,7 @@ namespace TiketManagementV2.ViewModel
         private string session_time;
         private int current = 0;
         private ApiServices _service;
+        private INotificationService _notificationService;
 
         public ObservableCollection<Vehicle> Vehicles { get; set; }
         public ObservableCollection<Vehicle> FilteredVehicles
@@ -58,8 +60,9 @@ namespace TiketManagementV2.ViewModel
             public string Amenities { get; set; }
         }
 
-        public VehicleCensorViewModel()
+        public VehicleCensorViewModel(INotificationService notificationService)
         {
+            _notificationService = notificationService;
             session_time = DateTime.Now.ToString("o");
             _service = new ApiServices();
             //Vehicles = new ObservableCollection<Vehicle>
@@ -112,11 +115,72 @@ namespace TiketManagementV2.ViewModel
         {
             try
             {
+                dynamic data = await GetVehicleData();
 
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "You must log in to use this function" || data.message == "Invalid refresh token" || data.message == "You do not have permission to perform this action")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "Input data error")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Input data error",
+                            (string)item.Value.msg,
+                            NotificationType.Warning
+                        );
+                    }
+                    return;
+                }
+
+                if (data.message == "Failed to get vehicle information")
+                {
+                    _notificationService.ShowNotification(
+                        "Error",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    return;
+                }
+
+                foreach (dynamic item in data.result.vehicle)
+                {
+                    Vehicles.Add(new Vehicle()
+                    {
+                        Amenities = item.amenities,
+                        LicensePlate = item.license_plate,
+                        Rules = item.rules,
+                        SeatType = (string)item.seat_type,
+                        Seats = (int)item.seats,
+                        VehicleType = item.vehicle_type
+                    });
+                }
             }
             catch (Exception ex)
             {
-
+                _notificationService.ShowNotification(
+                    "Error",
+                    ex.Message,
+                    NotificationType.Error
+                );
+                return;
             }
         }
 
