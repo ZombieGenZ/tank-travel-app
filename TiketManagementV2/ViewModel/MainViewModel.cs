@@ -49,6 +49,8 @@ namespace TiketManagementV2.ViewModel
         public class UserAccount
         {
             public string DisplayName { get; set; }
+            public string Email { get; set; }
+            public string Phone { get; set; }
         }
 
         public object _currentView;
@@ -190,7 +192,9 @@ namespace TiketManagementV2.ViewModel
 
             CurrentUserAccount = new UserAccount
             {
-                DisplayName = user.display_name
+                DisplayName = user.display_name,
+                Email = user.email,
+                Phone = user.phone
             };
             PathUser = user.avatar.url;
 
