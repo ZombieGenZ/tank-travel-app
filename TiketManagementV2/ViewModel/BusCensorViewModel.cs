@@ -3,12 +3,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using TiketManagementV2.Commands;
 
 namespace TiketManagementV2.ViewModel
 {
     public class BusCensorViewModel : INotifyPropertyChanged
     {
-        private int _itemsToLoad = 20;
+        private int _itemsToLoad = 2;
         private ObservableCollection<User> _filteredUsers;
         private bool _canLoadMore;
 
@@ -47,8 +48,8 @@ namespace TiketManagementV2.ViewModel
             FilteredUsers = new ObservableCollection<User>(Users.Take(_itemsToLoad));
             CanLoadMore = Users.Count > _itemsToLoad;
 
-            AcceptCommand = new RelayCommand<User>(RemoveUser);
-            RejectCommand = new RelayCommand<User>(RemoveUser);
+            AcceptCommand = new RelayCommandGeneric<User>(RemoveUser);
+            RejectCommand = new RelayCommandGeneric<User>(RemoveUser);
         }
 
         public void LoadMore()
@@ -81,34 +82,6 @@ namespace TiketManagementV2.ViewModel
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public class RelayCommand<T> : ICommand
-    {
-        private readonly Action<T> _execute;
-        private readonly Func<T, bool> _canExecute;
-
-        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
-        {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null || _canExecute((T)parameter);
-        }
-
-        public void Execute(object parameter)
-        {
-            _execute((T)parameter);
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
         }
     }
 }

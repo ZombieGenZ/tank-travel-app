@@ -55,16 +55,6 @@
                       Foreground="{StaticResource plainTextColor3}"/>
                 </Button>
             </StackPanel>
-
-            <Button Grid.Column="0"
-                    Content="ADD"                            
-                    FontSize="12"
-                    FontFamily="Montserrat"
-                    Cursor="Hand"
-                    BorderThickness="0"
-                    Foreground="White"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource ButtonCensor}"/>
         </Grid>
 
         <!-- DataGrid hiển thị danh sách -->

@@ -14,6 +14,8 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,14 +37,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.4.3.0\lib\net462\ControlzEx.dll</HintPath>
+    </Reference>
     <Reference Include="FontAwesome.Sharp, Version=6.6.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.Sharp.6.6.0\lib\net48\FontAwesome.Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.2.0.0\lib\net47\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignColors, Version=5.2.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.5.2.1\lib\net462\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.MahApps, Version=5.2.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.MahApps.5.2.1\lib\net462\MaterialDesignThemes.MahApps.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=5.2.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.5.2.1\lib\net462\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,19 +93,34 @@
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\LogTypeToColorConverter.cs" />
+    <Compile Include="Converters\LogTypeToIconConverter.cs" />
     <Compile Include="Converters\StatusToColorConverter.cs" />
+    <Compile Include="Helpers\TimeValidationRule.cs" />
     <Compile Include="Helpers\ValidationHelper.cs" />
     <Compile Include="Model\ApiServices.cs" />
     <Compile Include="Services\INotificationService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="ViewModel\BusCensorViewModel.cs" />
+    <Compile Include="ViewModel\BusRouteViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\LogViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\VehicleCensorViewModel.cs" />
+    <Compile Include="ViewModel\VehicleManagementViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddBusRouteView.xaml.cs">
+      <DependentUpon>AddBusRouteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddBusView.xaml.cs">
+      <DependentUpon>AddBusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddVehicleView.xaml.cs">
+      <DependentUpon>AddVehicleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AdminView.xaml.cs">
       <DependentUpon>AdminView.xaml</DependentUpon>
@@ -92,6 +131,12 @@
     <Compile Include="View\BusCensorView.xaml.cs">
       <DependentUpon>BusCensorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\BusManagementView.xaml.cs">
+      <DependentUpon>BusManagementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BusRouteView.xaml.cs">
+      <DependentUpon>BusRouteView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BusView.xaml.cs">
       <DependentUpon>BusView.xaml</DependentUpon>
     </Compile>
@@ -100,6 +145,12 @@
     </Compile>
     <Compile Include="View\ChartView.xaml.cs">
       <DependentUpon>ChartView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EditBusRouteView.xaml.cs">
+      <DependentUpon>EditBusRouteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EditVehicleView.xaml.cs">
+      <DependentUpon>EditVehicleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HomeBusView.xaml.cs">
       <DependentUpon>HomeBusView.xaml</DependentUpon>
@@ -112,6 +163,9 @@
     </Compile>
     <Compile Include="View\LogView.xaml.cs">
       <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MailView.xaml.cs">
+      <DependentUpon>MailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NotificationMessage.xaml.cs">
       <DependentUpon>NotificationMessage.xaml</DependentUpon>
@@ -127,6 +181,9 @@
     </Compile>
     <Compile Include="View\VehicleCensorView.xaml.cs">
       <DependentUpon>VehicleCensorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VehicleManagementView.xaml.cs">
+      <DependentUpon>VehicleManagementView.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\CircularLoadingControl.xaml">
       <SubType>Designer</SubType>
@@ -164,6 +221,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AddBusRouteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddBusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddVehicleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AdminView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -176,6 +245,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\BusManagementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\BusRouteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\BusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -185,6 +262,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ChartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EditBusRouteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EditVehicleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -201,6 +286,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\LogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -221,6 +310,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\VehicleCensorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VehicleManagementView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -290,4 +383,11 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\MaterialDesignThemes.5.2.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.5.2.1\build\MaterialDesignThemes.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.5.2.1\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.5.2.1\build\MaterialDesignThemes.targets'))" />
+  </Target>
 </Project>

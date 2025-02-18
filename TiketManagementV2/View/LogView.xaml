@@ -3,10 +3,120 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              xmlns:local="clr-namespace:TiketManagementV2.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+    <Border Background="#200F53"
+            CornerRadius="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Margin="5,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="NOTIFICATIONS" 
+                          FontSize="28" 
+                          FontWeight="Bold" 
+                          Foreground="#E0E1F1"
+                          Margin="15,0"/>
+
+                <!-- Clear All Button -->
+                <Button Grid.Column="1"
+                        Content="CLEAR ALL"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Margin="0,0,15,0"
+                        Command="{Binding ClearAllCommand}"
+                        Style="{StaticResource TextButton}"/>
+            </Grid>
+
+            <!-- Notifications List -->
+            <ScrollViewer Grid.Row="1" 
+                         VerticalScrollBarVisibility="Auto"
+                         Margin="10,0">
+                <ItemsControl ItemsSource="{Binding LogItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#1B1464"
+                                    CornerRadius="10"
+                                    Margin="0,0,0,10"
+                                    Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Log Type Icon -->
+                                    <Border Grid.Column="0"
+                                            Width="40"
+                                            Height="40"
+                                            CornerRadius="20"
+                                            Background="{Binding LogType, Converter={StaticResource LogTypeToColorConverter}}"
+                                            Margin="0,0,15,0">
+                                        <fa:IconImage Icon="{Binding LogType, Converter={StaticResource LogTypeToIconConverter}}"
+                                                     Foreground="White"
+                                                     Width="20"
+                                                     Height="20"/>
+                                    </Border>
+
+                                    <!-- Log Content -->
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Message}"
+                                                 FontSize="14"
+                                                 Foreground="White"
+                                                 TextWrapping="Wrap"/>
+                                        <StackPanel Orientation="Horizontal"
+                                                  Margin="0,5,0,0">
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm - dd/MM/yyyy'}"
+                                                     FontSize="12"
+                                                     Foreground="#B8B9CF"/>
+                                            <TextBlock Text="{Binding Source}"
+                                                     FontSize="12"
+                                                     Foreground="#B8B9CF"
+                                                     Margin="15,0,0,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Delete Button -->
+                                    <Button Grid.Column="2"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Command="{Binding DataContext.DeleteLogCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            Margin="10,0,0,0">
+                                        <fa:IconImage Icon="TrashAlt"
+                                                     Foreground="#B8B9CF"
+                                                     Width="16"
+                                                     Height="16"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- No Notifications Message -->
+            <TextBlock Grid.Row="1"
+                      Text="No notifications"
+                      FontSize="16"
+                      Foreground="White"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Visibility="{Binding HasLogItems, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+        </Grid>
+    </Border>
+
 </UserControl>

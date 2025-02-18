@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TiketManagementV2.Commands;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using static TiketManagementV2.ViewModel.HomeViewModel;
@@ -176,9 +177,7 @@ namespace TiketManagementV2.ViewModel
         }
 
         public VehicleCensorViewModel(INotificationService notificationService)
-        public VehicleCensorViewModel(INotificationService notificationService)
         {
-            _notificationService = notificationService;
             _notificationService = notificationService;
             session_time = DateTime.Now.ToString("o");
             _service = new ApiServices();
@@ -193,10 +192,10 @@ namespace TiketManagementV2.ViewModel
             FilteredVehicles = new ObservableCollection<Vehicle>(Vehicles.Take(_itemsToLoad));
             CanLoadMore = Vehicles.Count > _itemsToLoad;
 
-            SearchCommand = new RelayCommand(_ => FilterVehicles());
-            AcceptCommand = new RelayCommand(AcceptVehicle);
-            RejectCommand = new RelayCommand(RejectVehicle);
-            LoadMoreCommand = new RelayCommand(_ => LoadMore());
+            SearchCommand = new RelayCommandGeneric<Vehicle>(_ => FilterVehicles());
+            AcceptCommand = new RelayCommandGeneric<Vehicle>(AcceptVehicle);
+            RejectCommand = new RelayCommandGeneric<Vehicle>(RejectVehicle);
+            LoadMoreCommand = new RelayCommandGeneric<Vehicle>(_ => LoadMore());
 
             LoadVehicle();
         }
@@ -306,12 +305,6 @@ namespace TiketManagementV2.ViewModel
                     NotificationType.Error
                 );
                 return;
-                _notificationService.ShowNotification(
-                    "Error",
-                    ex.Message,
-                    NotificationType.Error
-                );
-                return;
             }
         }
 
@@ -333,7 +326,7 @@ namespace TiketManagementV2.ViewModel
             CanLoadMore = FilteredVehicles.Count < Vehicles.Count;
         }
 
-        private void LoadMore()
+        public void LoadMore()
         {
             int currentCount = FilteredVehicles.Count;
 
@@ -542,26 +535,6 @@ namespace TiketManagementV2.ViewModel
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public class RelayCommand : ICommand
-    {
-        private readonly Action<object> _execute;
-        private readonly Predicate<object> _canExecute;
-
-        public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
-        public void Execute(object parameter) => _execute(parameter);
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
         }
     }
 }

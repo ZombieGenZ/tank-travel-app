@@ -76,6 +76,9 @@ namespace TiketManagementV2.ViewModel
         public ICommand ShowNotificationViewCommand { get; }
         public ICommand ShowBusCensorViewCommand { get; }
         public ICommand ShowVehicleCensorViewCommand { get; }
+        public ICommand ShowVehicleManagementViewCommand { get; }
+        public ICommand ShowBusRouteViewCommand {  get; }
+        public ICommand ShowMailViewCommand { get; }
 
         //command bus
         public ICommand ShowHomeBusViewCommand { get; }
@@ -121,6 +124,19 @@ namespace TiketManagementV2.ViewModel
         private void ExecuteShowVehicleCensorView(object obj)
         {
             CurrentView = new VehicleCensorView(_notificationService);
+        }
+        private void ExecuteShowVehicleManagementView(object obj)
+        {
+            CurrentView = new VehicleManagementView(_notificationService);
+        }
+        private void ExecuteShowBusRouteView(object obj)
+        {
+            CurrentView = new BusRouteView();
+        }
+        private void ExecuteShowMailView(object obj)
+        {
+            var mailView = new MailView();
+            mailView.Show();
         }
         //BUS VIEW
         private void ExecuteShowHomeBusView(object obj)
@@ -225,6 +241,9 @@ namespace TiketManagementV2.ViewModel
             ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
             ShowBusCensorViewCommand = new RelayCommand(ExecuteShowBusCensorView);
             ShowVehicleCensorViewCommand = new RelayCommand(ExecuteShowVehicleCensorView);
+            ShowVehicleManagementViewCommand = new RelayCommand(ExecuteShowVehicleManagementView);
+            ShowBusRouteViewCommand = new RelayCommand(ExecuteShowBusRouteView);
+            ShowMailViewCommand = new RelayCommand(ExecuteShowMailView);
             //command bus
             ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
 

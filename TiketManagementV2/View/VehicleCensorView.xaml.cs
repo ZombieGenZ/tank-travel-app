@@ -37,7 +37,7 @@ namespace TiketManagementV2.View
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is BusCensorViewModel viewModel)
+            if (DataContext is VehicleCensorViewModel viewModel)
             {
                 viewModel.LoadMore();
             }
