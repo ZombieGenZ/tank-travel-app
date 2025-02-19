@@ -96,11 +96,11 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding User}" Header="Owner"/>
                         <DataGridTextColumn Binding="{Binding LicensePlate}" Header="License Plate"/>
-                        <DataGridTextColumn Binding="{Binding vehicleType}" Header="Vehicle"/>
-                        <DataGridTextColumn Binding="{Binding seatType}" Header="Seat Type"/>
-                        <DataGridTextColumn Binding="{Binding seats}" Header="Seats"/>
-                        <DataGridTextColumn Binding="{Binding rules}" Header="Rules"/>
-                        <DataGridTextColumn Binding="{Binding amenities}" Header="amenities"/>
+                        <DataGridTextColumn Binding="{Binding VehicleType}" Header="Vehicle"/>
+                        <DataGridTextColumn Binding="{Binding SeatType}" Header="Seat Type"/>
+                        <DataGridTextColumn Binding="{Binding Seats}" Header="Seats"/>
+                        <DataGridTextColumn Binding="{Binding Rules}" Header="Rules"/>
+                        <DataGridTextColumn Binding="{Binding Amenities}" Header="amenities"/>
                         <!-- Thêm cột mới chứa các nút -->
                         <DataGridTemplateColumn Width="140">
                             <DataGridTemplateColumn.CellTemplate>

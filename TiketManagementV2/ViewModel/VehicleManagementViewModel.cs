@@ -263,7 +263,7 @@ namespace TiketManagementV2.ViewModel
                     ManagedVehicles.Add(new Vehicle()
                     {
                         Id = item._id,
-                        User = item.user,
+                        User = item.user.display_name,
                         Amenities = item.amenities,
                         LicensePlate = item.license_plate,
                         Rules = item.rules,

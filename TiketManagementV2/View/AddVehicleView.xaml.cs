@@ -39,7 +39,10 @@ namespace TiketManagementV2.View
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            ComboBoxItem comboBoxItem = (ComboBoxItem)cmbEditVehicle.SelectedItem;
+            MessageBox.Show(comboBoxItem.Content.ToString());
 
+            
         }
     }
 }

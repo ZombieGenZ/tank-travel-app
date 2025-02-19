@@ -117,8 +117,9 @@
                         <ComboBox.Background>
                             <SolidColorBrush Color="#353340"/>
                         </ComboBox.Background>
-                        <ComboBoxItem>Bus</ComboBoxItem>
-                        <ComboBoxItem>Train</ComboBoxItem>
+                        <ComboBoxItem>Seating seat</ComboBoxItem>
+                        <ComboBoxItem>Sleeper seat</ComboBoxItem>
+                        <ComboBoxItem>Hybrid seat</ComboBoxItem>
                     </ComboBox>
 
                     <TextBlock Text="Rules"
