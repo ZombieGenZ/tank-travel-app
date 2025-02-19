@@ -17,10 +17,9 @@ using TiketManagementV2.ViewModel;
 
 namespace TiketManagementV2.View
 {
-
     public partial class EditBusRouteView : Window
     {
-        private readonly INotificationService _notificationService;
+        private INotificationService _notificationService;
         public EditBusRouteView(INotificationService notificationService)
         {
             InitializeComponent();
@@ -28,7 +27,6 @@ namespace TiketManagementV2.View
 
             DataContext = viewmodel;
             _notificationService = notificationService;
-
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -51,8 +49,8 @@ namespace TiketManagementV2.View
             if (string.IsNullOrEmpty(vehicle))
             {
                 _notificationService.ShowNotification(
-                    "Error",
-                    "Invalid email format! Please enter a valid email.",
+                    "Validation Error",
+                    "Please select a vehicle type",
                     NotificationType.Error
                 );
                 return;
@@ -61,34 +59,63 @@ namespace TiketManagementV2.View
             // Kiểm tra Start Point và End Point
             if (string.IsNullOrWhiteSpace(startPoint))
             {
-                MessageBox.Show("Start Point không được để trống.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowNotification(
+                    "Validation Error",
+                    "Start point cannot be empty",
+                    NotificationType.Error
+                );
                 return;
             }
             if (string.IsNullOrWhiteSpace(endPoint))
             {
-                MessageBox.Show("End Point không được để trống.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowNotification(
+                    "Validation Error",
+                    "End point cannot be empty",
+                    NotificationType.Error
+                );
                 return;
             }
 
             // Kiểm tra thời gian
-            if (!IsValidDateTime(departureTimeInput, out string formattedDepartureTime) ||
-                !IsValidDateTime(arrivalTimeInput, out string formattedArrivalTime))
+            if (!IsValidDateTime(departureTimeInput, out string formattedDepartureTime))
             {
-                MessageBox.Show("Thời gian không hợp lệ! Vui lòng nhập đúng định dạng yyyy-MM-dd HH:mm:ss.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Error);
+                _notificationService.ShowNotification(
+                    "Validation Error",
+                    "Invalid departure time format. Please use yyyy-MM-dd HH:mm:ss",
+                    NotificationType.Error
+                );
+                return;
+            }
+
+            if (!IsValidDateTime(arrivalTimeInput, out string formattedArrivalTime))
+            {
+                _notificationService.ShowNotification(
+                    "Validation Error",
+                    "Invalid arrival time format. Please use yyyy-MM-dd HH:mm:ss",
+                    NotificationType.Error
+                );
                 return;
             }
 
             // Kiểm tra giá (Price)
             if (!decimal.TryParse(priceInput, out decimal price) || price <= 0)
             {
-                MessageBox.Show("Giá phải là số hợp lệ và lớn hơn 0.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowNotification(
+                    "Validation Error",
+                    "Price must be a positive number",
+                    NotificationType.Error
+                );
                 return;
             }
 
             // Kiểm tra số lượng (Quantity)
             if (!int.TryParse(quantityInput, out int quantity) || quantity <= 0)
             {
-                MessageBox.Show("Số lượng phải là số nguyên dương.", "Lỗi nhập liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _notificationService.ShowNotification(
+                    "Validation Error",
+                    "Quantity must be a positive integer",
+                    NotificationType.Error
+                );
                 return;
             }
 
@@ -96,8 +123,12 @@ namespace TiketManagementV2.View
             txtEditDepartureTime.Text = formattedDepartureTime;
             txtEditArrivalTime.Text = formattedArrivalTime;
 
-            // Tiếp tục xử lý lưu thông tin
-            MessageBox.Show("Dữ liệu hợp lệ! Tiến hành lưu thông tin.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Nếu tất cả validation đều pass, hiển thị thông báo thành công
+            _notificationService.ShowNotification(
+                "Success",
+                "Bus route updated successfully",
+                NotificationType.Success
+            );
         }
 
         private bool IsValidDateTime(string input, out string formattedDateTime)
@@ -115,7 +146,10 @@ namespace TiketManagementV2.View
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
         }
     }
 }

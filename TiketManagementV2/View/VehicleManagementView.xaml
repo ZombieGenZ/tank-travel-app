@@ -94,6 +94,10 @@
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomColumnHeader}"/>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
+<<<<<<< HEAD
+=======
+                        <DataGridTextColumn Binding="{Binding User}" Header="Owner"/>
+>>>>>>> ace0ef6cc5681693b1644758b274c80bc1646cfe
                         <DataGridTextColumn Binding="{Binding LicensePlate}" Header="License Plate"/>
                         <DataGridTextColumn Binding="{Binding vehicleType}" Header="Vehicle"/>
                         <DataGridTextColumn Binding="{Binding seatType}" Header="Seat Type"/>

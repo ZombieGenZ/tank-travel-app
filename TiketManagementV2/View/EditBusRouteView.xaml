@@ -152,51 +152,51 @@
                         </TextBox.Background>
                     </TextBox>
 
-                    <TextBlock Text="Departure Time"
-                         Foreground="DarkGray"
-                         FontSize="12"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                             
-                         Margin="0,15,0,0"/>
+                    <TextBlock Text="Departure Time (yyyy-MM-dd HH:mm:ss)"
+                               Foreground="DarkGray"
+                               FontSize="12"
+                               FontWeight="Medium"
+                               FontFamily="Montserrat"                             
+                               Margin="0,15,0,0"/>
                     <TextBox x:Name="txtEditDepartureTime"
-                        FontSize="13"
-                        FontWeight="Medium"
-                        FontFamily="Montserrat"                            
-                        Foreground="White"
-                        CaretBrush="LightGray"
-                        BorderBrush="DarkGray"
-                        BorderThickness="0,0,0,2"
-                        Height="28"
-                        VerticalContentAlignment="Center"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
+                             FontSize="13"
+                             FontWeight="Medium"
+                             FontFamily="Montserrat"                            
+                             Foreground="White"
+                             CaretBrush="LightGray"
+                             BorderBrush="DarkGray"
+                             BorderThickness="0,0,0,2"
+                             Height="28"
+                             VerticalContentAlignment="Center"
+                             Margin="0,5,0,0"
+                             Padding="20,0,0,0">
                         <TextBox.Background>
                             <ImageBrush Stretch="None"
-                                    AlignmentX="Left"/>
+                AlignmentX="Left"/>
                         </TextBox.Background>
                     </TextBox>
 
-                    <TextBlock Text="Arrival Time"
-                         Foreground="DarkGray"
-                         FontSize="12"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                             
-                         Margin="0,15,0,0"/>
+                    <TextBlock Text="Arrival Time (yyyy-MM-dd HH:mm:ss)"
+                               Foreground="DarkGray"
+                               FontSize="12"
+                               FontWeight="Medium"
+                               FontFamily="Montserrat"                             
+                               Margin="0,15,0,0"/>
                     <TextBox x:Name="txtEditArrivalTime"
-                        FontSize="13"
-                        FontWeight="Medium"
-                        FontFamily="Montserrat"                            
-                        Foreground="White"
-                        CaretBrush="LightGray"
-                        BorderBrush="DarkGray"
-                        BorderThickness="0,0,0,2"
-                        Height="28"
-                        VerticalContentAlignment="Center"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
+                             FontSize="13"
+                             FontWeight="Medium"
+                             FontFamily="Montserrat"                            
+                             Foreground="White"
+                             CaretBrush="LightGray"
+                             BorderBrush="DarkGray"
+                             BorderThickness="0,0,0,2"
+                             Height="28"
+                             VerticalContentAlignment="Center"
+                             Margin="0,5,0,0"
+                             Padding="20,0,0,0">
                         <TextBox.Background>
                             <ImageBrush Stretch="None"
-                                    AlignmentX="Left"/>
+                AlignmentX="Left"/>
                         </TextBox.Background>
                     </TextBox>
                     <TextBlock Text="Price"
@@ -206,41 +206,41 @@
                            FontFamily="Montserrat"                             
                            Margin="0,15,0,0"/>
                     <TextBox x:Name="txtEditPrice"
-                         FontSize="13"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                            
-                         Foreground="White"
-                         CaretBrush="LightGray"
-                         BorderBrush="DarkGray"
-                         BorderThickness="0,0,0,2"
-                         Height="28"
-                         VerticalContentAlignment="Center"
-                         Margin="0,5,0,0"
-                         Padding="20,0,0,0">
+                             FontSize="13"
+                             FontWeight="Medium"
+                             FontFamily="Montserrat"                            
+                             Foreground="White"
+                             CaretBrush="LightGray"
+                             BorderBrush="DarkGray"
+                             BorderThickness="0,0,0,2"
+                             Height="28"
+                             VerticalContentAlignment="Center"
+                             Margin="0,5,0,0"
+                             Padding="20,0,0,0">
                         <TextBox.Background>
                             <ImageBrush Stretch="None"
-                                    AlignmentX="Left"/>
+                                        AlignmentX="Left"/>
                         </TextBox.Background>
                     </TextBox>
 
                     <TextBlock Text="Quantity"
-                           Foreground="DarkGray"
-                           FontSize="12"
-                           FontWeight="Medium"
-                           FontFamily="Montserrat"                             
-                           Margin="0,15,0,0"/>
+                               Foreground="DarkGray"
+                               FontSize="12"
+                               FontWeight="Medium"
+                               FontFamily="Montserrat"                             
+                               Margin="0,15,0,0"/>
                     <TextBox x:Name="txtEditQuantity"
-                        FontSize="13"
-                        FontWeight="Medium"
-                        FontFamily="Montserrat"                            
-                        Foreground="White"
-                        CaretBrush="LightGray"
-                        BorderBrush="DarkGray"
-                        BorderThickness="0,0,0,2"
-                        Height="28"
-                        VerticalContentAlignment="Center"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
+                             FontSize="13"
+                             FontWeight="Medium"
+                             FontFamily="Montserrat"                            
+                             Foreground="White"
+                             CaretBrush="LightGray"
+                             BorderBrush="DarkGray"
+                             BorderThickness="0,0,0,2"
+                             Height="28"
+                             VerticalContentAlignment="Center"
+                             Margin="0,5,0,0"
+                             Padding="20,0,0,0">
                         <TextBox.Background>
                             <ImageBrush Stretch="None"
                                     AlignmentX="Left"/>
@@ -248,15 +248,15 @@
                     </TextBox>
 
                     <Button x:Name="btnSubmit"                          
-                        BorderThickness="0"
-                        Content="SUBMIT"
-                        Foreground="White"
-                        FontSize="12"
-                        FontFamily="Montserrat"
-                        Cursor="Hand"                           
-                        Margin="0,20,0,0"
-                        Click="btnSubmit_Click"
-                        IsDefault="True">
+                            BorderThickness="0"
+                            Content="SUBMIT"
+                            Foreground="White"
+                            FontSize="12"
+                            FontFamily="Montserrat"
+                            Cursor="Hand"                           
+                            Margin="0,20,0,0"
+                            Click="btnSubmit_Click"
+                            IsDefault="True">
                         <Button.Template>
                             <ControlTemplate TargetType="{x:Type Button}">
                                 <Border Width="150" Height="40"

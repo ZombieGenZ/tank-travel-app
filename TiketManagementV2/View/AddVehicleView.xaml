@@ -202,7 +202,7 @@
                     FontFamily="Montserrat"
                     Cursor="Hand"                           
                     Margin="0,20,0,0"
-                    Click="btnClose_Click"
+                    Click="btnSubmit_Click"
                     IsDefault="True">
                         <Button.Template>
                             <ControlTemplate TargetType="{x:Type Button}">

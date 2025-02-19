@@ -14,24 +14,21 @@ using System.Windows.Shapes;
 
 namespace TiketManagementV2.View
 {
-    /// <summary>
-    /// Interaction logic for EditVehicleView.xaml
-    /// </summary>
-    public partial class EditVehicleView : Window
+    public partial class ResetPasswordView : Window
     {
-        public EditVehicleView()
+        public ResetPasswordView()
         {
             InitializeComponent();
-        }
-
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void btnConfirm_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
