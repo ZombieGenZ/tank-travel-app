@@ -176,6 +176,9 @@
     <Compile Include="View\ProfileView.xaml.cs">
       <DependentUpon>ProfileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ResetPasswordView.xaml.cs">
+      <DependentUpon>ResetPasswordView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TicketView.xaml.cs">
       <DependentUpon>TicketView.xaml</DependentUpon>
     </Compile>
@@ -302,6 +305,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ResetPasswordView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
