@@ -29,6 +29,7 @@ namespace TiketManagementV2.View
         public BusView(dynamic user)
         {
             InitializeComponent();
+            LoadingControl.Visibility = Visibility.Hidden;
             var notificationService = new NotificationService();
             _user = user;
             var viewModel = new MainViewModel(notificationService, _user);

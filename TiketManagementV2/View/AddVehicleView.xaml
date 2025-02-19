@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TiketManagementV2.View"
         mc:Ignorable="d"
-        Title="AddVehicleView" Height="500" Width="500"
+        Title="AddVehicleView" MinHeight="600" MaxHeight="700" Width="500"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -83,9 +83,9 @@
                 </Grid>
 
                 <StackPanel Width="380"
-                   Grid.Row="1"
-                   Orientation="Vertical"
-                   Margin="0,20,0,0">
+                            Grid.Row="1"
+                            Orientation="Vertical"
+                            Margin="0,20,0,0">
 
                     <TextBlock Text="Vehicle Type"
                      Foreground="DarkGray"
@@ -100,8 +100,8 @@
                         <ComboBox.Background>
                             <SolidColorBrush Color="#353340"/>
                         </ComboBox.Background>
-                        <ComboBoxItem>Bus</ComboBoxItem>
-                        <ComboBoxItem>Train</ComboBoxItem>
+                        <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Bus</ComboBoxItem>
+                        <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Train</ComboBoxItem>
                     </ComboBox>
 
                     <TextBlock Text="Seat Type"
@@ -117,9 +117,9 @@
                         <ComboBox.Background>
                             <SolidColorBrush Color="#353340"/>
                         </ComboBox.Background>
-                        <ComboBoxItem>Seating seat</ComboBoxItem>
-                        <ComboBoxItem>Sleeper seat</ComboBoxItem>
-                        <ComboBoxItem>Hybrid seat</ComboBoxItem>
+                        <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Seating seat</ComboBoxItem>
+                        <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Sleeper seat</ComboBoxItem>
+                        <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Hybrid seat</ComboBoxItem>
                     </ComboBox>
 
                     <TextBlock Text="Rules"
@@ -193,7 +193,62 @@
                                 AlignmentX="Left"/>
                         </TextBox.Background>
                     </TextBox>
-                    
+
+                    <Button x:Name="btnSelectImage" 
+                            Content="Choose Images" 
+                            BorderThickness="0"
+                            Foreground="White"
+                            FontSize="12"
+                            FontFamily="Montserrat"
+                            Cursor="Hand"  
+                            Click="ChangeProfileImage_Click" 
+                            Width="100" Height="40"
+                            Margin="0 10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Width="100" Height="40"
+                                CornerRadius="15"
+                                Background="{TemplateBinding Background}">
+                                    <ContentPresenter VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto"
+                                  Style="{StaticResource CustomScrollViewerStyle}">
+                        <ItemsControl ItemsSource="{Binding ImageFiles}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <TextBlock Text="{Binding}" 
+                                                   Width="150"
+                                                   Foreground="DarkGray"
+                                                   FontSize="12"
+                                                   FontWeight="Medium"
+                                                   FontFamily="Montserrat"
+                                                   TextWrapping="NoWrap"/>
+                                        <Button x:Name="btnClear"
+                                                Content="X"
+                                                Width="20" 
+                                                Height="20"
+                                                FontSize="16"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                Click="btnClear_Click" 
+                                                DataContext="{Binding}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
 
                     <Button x:Name="btnSubmit"                          
                     BorderThickness="0"

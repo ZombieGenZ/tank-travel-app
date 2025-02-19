@@ -79,7 +79,7 @@
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource color5}"
-                                 Command="{Binding ShowTicketViewCommand}">
+                                 Command="{Binding ShowVehicleManagementViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="TicketAlt" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Vehicle Management" Style="{StaticResource menuButtonText}"/>
@@ -287,8 +287,9 @@
             </Grid>
         </Border>
         <Controls:CircularLoadingControl 
-        Grid.ColumnSpan="2"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"/>
+            x:Name="LoadingControl"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
