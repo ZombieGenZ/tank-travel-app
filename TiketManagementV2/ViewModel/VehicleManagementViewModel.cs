@@ -9,6 +9,7 @@ using TiketManagementV2.Commands;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.View;
+using static TiketManagementV2.ViewModel.HomeViewModel;
 
 namespace TiketManagementV2.ViewModel
 {
@@ -185,6 +186,10 @@ namespace TiketManagementV2.ViewModel
             LoadMoreCommand = new RelayCommandGeneric<Vehicle>(_ => LoadMoreManagedVehicles());
             AddCommand = new RelayCommand(ExecuteAddCommand);
 
+            ManagedVehicles.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(ManagedVehicles));
+            };  
 
             LoadManagedVehicles();
         }
@@ -208,11 +213,11 @@ namespace TiketManagementV2.ViewModel
                 var getVehicleDataBody = new
                 {
                     refresh_token,
-                    _managementSessionTime,
-                    _managementCurrent
+                    session_time = _managementSessionTime,
+                    current = _managementCurrent
                 };
 
-                return await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle-registration", getVehicleDataHeader, getVehicleDataBody);
+                return await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle", getVehicleDataHeader, getVehicleDataBody);
             }
             catch (Exception ex)
             {
@@ -264,7 +269,7 @@ namespace TiketManagementV2.ViewModel
                         Rules = item.rules,
                         SeatType = (string)item.seat_type,
                         Seats = (int)item.seats,
-                        VehicleType = item.vehicle_type
+                        VehicleType = (string)item.vehicle_type
                     });
                 }
                 FilterManagedVehicles();

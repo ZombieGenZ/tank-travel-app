@@ -74,7 +74,7 @@
                 Padding="10">
             <Grid>
                 <!-- DataGrid -->
-                <DataGrid ItemsSource="{Binding filteredBusRoutes}" 
+                <DataGrid ItemsSource="{Binding ManagedFilteredVehicles}" 
                          Style="{StaticResource TransparentDataGrid}" 
                          Height="600" 
                          VerticalAlignment="Top">
@@ -94,13 +94,12 @@
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomColumnHeader}"/>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Price}" Header="Owner"/>
-                        <DataGridTextColumn Binding="{Binding Price}" Header="License Plate"/>
-                        <DataGridTextColumn Binding="{Binding Vehicle}" Header="Vehicle"/>
-                        <DataGridTextColumn Binding="{Binding StartPoint}" Header="Seat Type"/>
-                        <DataGridTextColumn Binding="{Binding EndPoint}" Header="Seats"/>
-                        <DataGridTextColumn Binding="{Binding DepartureTime}" Header="Rules"/>
-                        <DataGridTextColumn Binding="{Binding ArrivalTime}" Header="Amenities"/>
+                        <DataGridTextColumn Binding="{Binding LicensePlate}" Header="License Plate"/>
+                        <DataGridTextColumn Binding="{Binding vehicleType}" Header="Vehicle"/>
+                        <DataGridTextColumn Binding="{Binding seatType}" Header="Seat Type"/>
+                        <DataGridTextColumn Binding="{Binding seats}" Header="Seats"/>
+                        <DataGridTextColumn Binding="{Binding rules}" Header="Rules"/>
+                        <DataGridTextColumn Binding="{Binding amenities}" Header="amenities"/>
                         <!-- Thêm cột mới chứa các nút -->
                         <DataGridTemplateColumn Width="140">
                             <DataGridTemplateColumn.CellTemplate>

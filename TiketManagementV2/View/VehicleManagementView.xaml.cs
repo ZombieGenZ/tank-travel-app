@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TiketManagementV2.Services;
+using TiketManagementV2.ViewModel;
 
 namespace TiketManagementV2.View
 {
@@ -24,7 +25,7 @@ namespace TiketManagementV2.View
         public VehicleManagementView(INotificationService notificationService)
         {
             InitializeComponent();
-            var viewmodel = new VehicleManagementView(notificationService);
+            var viewmodel = new VehicleManagementViewModel(notificationService);
             DataContext = viewmodel;
         }
 
