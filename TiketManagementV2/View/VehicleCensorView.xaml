@@ -8,60 +8,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <!--<RowDefinition Height="50"/>-->
             <RowDefinition/>
             <!-- Thêm hàng mới cho nút Load More -->
         </Grid.RowDefinitions>
 
-        <!-- Thanh tìm kiếm -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1">
-                <Grid>
-                    <TextBox x:Name="SearchTextBox"
-                             Width="300"
-                             Height="24"
-                             FontSize="13"
-                             Background="Transparent"
-                             Foreground="{StaticResource plainTextColor3}"
-                             BorderBrush="{StaticResource plainTextColor3}"
-                             BorderThickness="0,0,0,1"
-                             VerticalContentAlignment="Center"
-                             TextChanged="SearchTextBox_TextChanged"/>
+        <TextBlock Grid.Row="1" 
+                   x:Name="txtkco"
+                   Text="Không có dữ liệu" 
+                   FontSize="20"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="Collapsed"/>
 
-                    <TextBlock x:Name="SearchPlaceholder"
-               Text="Search..."
-               Foreground="Gray"
-               VerticalAlignment="Center"
-               Margin="5,0,0,0"
-               IsHitTestVisible="False"/>
-                </Grid>
-
-                <Button x:Name="SeachButton"
-                    BorderThickness="0"
-                    Padding="5"
-                    Style="{StaticResource hoverbutton}"
-                    Command="{Binding SearchCommand}"                            
-                    >
-                    <fa:IconImage Icon="Search"
-                  Height="20"
-                  Width="20"
-                  Foreground="{StaticResource plainTextColor3}"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-        <!-- DataGrid hiển thị danh sách -->
         <Border Grid.Row="1"
-    Background="#200F53"
-    CornerRadius="10" 
-    Padding="10">
+                Background="#200F53"
+                CornerRadius="10" 
+                Padding="10"
+                Visibility="{Binding HasItems, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid>
                 <!-- DataGrid -->
                 <DataGrid ItemsSource="{Binding Vehicles}" 

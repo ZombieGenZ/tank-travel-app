@@ -14,49 +14,6 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <!-- Thanh tìm kiếm -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="120"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Right"
-            Grid.Column="1">
-                <Grid>
-                    <TextBox x:Name="SearchTextBox"
-                 Width="300"
-                 Height="24"
-                 FontSize="13"
-                 Background="Transparent"
-                 Foreground="{StaticResource plainTextColor3}"
-                 BorderBrush="{StaticResource plainTextColor3}"
-                 BorderThickness="0,0,0,1"
-                 VerticalContentAlignment="Center"
-                 TextChanged="SearchTextBox_TextChanged"/>
-
-                    <TextBlock x:Name="SearchPlaceholder"
-                   Text="Search..."
-                   Foreground="Gray"
-                   VerticalAlignment="Center"
-                   Margin="5,0,0,0"
-                   IsHitTestVisible="False"/>
-                </Grid>
-
-                <Button x:Name="SeachButton"
-                        BorderThickness="0"
-                        Padding="5"
-                        Command="{Binding SearchCommand}"                            
-                        Style="{StaticResource hoverbutton}">
-                    <fa:IconImage Icon="Search"
-                      Height="20"
-                      Width="20"
-                      Foreground="{StaticResource plainTextColor3}"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-
         <!-- DataGrid hiển thị danh sách -->
         <Border Grid.Row="1"
                 Background="#200F53"

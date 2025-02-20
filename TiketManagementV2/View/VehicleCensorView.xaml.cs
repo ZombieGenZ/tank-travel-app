@@ -18,6 +18,7 @@ using TiketManagementV2.Controls;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
+using static TiketManagementV2.ViewModel.HomeViewModel;
 
 namespace TiketManagementV2.View
 {
@@ -35,6 +36,16 @@ namespace TiketManagementV2.View
         private ApiServices _service;
         private INotificationService _notificationService;
         private CircularLoadingControl _circularLoadingControl;
+        private bool _hasItems;
+        public bool HasItems
+        {
+            get => Vehicles?.Any() ?? false;
+            private set
+            {
+                _hasItems = value;
+                OnPropertyChanged(nameof(HasItems));
+            }
+        }
 
         private ObservableCollection<Vehicle> _vehicles;
         public ObservableCollection<Vehicle> Vehicles
@@ -202,6 +213,11 @@ namespace TiketManagementV2.View
             Vehicles = new ObservableCollection<Vehicle>();
             FilteredVehicles = new ObservableCollection<Vehicle>();
 
+            Vehicles.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(HasItems));
+            };
+
             // Set up commands
             SearchCommand = new RelayCommandGeneric<Vehicle>(_ => FilterVehicles());
             AcceptCommand = new RelayCommandGeneric<Vehicle>(AcceptVehicle);
@@ -325,6 +341,12 @@ namespace TiketManagementV2.View
                     return;
                 }
 
+                if (data.result.message == "Không tìm thấy kết quả phù hợp")
+                {
+                    txtkco.Visibility = Visibility.Visible;
+                    return;
+                }
+
                 foreach (dynamic item in data.result.vehicle)
                 {
                     Vehicles.Add(new Vehicle()
@@ -338,7 +360,7 @@ namespace TiketManagementV2.View
                         VehicleType = item.vehicle_type
                     });
                 }
-                FilterVehicles();
+                //FilterVehicles();
             }
             catch (Exception ex)
             {
@@ -594,13 +616,13 @@ namespace TiketManagementV2.View
             }
         }
 
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        //private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
 
-            // Update the SearchText property
-            SearchText = SearchTextBox.Text;
-        }
+        //    // Update the SearchText property
+        //    SearchText = SearchTextBox.Text;
+        //}
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {

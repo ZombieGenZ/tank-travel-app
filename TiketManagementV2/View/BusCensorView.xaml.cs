@@ -30,12 +30,6 @@ namespace TiketManagementV2.View
 
 
         }
-
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
-        }
-
         private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is BusCensorViewModel viewModel)
