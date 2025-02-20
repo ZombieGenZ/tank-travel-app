@@ -122,7 +122,7 @@ namespace TiketManagementV2.ViewModel
         }
         private void ExecuteShowBusCensorView(object obj)
         {
-            CurrentView = new BusCensorView(_notificationService);
+            CurrentView = new BusCensorView(_notificationService, _circularLoadingControl);
         }
         private void ExecuteShowVehicleCensorView(object obj)
         {

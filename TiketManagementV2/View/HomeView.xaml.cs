@@ -63,7 +63,7 @@ namespace TiketManagementV2.View
 
         private void btnSeeMoreBus_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.CurrentView = new BusCensorView(_mainViewModel._notificationService);
+            _mainViewModel.CurrentView = new BusCensorView(_mainViewModel._notificationService, _circularLoadingControl);
         }
 
         private void TextBlock_MouseLeave(object sender, MouseEventArgs e)

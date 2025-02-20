@@ -21,9 +21,10 @@
                 Padding="10">
             <Grid>
                 <!-- DataGrid -->
-                <DataGrid ItemsSource="{Binding FilteredUsers}" 
-                         Style="{StaticResource TransparentDataGrid}" 
-                         Height="600" 
+                <DataGrid ItemsSource="{Binding Buss}"
+                          x:Name="DgvBus"
+                          Style="{StaticResource TransparentDataGrid}" 
+                          Height="600" 
                          VerticalAlignment="Top">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource TransparentDataGridCell}"/>

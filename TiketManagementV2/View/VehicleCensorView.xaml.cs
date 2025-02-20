@@ -281,7 +281,7 @@ namespace TiketManagementV2.View
                 if (data == null)
                 {
                     _notificationService.ShowNotification(
-                        "Error",
+                        "Lỗi",
                         data.message,
                         NotificationType.Error
                     );
@@ -360,12 +360,16 @@ namespace TiketManagementV2.View
                         VehicleType = item.vehicle_type
                     });
                 }
+
+                current = data.result.current;
+                CanLoadMore = data.result.continued;
+
                 //FilterVehicles();
             }
             catch (Exception ex)
             {
                 _notificationService.ShowNotification(
-                    "Error",
+                    "Lỗi",
                     ex.Message,
                     NotificationType.Error
                 );
@@ -396,22 +400,7 @@ namespace TiketManagementV2.View
             {
                 _circularLoadingControl.Visibility = Visibility.Visible;
 
-                await Task.Run(() => {
-                    Application.Current.Dispatcher.Invoke(() => {
-                        int currentCount = FilteredVehicles.Count;
-
-                        if (currentCount < Vehicles.Count)
-                        {
-                            var moreVehicles = Vehicles.Skip(currentCount).Take(_itemsToLoad).ToList();
-                            foreach (var vehicle in moreVehicles)
-                            {
-                                FilteredVehicles.Add(vehicle);
-                            }
-                        }
-
-                        CanLoadMore = FilteredVehicles.Count < Vehicles.Count;
-                    });
-                });
+                await LoadVehicle();
             }
             finally
             {
@@ -458,92 +447,7 @@ namespace TiketManagementV2.View
                     if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
                     {
                         _notificationService.ShowNotification(
-                            "Error",
-                            data.message,
-                            NotificationType.Error
-                        );
-                        return;
-                    }
-
-                    if (data.message == "Bạn không có quyền thực hiện hành động này")
-                    {
-                        _notificationService.ShowNotification(
-                            "Error",
-                            data.message,
-                            NotificationType.Error
-                        );
-                        Properties.Settings.Default.access_token = data.authenticate.access_token;
-                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
-                        Properties.Settings.Default.Save();
-                        return;
-                    }
-
-                    if (data.message == "Lỗi dữ liệu đầu vào")
-                    {
-                        foreach (dynamic items in data.errors)
-                        {
-                            _notificationService.ShowNotification(
-                                "Error",
-                                (string)items.Value.msg,
-                                 NotificationType.Warning
-                            );
-                        }
-
-                        Properties.Settings.Default.access_token = data.authenticate.access_token;
-                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
-                        Properties.Settings.Default.Save();
-                        return;
-                    }
-
-                    if (data.message == "Kiểm duyệt phương tiện thành công!")
-                    {
-                        _notificationService.ShowNotification(
-                            "Thành công",
-                            (string)data.message,
-                            NotificationType.Success
-                        );
-
-                        Properties.Settings.Default.access_token = data.authenticate.access_token;
-                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
-                        Properties.Settings.Default.Save();
-
-                        Vehicles.Remove(vehicle);
-                        FilterVehicles();
-                    }
-                    else
-                    {
-                        _notificationService.ShowNotification(
                             "Lỗi",
-                            (string)data.message,
-                            NotificationType.Warning
-                        );
-
-                        Properties.Settings.Default.access_token = data.authenticate.access_token;
-                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
-                        Properties.Settings.Default.Save();
-                    }
-                }
-            }
-            finally
-            {
-                _circularLoadingControl.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private async void RejectVehicle(object obj)
-        {
-            try
-            {
-                _circularLoadingControl.Visibility = Visibility.Visible;
-
-                if (obj is Vehicle vehicle)
-                {
-                    dynamic data = await CensorVehicleRegistration(vehicle.Id, false);
-
-                    if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
-                    {
-                        _notificationService.ShowNotification(
-                            "Error",
                             data.message,
                             NotificationType.Error
                         );
@@ -593,7 +497,102 @@ namespace TiketManagementV2.View
                         Properties.Settings.Default.Save();
 
                         Vehicles.Remove(vehicle);
-                        FilterVehicles();
+                        //FilterVehicles();
+
+                        if (Vehicles.Count < 1)
+                        {
+                            txtkco.Visibility = Visibility.Visible;
+                        }
+                    }
+                    else
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi",
+                            (string)data.message,
+                            NotificationType.Warning
+                        );
+
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+                    }
+                }
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async void RejectVehicle(object obj)
+        {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
+                if (obj is Vehicle vehicle)
+                {
+                    dynamic data = await CensorVehicleRegistration(vehicle.Id, false);
+
+                    if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi",
+                            data.message,
+                            NotificationType.Error
+                        );
+                        return;
+                    }
+
+                    if (data.message == "Bạn không có quyền thực hiện hành động này")
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi",
+                            data.message,
+                            NotificationType.Error
+                        );
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+                        return;
+                    }
+
+                    if (data.message == "Lỗi dữ liệu đầu vào")
+                    {
+                        foreach (dynamic items in data.errors)
+                        {
+                            _notificationService.ShowNotification(
+                                "Lỗi",
+                                (string)items.Value.msg,
+                                 NotificationType.Warning
+                            );
+                        }
+
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+                        return;
+                    }
+
+                    if (data.message == "Kiểm duyệt phương tiện thành công!")
+                    {
+                        _notificationService.ShowNotification(
+                            "Thành công",
+                            (string)data.message,
+                            NotificationType.Success
+                        );
+
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+
+                        Vehicles.Remove(vehicle);
+                        //FilterVehicles();
+
+                        if (Vehicles.Count < 1)
+                        {
+                            txtkco.Visibility = Visibility.Visible;
+                        }
                     }
                     else
                     {
