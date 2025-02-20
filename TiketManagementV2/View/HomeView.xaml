@@ -440,43 +440,43 @@
                                          Foreground="#B8B9CF"
                                          FontSize="15"/>
                                                 <TextBlock Text="{Binding Amenities}"
-                                          Style="{StaticResource EllipsisTextBlockStyle}"
-                                          Foreground="#B8B9CF"
-                                          FontSize="15"
-                                          MouseEnter="TextBlock_MouseEnter"
-                                          MouseLeave="TextBlock_MouseLeave"/>
+                                                          Style="{StaticResource EllipsisTextBlockStyle}"
+                                                          Foreground="#B8B9CF"
+                                                          FontSize="15"
+                                                          MouseEnter="TextBlock_MouseEnter"
+                                                          MouseLeave="TextBlock_MouseLeave"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
 
                                     <!-- Nút Accept/Reject -->
                                     <StackPanel Grid.Row="2" 
-                              Orientation="Horizontal" 
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Bottom"
-                              Margin="0,10,0,0"
-                              Visibility="{Binding IsActionRequired, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                Orientation="Horizontal" 
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Margin="0,10,0,0"
+                                                Visibility="{Binding IsActionRequired, Converter={StaticResource BoolToVisibilityConverter}}">
                                         <Button Content="Accept"
-                                FontSize="15"
-                                Command="{Binding DataContext.AcceptVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                CommandParameter="{Binding}"
-                                Background="{StaticResource color5}"
-                                Foreground="White"
-                                Width="90"
-                                Height="35"
-                                Margin="0,0,10,0"
-                                Cursor="Hand"
-                                Style="{StaticResource RoundedButton}"/>
+                                                FontSize="15"
+                                                Command="{Binding DataContext.AcceptVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Background="{StaticResource color5}"
+                                                Foreground="White"
+                                                Width="90"
+                                                Height="35"
+                                                Margin="0,0,10,0"
+                                                Cursor="Hand"
+                                                Style="{StaticResource RoundedButton}"/>
                                         <Button Content="Reject"
-                                FontSize="15"
-                                Command="{Binding DataContext.RejectVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                CommandParameter="{Binding}"
-                                Background="{StaticResource color4}"
-                                Foreground="White"
-                                Width="90"
-                                Height="35"
-                                Cursor="Hand"
-                                Style="{StaticResource RoundedButton}"/>
+                                                FontSize="15"
+                                                Command="{Binding DataContext.RejectVehicleCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Background="{StaticResource color4}"
+                                                Foreground="White"
+                                                Width="90"
+                                                Height="35"
+                                                Cursor="Hand"
+                                                Style="{StaticResource RoundedButton}"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>

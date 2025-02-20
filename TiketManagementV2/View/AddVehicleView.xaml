@@ -241,6 +241,8 @@
                                                 FontSize="16"
                                                 Background="Transparent"
                                                 Foreground="White"
+                                                HorizontalContentAlignment="Center"
+                                                HorizontalAlignment="Center"
                                                 Click="btnClear_Click" 
                                                 DataContext="{Binding}"/>
                                     </StackPanel>

@@ -17,6 +17,7 @@
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <converters:LogTypeToColorConverter x:Key="LogTypeToColorConverter"/>
             <converters:LogTypeToIconConverter x:Key="LogTypeToIconConverter"/>
+            <converters:BooleanToSelectionBorderConverter x:Key="BooleanToSelectionBorderConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

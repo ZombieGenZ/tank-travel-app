@@ -22,7 +22,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="NOTIFICATIONS" 
+                <TextBlock Text="LOG" 
                           FontSize="28" 
                           FontWeight="Bold" 
                           Foreground="#E0E1F1"

@@ -58,6 +58,7 @@ namespace TiketManagementV2.ViewModel
         public ICommand DeleteCommand { get; }
         public ICommand LoadMoreCommand { get; }
         public ICommand AddCommand { get; }
+        public ICommand ImageCommand { get; }
 
 
         public class Vehicle : INotifyPropertyChanged
@@ -185,6 +186,7 @@ namespace TiketManagementV2.ViewModel
             DeleteCommand = new RelayCommandGeneric<Vehicle>(DeleteVehicle);
             LoadMoreCommand = new RelayCommandGeneric<Vehicle>(_ => LoadMoreManagedVehicles());
             AddCommand = new RelayCommand(ExecuteAddCommand);
+            ImageCommand = new RelayCommandGeneric<Vehicle>(ShowVehicleImages);
 
             ManagedVehicles.CollectionChanged += (s, e) =>
             {
@@ -394,6 +396,98 @@ namespace TiketManagementV2.ViewModel
                 Properties.Settings.Default.access_token = data.authenticate.access_token;
                 Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
                 Properties.Settings.Default.Save();
+            }
+        }
+
+        private void ShowVehicleImages(object obj)
+        {
+            if (obj is Vehicle vehicle)
+            {
+                var imageGalleryView = new ImageGalleryView();
+
+                // You'll need to load vehicle images based on vehicle ID
+                // For example, you might have a path like: Images/{vehicleId}/...
+                LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
+
+                imageGalleryView.Show();
+            }
+        }
+
+        private async void LoadVehicleImagesIntoGallery(string vehicleId, ImageGalleryView galleryView)
+        {
+            try
+            {
+                // Create a method to fetch images for this vehicle from your API
+                var images = await GetVehicleImagesAsync(vehicleId);
+
+                if (images != null && images.Count > 0)
+                {
+                    foreach (string imagePath in images)
+                    {
+                        galleryView.ImagePaths.Add(imagePath);
+                    }
+
+                    // Load the first image
+                    if (galleryView.ImagePaths.Count > 0)
+                    {
+                        galleryView.ThumbnailList.SelectedIndex = 0;
+                    }
+                }
+                else
+                {
+                    _notificationService.ShowNotification("Warning", "No images found for this vehicle", NotificationType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Error", "Failed to load vehicle images: " + ex.Message, NotificationType.Error);
+            }
+        }
+
+        private async Task<List<string>> GetVehicleImagesAsync(string vehicleId)
+        {
+            try
+            {
+                Dictionary<string, string> header = new Dictionary<string, string>()
+        {
+            { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+        };
+
+                var requestBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    vehicle_id = vehicleId
+                };
+
+                dynamic response = await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle-images", header, requestBody);
+
+                if (response == null || response.message == "Failed to get vehicle images")
+                {
+                    return new List<string>();
+                }
+
+                if (response.authenticate != null)
+                {
+                    Properties.Settings.Default.access_token = response.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = response.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+                }
+
+                List<string> imagePaths = new List<string>();
+
+                // Parse the response - adjust according to your actual API response structure
+                foreach (dynamic imageData in response.result.images)
+                {
+                    string imagePath = (string)imageData.path;
+                    imagePaths.Add(imagePath);
+                }
+
+                return imagePaths;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<string>();
             }
         }
 
