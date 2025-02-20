@@ -195,20 +195,20 @@
 
 
                     <Button x:Name="btnSubmit"                          
-                BorderThickness="0"
-                Content="SUBMIT"
-                Foreground="White"
-                FontSize="12"
-                FontFamily="Montserrat"
-                Cursor="Hand"                           
-                Margin="0,20,0,0"
-                Click="btnSubmit_Click"
-                IsDefault="True">
+                            BorderThickness="0"
+                            Content="SUBMIT"
+                            Foreground="White"
+                            FontSize="12"
+                            FontFamily="Montserrat"
+                            Cursor="Hand"                           
+                            Margin="0,20,0,0"
+                            Click="btnSubmit_Click"
+                            IsDefault="True">
                         <Button.Template>
                             <ControlTemplate TargetType="{x:Type Button}">
                                 <Border Width="150" Height="40"
-                            CornerRadius="20"
-                            Background="{TemplateBinding Background}">
+                                        CornerRadius="20"
+                                        Background="{TemplateBinding Background}">
                                     <ContentPresenter VerticalAlignment="Center"
                                         HorizontalAlignment="Center"/>
                                 </Border>
