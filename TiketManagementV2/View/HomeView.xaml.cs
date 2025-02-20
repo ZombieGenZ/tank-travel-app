@@ -19,6 +19,7 @@ using TiketManagementV2.Services;
 using System.Globalization;
 using TiketManagementV2.ViewModel;
 using static TiketManagementV2.ViewModel.MainViewModel;
+using TiketManagementV2.Controls;
 
 namespace TiketManagementV2.View
 {
@@ -27,20 +28,22 @@ namespace TiketManagementV2.View
         private MainViewModel _mainViewModel;
         private DispatcherTimer timer;
         private Popup currentPopup;
+        private CircularLoadingControl _circularLoadingControl;
         //private readonly NotificationService notificationService;
         //private ApiServices _service;
         //private dynamic _user;
 
-        public HomeView(dynamic user, MainViewModel mainViewModel)
+        public HomeView(dynamic user, MainViewModel mainViewModel, CircularLoadingControl loading)
         {
             InitializeComponent();
+            _circularLoadingControl = loading;
             //_service = new ApiServices();
             //_user = user;
             ClockText.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
             StartClock();
             //notificationService = new NotificationService();  // Initialize the field
 
-            var viewModel = new HomeViewModel(user, mainViewModel);
+            var viewModel = new HomeViewModel(user, mainViewModel, _circularLoadingControl);
             DataContext = viewModel;
             _mainViewModel = mainViewModel;
         }
@@ -128,7 +131,7 @@ namespace TiketManagementV2.View
 
         private void btnSeeMoreVehicle_Click(object sender, RoutedEventArgs e)
         {
-            _mainViewModel.CurrentView = new VehicleCensorView(_mainViewModel._notificationService);
+            _mainViewModel.CurrentView = new VehicleCensorView(_mainViewModel._notificationService, _circularLoadingControl);
         }
     }
 }

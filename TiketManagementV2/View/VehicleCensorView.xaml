@@ -64,7 +64,7 @@
     Padding="10">
             <Grid>
                 <!-- DataGrid -->
-                <DataGrid ItemsSource="{Binding FilteredVehicles}" 
+                <DataGrid ItemsSource="{Binding Vehicles}" 
                      Style="{StaticResource TransparentDataGrid}" 
                      Height="600" 
                      VerticalAlignment="Top">

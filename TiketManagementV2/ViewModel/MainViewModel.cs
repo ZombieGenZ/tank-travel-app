@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TiketManagementV2.Commands;
+using TiketManagementV2.Controls;
 using TiketManagementV2.Helpers;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
@@ -24,6 +25,7 @@ namespace TiketManagementV2.ViewModel
         private string _originalPhone;
         private string _originalPathUser;
         private dynamic _user;
+        private CircularLoadingControl _circularLoadingControl;
 
         private string _revenue;
         public string Revenue
@@ -87,7 +89,7 @@ namespace TiketManagementV2.ViewModel
 
         private void ExecuteShowHomeView(object obj)
         {
-            CurrentView = new HomeView(_user, this);
+            CurrentView = new HomeView(_user, this, _circularLoadingControl);
         }
         private void ExecuteShowBankView (object obj)
         {
@@ -124,7 +126,7 @@ namespace TiketManagementV2.ViewModel
         }
         private void ExecuteShowVehicleCensorView(object obj)
         {
-            CurrentView = new VehicleCensorView(_notificationService);
+            CurrentView = new VehicleCensorView(_notificationService, _circularLoadingControl);
         }
         private void ExecuteShowVehicleManagementView(object obj)
         {
@@ -260,6 +262,63 @@ namespace TiketManagementV2.ViewModel
                 ExecuteShowHomeView(null);
             }
             else if(user.permission == 1)
+            {
+                ExecuteShowHomeBusView(null);
+            }
+        }
+
+        public MainViewModel(INotificationService notificationService, dynamic user, CircularLoadingControl loading)
+        {
+            _service = new ApiServices();
+
+            _user = user;
+            _notificationService = notificationService;
+
+            _circularLoadingControl = loading;
+
+            CurrentUserAccount = new UserAccount
+            {
+                DisplayName = user.display_name,
+                Email = user.email,
+                Phone = user.phone
+            };
+            PathUser = user.avatar.url;
+
+            //Revenue = "0";
+            //_Deals = "0";
+
+            //LoadRevenue();
+
+            // Khởi tạo commands cho profile
+            SaveProfileCommand = new RelayCommand(ExecuteSaveProfile);
+            CancelProfileCommand = new RelayCommand(ExecuteCancelProfile);
+            ChangeProfileImageCommand = new RelayCommand(ExecuteChangeProfileImage);
+
+
+            // Khởi tạo commands
+            ShowHomeViewCommand = new RelayCommand(ExecuteShowHomeView);
+            ShowBankViewCommand = new RelayCommand(ExecuteShowBankView);
+            ShowProfileViewCommand = new RelayCommand(ExecuteShowProfileView);
+            ShowAccountViewCommand = new RelayCommand(ExecuteShowAccountView);
+            ShowTicketViewCommand = new RelayCommand(ExecuteShowTicketView);
+            ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
+            ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
+            ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+            ShowBusCensorViewCommand = new RelayCommand(ExecuteShowBusCensorView);
+            ShowVehicleCensorViewCommand = new RelayCommand(ExecuteShowVehicleCensorView);
+            ShowVehicleManagementViewCommand = new RelayCommand(ExecuteShowVehicleManagementView);
+            ShowBusRouteViewCommand = new RelayCommand(ExecuteShowBusRouteView);
+            ShowMailViewCommand = new RelayCommand(ExecuteShowMailView);
+            ShowResetPasswordViewCommand = new RelayCommand(ExecuteShowResetPasswordView);
+            //command bus
+            ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
+
+            // Set view mặc định
+            if (user.permission == 2)
+            {
+                ExecuteShowHomeView(null);
+            }
+            else if (user.permission == 1)
             {
                 ExecuteShowHomeBusView(null);
             }

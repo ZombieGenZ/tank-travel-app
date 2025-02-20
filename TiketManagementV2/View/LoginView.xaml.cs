@@ -57,8 +57,8 @@ namespace TiketManagementV2.View
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         notificationService?.ShowNotification(
-                            "Error",
-                            "An error occurred while checking login status",
+                            "Lỗi!",
+                            "Không thể kết nối đến máy chủ",
                             NotificationType.Error
                         );
                         LoadingControl.Visibility = Visibility.Collapsed;
@@ -103,8 +103,8 @@ namespace TiketManagementV2.View
                 if (userData == null)
                 {
                     notificationService.ShowNotification(
-                        "Error",
-                        "Error connecting to server!",
+                        "Lỗi",
+                        "Không thể kết nối đến máy chủ",
                         NotificationType.Error
                     );
                     LoadingControl.Visibility = Visibility.Collapsed;
@@ -220,11 +220,11 @@ namespace TiketManagementV2.View
                 string username = txtUser.Text.Trim();
                 string password = txtPass.Password.Trim();
 
-                if (string.IsNullOrWhiteSpace(username))
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 {
                     notificationService.ShowNotification(
-                        "Input data error",
-                        "Username cannot be empty!",
+                        "Lỗi kiểu dử liệu đầu vào",
+                        "Vui lòng điền đầy đủ thông tin",
                         NotificationType.Warning
                     );
                     txtUser.Focus();
@@ -232,23 +232,11 @@ namespace TiketManagementV2.View
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(password))
-                {
-                    notificationService.ShowNotification(
-                        "Input data error",
-                        "Password cannot be empty!",
-                        NotificationType.Warning
-                    );
-                    txtPass.Focus();
-                    LoadingControl.Visibility = Visibility.Collapsed;
-                    return;
-                }
-
                 if (!ValidationHelper.IsValidEmail(username))
                 {
                     notificationService.ShowNotification(
-                        "Input data error",
-                        "Invalid email format! Please enter a valid email.",
+                        "Lỗi kiểu dử liệu đầu vào",
+                        "Địa chỉ eamil không đúng định dạn",
                         NotificationType.Warning
                     );
                     LoadingControl.Visibility = Visibility.Collapsed;
@@ -260,19 +248,19 @@ namespace TiketManagementV2.View
                 if (data == null)
                 {
                     notificationService.ShowNotification(
-                        "Error",
-                        "Error connecting to server!",
+                        "Lỗi",
+                        "Không thể kết nối đến máy chủ",
                         NotificationType.Error
                     );
                     LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
-                if (data.message == "Input data error")
+                if (data.message == "Lỗi dữ liệu đầu vào")
                 {
                     foreach (dynamic item in data.errors)
                     {
-                       if (item.Value.msg == "Please change your temporary password before logging in")
+                       if (item.Value.msg == "Vui lòng thay đổi mật khẩu tạm thời trước khi đăng nhập")
                        {
                             LoadingControl.Visibility = Visibility.Collapsed;
                             ChangePasswordView view = new ChangePasswordView(txtUser.Text, txtPass.Password);
@@ -284,7 +272,7 @@ namespace TiketManagementV2.View
                             return;
                        }
                        notificationService.ShowNotification(
-                            "Input data error",
+                            "Lỗi kiểu dử liệu đầu vào",
                             (string)item.Value.msg,
                             NotificationType.Warning
                         );
@@ -293,18 +281,7 @@ namespace TiketManagementV2.View
                     return;
                 }
 
-                if (data.message == "Login failed")
-                {
-                    notificationService.ShowNotification(
-                        "Error",
-                        data.message,
-                        NotificationType.Error
-                    );
-                    LoadingControl.Visibility = Visibility.Collapsed;
-                    return;
-                }
-
-                if (data.message == "Login successful!")
+                if (data.message == "Đăng nhập thành công!")
                 {
                     string access_token = data.authenticate.access_token;
                     string refresh_token = data.authenticate.refresh_token;
@@ -319,20 +296,9 @@ namespace TiketManagementV2.View
                     if (userData == null)
                     {
                         notificationService.ShowNotification(
-                            "Error",
-                            "Error connecting to server!",
+                            "Lỗi",
+                            "Không thể kết nối đến máy chủ",
                             NotificationType.Error
-                        );
-                        LoadingControl.Visibility = Visibility.Collapsed;
-                        return;
-                    }
-
-                    if (userData.user.penalty != null)
-                    {
-                        notificationService.ShowNotification(
-                            "Banned",
-                            $"Your account has been banned for reason {userData.user.penalty.reason} and will end on ${FormatDate(userData.user.penalty.expired_at)}",
-                            NotificationType.Warning
                         );
                         LoadingControl.Visibility = Visibility.Collapsed;
                         return;
@@ -363,7 +329,7 @@ namespace TiketManagementV2.View
                         {
                             notificationService.ShowNotification(
                                 "Error",
-                                "YOU ARE A USER? GET OUT",
+                                "Bạn không có quyền thực hiện hành động này",
                                 NotificationType.Warning
                             );
                             LoadingControl.Visibility = Visibility.Collapsed;
@@ -384,7 +350,7 @@ namespace TiketManagementV2.View
                     });
 
                     notificationService.ShowNotification(
-                        "Success",
+                        "Thành công!",
                         (string)data.message,
                         NotificationType.Success
                     );
@@ -393,8 +359,8 @@ namespace TiketManagementV2.View
             catch
             {
                 notificationService.ShowNotification(
-                    "Error",
-                    "Error connecting to server!",
+                    "Lỗi",
+                    "Không thể kết nối đến máy chủ",
                     NotificationType.Error
                 );
             }
