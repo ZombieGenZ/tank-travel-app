@@ -48,8 +48,8 @@ namespace TiketManagementV2.ViewModel
             FilteredUsers = new ObservableCollection<User>(Users.Take(_itemsToLoad));
             CanLoadMore = Users.Count > _itemsToLoad;
 
-            AcceptCommand = new RelayCommandGeneric<User>(RemoveUser);
-            RejectCommand = new RelayCommandGeneric<User>(RemoveUser);
+            AcceptCommand = new RelayCommandGeneric<User>(AcceptBus);
+            RejectCommand = new RelayCommandGeneric<User>(RejectBus);
         }
 
         public void LoadMore()
