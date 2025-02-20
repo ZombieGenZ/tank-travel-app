@@ -36,7 +36,16 @@ namespace TiketManagementV2.View
         private string session_time;
         private ApiServices _service;
         private INotificationService _notificationService;
-
+        private bool _hasItems;
+        public bool HasItems
+        {
+            get => Buss?.Any() ?? false;
+            private set
+            {
+                _hasItems = value;
+                OnPropertyChanged(nameof(HasItems));
+            }
+        }
         public ObservableCollection<Bus> buss { get; set; }
         public ObservableCollection<Bus> Buss
         {
@@ -115,6 +124,11 @@ namespace TiketManagementV2.View
             _service = new ApiServices();
             _notificationService = notificationService;
             _circularLoading = loading;
+
+            Buss.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(HasItems));
+            };
 
             session_time = DateTime.Now.ToString("o");
 
@@ -225,7 +239,7 @@ namespace TiketManagementV2.View
 
                 if (data.result.message == "Không tìm thấy kết quả phù hợp")
                 {
-                    //txtkco.Visibility = Visibility.Visible;
+                    txtkco.Visibility = Visibility.Visible;
                     return;
                 }
 
@@ -342,6 +356,11 @@ namespace TiketManagementV2.View
                         Properties.Settings.Default.Save();
 
                         Buss.Remove(bus);
+
+                        if (Buss.Count < 1)
+                        {
+                            txtkco.Visibility = Visibility.Visible;
+                        }
                     }
                     else
                     {
@@ -425,6 +444,11 @@ namespace TiketManagementV2.View
                         Properties.Settings.Default.Save();
 
                         Buss.Remove(bus);
+
+                        if (Buss.Count < 1)
+                        {
+                            txtkco.Visibility = Visibility.Visible;
+                        }
                     }
                     else
                     {
@@ -476,6 +500,23 @@ namespace TiketManagementV2.View
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async void btnReload_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _circularLoading.Visibility = Visibility.Visible;
+
+                current = 0;
+                session_time = DateTime.Now.ToString("o");
+
+                await LoadBusData();
+            }
+            finally
+            {
+                _circularLoading.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

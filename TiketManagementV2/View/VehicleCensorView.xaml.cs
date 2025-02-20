@@ -635,9 +635,21 @@ namespace TiketManagementV2.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void btnReload_Click()
+        private async void btnReload_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
 
+                current = 0;
+                session_time = DateTime.Now.ToString("o");
+
+                await LoadVehicle();
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
