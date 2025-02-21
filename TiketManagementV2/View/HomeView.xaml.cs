@@ -133,5 +133,10 @@ namespace TiketManagementV2.View
         {
             _mainViewModel.CurrentView = new VehicleCensorView(_mainViewModel._notificationService, _circularLoadingControl);
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

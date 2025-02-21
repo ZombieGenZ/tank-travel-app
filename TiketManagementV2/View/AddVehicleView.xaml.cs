@@ -13,6 +13,8 @@ using static TiketManagementV2.View.FileUploadInfo;
 using System.Collections.Generic;
 using System.Linq;
 using TiketManagementV2.Model;
+using System.Threading.Tasks;
+using TiketManagementV2.Services;
 
 namespace TiketManagementV2.View
 {
@@ -105,11 +107,13 @@ namespace TiketManagementV2.View
     }
     public class SeatTypeItem
     {
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 
     public class VehicleTypeItem
     {
+        public string Id { get; set; }
         public string Name { get; set; }
     }
     public partial class AddVehicleView : Window, INotifyPropertyChanged
@@ -122,6 +126,7 @@ namespace TiketManagementV2.View
         private string _selectedImagePath;
         private bool _hasUploadedFiles;
         private ApiServices _apiServices;
+        private INotificationService _notificationService;
 
         public ObservableCollection<string> ImageFiles { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<FileUploadInfo> UploadingFiles { get; set; } = new ObservableCollection<FileUploadInfo>();
@@ -157,9 +162,205 @@ namespace TiketManagementV2.View
 
             DataContext = this;
             ImageFiles.CollectionChanged += (s, e) => HasUploadedFiles = ImageFiles.Count > 0;
+
+            LoadData();
         }
 
-        
+        private async Task<dynamic> GetVehicleType()
+        {
+            try
+            {
+                Dictionary<string, string> statisticsHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var statisticsBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                };
+
+                dynamic data = await _apiServices.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle-type", statisticsHeader, statisticsBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task<dynamic> GetSeatype()
+        {
+            try
+            {
+                Dictionary<string, string> statisticsHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var statisticsBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                };
+
+                dynamic data = await _apiServices.PostWithHeaderAndBodyAsync("api/vehicle/get-seat-type", statisticsHeader, statisticsBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task LoadVehicleType()
+        {
+            try
+            {
+                LoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await GetVehicleType();
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Không thể kết nối đến máy chủ",
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                foreach (dynamic item in data.vehicleType)
+                {
+                    VehicleTypes.Add(new VehicleTypeItem()
+                    {
+                        Id = item.value,
+                        Name = item.display,
+                    });
+                }
+
+                cmbEditVehicle.ItemsSource = VehicleTypes;
+            }
+            finally
+            {
+                LoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async Task LoadSeaType()
+        {
+            try
+            {
+                LoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await GetSeatype();
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Không thể kết nối đến máy chủ",
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                if (data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    return;
+                }
+
+                foreach (dynamic item in data.seatType)
+                {
+                    SeatTypes.Add(new SeatTypeItem()
+                    {
+                        Id = item.value,
+                        Name = item.display,
+                    });
+                }
+
+                cmbSeatType.ItemsSource = SeatTypes;
+            }
+            finally
+            {
+                LoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async void LoadData()
+        {
+            try
+            {
+                LoadingControl.Visibility = Visibility.Visible;
+
+                Task loadVehicleTypeTask = LoadVehicleType();
+                Task loadSeaTypeTask = LoadSeaType();
+
+                await Task.WhenAll(loadVehicleTypeTask, loadSeaTypeTask);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                _notificationService.ShowNotification(
+                    "Lỗi!",
+                    "Có lỗi xảy ra khi tải dữ liệu",
+                    NotificationType.Error
+                );
+            }
+            finally
+            {
+                LoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
