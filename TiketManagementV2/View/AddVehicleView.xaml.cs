@@ -10,6 +10,9 @@ using System.IO;
 using System.Timers;
 using System.Windows.Data;
 using static TiketManagementV2.View.FileUploadInfo;
+using System.Collections.Generic;
+using System.Linq;
+using TiketManagementV2.Model;
 
 namespace TiketManagementV2.View
 {
@@ -111,12 +114,14 @@ namespace TiketManagementV2.View
     }
     public partial class AddVehicleView : Window, INotifyPropertyChanged
     {
+        private List<Tuple<string, byte[]>> fileList = new List<Tuple<string, byte[]>>();
         public ObservableCollection<SeatTypeItem> SeatTypes { get; set; }
         public ObservableCollection<VehicleTypeItem> VehicleTypes { get; set; }
 
         private bool _isDraggingOver = false;
         private string _selectedImagePath;
         private bool _hasUploadedFiles;
+        private ApiServices _apiServices;
 
         public ObservableCollection<string> ImageFiles { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<FileUploadInfo> UploadingFiles { get; set; } = new ObservableCollection<FileUploadInfo>();
@@ -143,22 +148,17 @@ namespace TiketManagementV2.View
 
         public AddVehicleView()
         {
+            _apiServices = new ApiServices();
+
             InitializeComponent();
-            SeatTypes = new ObservableCollection<SeatTypeItem>
-            {
-                new SeatTypeItem { Name = "Seating seat" },
-                new SeatTypeItem { Name = "Sleeper seat" },
-                new SeatTypeItem { Name = "Hybrid seat" }
-            };
-            VehicleTypes = new ObservableCollection<VehicleTypeItem>
-            {
-                new VehicleTypeItem {Name = "Ghế Ngồi"},
-                new VehicleTypeItem {Name = "Ghế nằm"},
-                new VehicleTypeItem {Name = "Ghế vừa ngồi vừa nằm"}
-            };
+            SeatTypes = new ObservableCollection<SeatTypeItem>();
+            VehicleTypes = new ObservableCollection<VehicleTypeItem>();
+
             DataContext = this;
             ImageFiles.CollectionChanged += (s, e) => HasUploadedFiles = ImageFiles.Count > 0;
         }
+
+        
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
@@ -191,8 +191,8 @@ namespace TiketManagementV2.View
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
-                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
-                Title = "Select Images",
+                Filter = "PNG and JPG Files|*.png;*.jpg",
+                Title = "Chọn ảnh xem trước cho phương tiện",
                 Multiselect = true
             };
 
@@ -200,8 +200,10 @@ namespace TiketManagementV2.View
             {
                 foreach (var filePath in openFileDialog.FileNames)
                 {
+                    byte[] fileData = File.ReadAllBytes(filePath);
                     string fileName = Path.GetFileName(filePath);
-                    SimulateFileUpload(fileName);
+
+                    SimulateFileUpload(fileName, fileData);
                 }
             }
         }
@@ -211,6 +213,13 @@ namespace TiketManagementV2.View
             if (sender is Button button && button.DataContext is string fileName)
             {
                 ImageFiles.Remove(fileName);
+
+                var fileToRemove = fileList.FirstOrDefault(f => f.Item1 == fileName);
+                if (fileToRemove != null)
+                {
+                    fileList.Remove(fileToRemove);
+                }
+
                 if (ImageFiles.Count > 0)
                 {
                     SelectedImagePath = ImageFiles[0];
@@ -230,6 +239,12 @@ namespace TiketManagementV2.View
                 if (fileToCancel != null)
                 {
                     fileToCancel.CancelUpload();
+
+                    var fileToRemove = fileList.FirstOrDefault(f => f.Item1 == fileName);
+                    if (fileToRemove != null)
+                    {
+                        fileList.Remove(fileToRemove);
+                    }
                 }
             }
         }
@@ -246,11 +261,11 @@ namespace TiketManagementV2.View
             return null;
         }
 
-        private void SimulateFileUpload(string fileName)
+        private void SimulateFileUpload(string fileName, byte[] fileData)
         {
             if (ImageFiles.Contains(fileName) || HasUploadingFile(fileName))
             {
-                return; // Skip duplicate files
+                return;
             }
 
             var fileUpload = new FileUploadInfo(fileName);
@@ -278,6 +293,7 @@ namespace TiketManagementV2.View
             Application.Current.Dispatcher.Invoke(() =>
             {
                 UploadingFiles.Add(fileUpload);
+                fileList.Add(new Tuple<string, byte[]>(fileName, fileData));
             });
         }
 
@@ -327,13 +343,18 @@ namespace TiketManagementV2.View
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                foreach (string file in files)
+                foreach (string filePath in files)
                 {
-                    string extension = Path.GetExtension(file).ToLower();
+                    string extension = Path.GetExtension(filePath).ToLower();
                     if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".bmp" || extension == ".gif")
                     {
-                        string fileName = Path.GetFileName(file);
-                        SimulateFileUpload(fileName);
+                        byte[] fileData = File.ReadAllBytes(filePath);
+
+                        string fileName = Path.GetFileName(filePath);
+
+                        fileList.Add(new Tuple<string, byte[]>(fileName, fileData));
+
+                        SimulateFileUpload(fileName, fileData);
                     }
                 }
             }

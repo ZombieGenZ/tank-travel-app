@@ -381,5 +381,79 @@ namespace TiketManagementV2.Model
             }
         }
         #endregion
+
+        #region Upload Methods
+
+        public async Task<TResponse> UploadSingleImageWithPutAsync<TResponse>(
+            string endpoint,
+            Dictionary<string, string> headers,
+            byte[] imageBytes)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}");
+
+                foreach (var header in headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+
+                var byteArrayContent = new ByteArrayContent(imageBytes);
+                byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Điều chỉnh content type nếu cần
+                request.Content = byteArrayContent;
+
+                var response = await _httpClient.SendAsync(request);
+                EnsureValidResponse(response);
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TResponse>(content, _serializerSettings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in PUT request for uploading a single image: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<TResponse> UploadMultipleImagesWithPostAsync<TResponse>(
+            string endpoint,
+            Dictionary<string, string> headers,
+            List<Tuple<string, byte[]>> imageFiles)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}");
+
+                foreach (var header in headers)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+
+                var formDataContent = new MultipartFormDataContent();
+
+                foreach (var imageFile in imageFiles)
+                {
+                    var fileName = imageFile.Item1;
+                    var fileBytes = imageFile.Item2;
+
+                    var byteArrayContent = new ByteArrayContent(fileBytes);
+                    byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+                    formDataContent.Add(byteArrayContent, "files", fileName);
+                }
+
+                request.Content = formDataContent;
+
+                var response = await _httpClient.SendAsync(request);
+                EnsureValidResponse(response);
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TResponse>(content, _serializerSettings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in POST request for uploading multiple images: {ex.Message}");
+                throw;
+            }
+        }
+
+        #endregion
     }
 }
