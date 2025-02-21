@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         mc:Ignorable="d"
         Title="ImageGalleryView" Height="600" Width="800"
         WindowStyle="None"
@@ -20,23 +19,19 @@
             </LinearGradientBrush>
         </Border.BorderBrush>
         <!-- Main Content -->
-        <Grid Grid.Row="1" Background="#1C0E49">
+        <Grid Background="#1C0E49">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <!-- Ảnh chính hiển thị ở giữa -->
                 <Border Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image x:Name="MainImage" Stretch="Uniform" Width="400" Height="400"/>
                 </Border>
-
                 <!-- Danh sách ảnh thu nhỏ bên phải -->
                 <Border Grid.Column="1" Padding="5">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -47,8 +42,7 @@
                                  SelectionChanged="ThumbnailList_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="5" 
-                                            BorderThickness="2"
+                                    <Border Margin="5" BorderThickness="2"
                                             BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected, Converter={StaticResource BooleanToSelectionBorderConverter}}">
                                         <Image Source="{Binding}" Width="80" Height="80" Stretch="Uniform"/>
                                     </Border>
@@ -58,24 +52,6 @@
                     </ScrollViewer>
                 </Border>
             </Grid>
-
-            <!-- Button for adding images -->
-            <Button Grid.Row="1" 
-            x:Name="ChooseImageButton"
-            Content="Chọn ảnh từ máy tính" 
-            Foreground="White"
-            Background="#3F1D83"
-            BorderThickness="0"
-            Padding="15,8"
-            Margin="10"
-            Click="ChooseImageButton_Click"
-            HorizontalAlignment="Center">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="5"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
         </Grid>
     </Border>
 </Window>
