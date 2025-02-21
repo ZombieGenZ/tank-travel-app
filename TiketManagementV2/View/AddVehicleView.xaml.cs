@@ -151,6 +151,7 @@ namespace TiketManagementV2.View
             _apiServices = new ApiServices();
 
             InitializeComponent();
+            LoadingControl.Visibility = Visibility.Collapsed;
             SeatTypes = new ObservableCollection<SeatTypeItem>();
             VehicleTypes = new ObservableCollection<VehicleTypeItem>();
 

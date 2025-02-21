@@ -22,6 +22,7 @@ namespace TiketManagementV2.View
         public EditVehicleView()
         {
             InitializeComponent();
+            LoadingControl.Visibility = Visibility.Collapsed;
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
