@@ -70,7 +70,7 @@ namespace TiketManagementV2.View
         public VehicleManagementView(INotificationService notificationService)
         {
             InitializeComponent();
-            LoadingControl.Visibility = Visibility.Collapsed;
+            //LoadingControl.Visibility = Visibility.Collapsed;
             _notificationService = notificationService;
             _managementSessionTime = DateTime.Now.ToString("o");
             _service = new ApiServices();
@@ -411,7 +411,7 @@ namespace TiketManagementV2.View
         {
             try
             {
-                LoadingControl.Visibility = Visibility.Visible;
+                //LoadingControl.Visibility = Visibility.Visible;
 
                 _managementSessionTime = DateTime.Now.ToString("o");
                 _managementCurrent = 0;
@@ -420,7 +420,7 @@ namespace TiketManagementV2.View
             }
             finally
             {
-                LoadingControl.Visibility = Visibility.Collapsed;
+                //LoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
