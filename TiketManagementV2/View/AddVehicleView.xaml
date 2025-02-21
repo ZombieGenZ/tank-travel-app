@@ -107,10 +107,16 @@
                                   ItemsSource="{Binding VehicleTypes}" Background="#353340">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}" 
-                                                  Content="{Binding Name}"/>
+                                    <TextBlock Text="{Binding Name}" 
+                                               Foreground="White"
+                                               FontSize="13"
+                                               FontFamily="Montserrat"
+                                               Padding="5"/>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                            </ComboBox.ItemContainerStyle>
                         </ComboBox>
 
                         <TextBlock Text="Seat Type"
@@ -126,10 +132,16 @@
                                   ItemsSource="{Binding SeatTypes}" Background="#353340">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}" 
-                                                  Content="{Binding Name}"/>
+                                    <TextBlock Text="{Binding Name}" 
+                                               Foreground="White"
+                                               FontSize="13"
+                                               FontFamily="Montserrat"
+                                               Padding="5"/>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                            </ComboBox.ItemContainerStyle>
                         </ComboBox>
 
                         <TextBlock Text="Rules"
