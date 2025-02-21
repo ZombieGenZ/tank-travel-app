@@ -374,7 +374,7 @@ namespace TiketManagementV2.View
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
             ResetPasswordView resetPasswordView = new ResetPasswordView();
-            resetPasswordView.Show();
+            resetPasswordView.ShowDialog();
         }
     }
 }

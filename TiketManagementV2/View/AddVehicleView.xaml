@@ -96,32 +96,41 @@
                          FontFamily="Montserrat"                             
                          Margin="0,15,0,0"/>
                         <ComboBox x:Name="cmbEditVehicle"
-                          Style="{StaticResource CustomComboBoxStyle}"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
+                                  Style="{StaticResource CustomComboBoxStyle}"
+                                  Margin="0,5,0,0"
+                                  Padding="20,0,0,0"
+                                  ItemsSource="{Binding VehicleTypes}">
                             <ComboBox.Background>
                                 <SolidColorBrush Color="#353340"/>
                             </ComboBox.Background>
-                            <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Bus</ComboBoxItem>
-                            <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Train</ComboBoxItem>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}" 
+                                                  Content="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
 
                         <TextBlock Text="Seat Type"
-                         Foreground="DarkGray"
-                         FontSize="12"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                             
-                         Margin="0,15,0,0"/>
+                                   Foreground="DarkGray"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   FontFamily="Montserrat"                             
+                                   Margin="0,15,0,0"/>
                         <ComboBox x:Name="cmbSeatType"
-                          Style="{StaticResource CustomComboBoxStyle}"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
+                                  Style="{StaticResource CustomComboBoxStyle}"
+                                  Margin="0,5,0,0"
+                                  Padding="20,0,0,0"
+                                  ItemsSource="{Binding SeatTypes}">
                             <ComboBox.Background>
                                 <SolidColorBrush Color="#353340"/>
                             </ComboBox.Background>
-                            <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Seating seat</ComboBoxItem>
-                            <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Sleeper seat</ComboBoxItem>
-                            <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}">Hybrid seat</ComboBoxItem>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <ComboBoxItem Style="{StaticResource CustomComboBoxItemStyle}" 
+                                                  Content="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
 
                         <TextBlock Text="Rules"

@@ -20,6 +20,7 @@
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="#BCBEE0"/>
         <Setter Property="Padding" Value="10,5"/>
+        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">

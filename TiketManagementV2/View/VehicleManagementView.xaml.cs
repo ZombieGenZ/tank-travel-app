@@ -98,7 +98,7 @@ namespace TiketManagementV2.View
         private void ExecuteAddCommand(object obj)
         {
             var addVehicleView = new AddVehicleView();
-            addVehicleView.Show();
+            addVehicleView.ShowDialog();
         }
 
         private async Task<dynamic> GetManagedVehicleData()
@@ -245,7 +245,7 @@ namespace TiketManagementV2.View
                 var editVehicle = new EditVehicleView();
                 // You might need to pass the vehicle data to the edit view
                 // editVehicle.DataContext = vehicle;
-                editVehicle.Show();
+                editVehicle.ShowDialog();
             }
         }
 
@@ -310,7 +310,7 @@ namespace TiketManagementV2.View
             {
                 var imageGalleryView = new ImageGalleryView();
                 LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
-                imageGalleryView.Show();
+                imageGalleryView.ShowDialog();
             }
         }
 

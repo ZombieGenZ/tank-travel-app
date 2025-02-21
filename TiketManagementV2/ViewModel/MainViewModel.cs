@@ -89,31 +89,56 @@ namespace TiketManagementV2.ViewModel
 
         private void ExecuteShowHomeView(object obj)
         {
+            if (CurrentView is HomeView)
+            {
+                return;
+            }
             CurrentView = new HomeView(_user, this, _circularLoadingControl);
         }
         private void ExecuteShowBankView (object obj)
         {
+            if (CurrentView is BankView)
+            {
+                return;
+            }
             CurrentView = new BankView();
         }
         private void ExecuteShowProfileView(object obj)
         {
+            if (CurrentView is ProfileView)
+            {
+                return;
+            }
             CurrentView = new ProfileView(_user);
         }
 
         private void ExecuteShowAccountView(object obj)
         {
+            if (CurrentView is AccountView)
+            {
+                return;
+            }
             CurrentView = new AccountView();
         }
         private void ExecuteShowTicketView(object obj)
         {
+
             CurrentView = new TicketView();
         }
         private void ExecuteShowChartView(object obj)
         {
+            if (CurrentView is ChartView)
+            {
+                return;
+            }
             CurrentView = new ChartView();
         }
         private void ExecuteShowLogView(object obj)
         {
+            if (CurrentView is LogView)
+            {
+                return;
+            }
             CurrentView = new LogView();
         }
         private void ExecuteShowNotificationView(object obj)
@@ -122,33 +147,54 @@ namespace TiketManagementV2.ViewModel
         }
         private void ExecuteShowBusCensorView(object obj)
         {
+            if (CurrentView is BusCensorView)
+            {
+                return;
+            }
             CurrentView = new BusCensorView(_notificationService, _circularLoadingControl);
         }
         private void ExecuteShowVehicleCensorView(object obj)
         {
+            if (CurrentView is VehicleCensorView)
+            {
+                return;
+            }
             CurrentView = new VehicleCensorView(_notificationService, _circularLoadingControl);
         }
         private void ExecuteShowVehicleManagementView(object obj)
         {
+            if (CurrentView is VehicleManagementView)
+            {
+                return;
+            }
             CurrentView = new VehicleManagementView(_notificationService);
         }
         private void ExecuteShowBusRouteView(object obj)
         {
+            if (CurrentView is BusRouteView)
+            {
+                return;
+            }
             CurrentView = new BusRouteView();
         }
         private void ExecuteShowMailView(object obj)
         {
+
             var mailView = new MailView();
-            mailView.Show();
+            mailView.ShowDialog();
         }
         private void ExecuteShowResetPasswordView(object obj)
         {
             var resetPasswordView = new ResetPasswordView();
-            resetPasswordView.Show();
+            resetPasswordView.ShowDialog();
         }
         //BUS VIEW
         private void ExecuteShowHomeBusView(object obj)
         {
+            if (CurrentView is HomeBusView)
+            {
+                return;
+            }
             CurrentView = new HomeBusView();
         }
         public readonly INotificationService _notificationService;

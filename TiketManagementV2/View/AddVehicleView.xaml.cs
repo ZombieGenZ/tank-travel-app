@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Timers;
 using System.Windows.Data;
+using static TiketManagementV2.View.FileUploadInfo;
 
 namespace TiketManagementV2.View
 {
@@ -99,9 +100,20 @@ namespace TiketManagementV2.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+    public class SeatTypeItem
+    {
+        public string Name { get; set; }
+    }
 
+    public class VehicleTypeItem
+    {
+        public string Name { get; set; }
+    }
     public partial class AddVehicleView : Window, INotifyPropertyChanged
     {
+        public ObservableCollection<SeatTypeItem> SeatTypes { get; set; }
+        public ObservableCollection<VehicleTypeItem> VehicleTypes { get; set; }
+
         private bool _isDraggingOver = false;
         private string _selectedImagePath;
         private bool _hasUploadedFiles;
@@ -132,6 +144,18 @@ namespace TiketManagementV2.View
         public AddVehicleView()
         {
             InitializeComponent();
+            SeatTypes = new ObservableCollection<SeatTypeItem>
+            {
+                new SeatTypeItem { Name = "Seating seat" },
+                new SeatTypeItem { Name = "Sleeper seat" },
+                new SeatTypeItem { Name = "Hybrid seat" }
+            };
+            VehicleTypes = new ObservableCollection<VehicleTypeItem>
+            {
+                new VehicleTypeItem {Name = "Ghế Ngồi"},
+                new VehicleTypeItem {Name = "Ghế nằm"},
+                new VehicleTypeItem {Name = "Ghế vừa ngồi vừa nằm"}
+            };
             DataContext = this;
             ImageFiles.CollectionChanged += (s, e) => HasUploadedFiles = ImageFiles.Count > 0;
         }

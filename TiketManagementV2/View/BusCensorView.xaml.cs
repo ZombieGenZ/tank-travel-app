@@ -511,6 +511,8 @@ namespace TiketManagementV2.View
                 current = 0;
                 session_time = DateTime.Now.ToString("o");
 
+                Buss.Clear();
+
                 await LoadBusData();
             }
             finally
