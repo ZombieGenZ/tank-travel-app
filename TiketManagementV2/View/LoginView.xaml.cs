@@ -45,6 +45,11 @@ namespace TiketManagementV2.View
 
         private void InitializeLoginCheck()
         {
+            //Properties.Settings.Default.access_token = "";
+            //Properties.Settings.Default.refresh_token = "";
+            //Properties.Settings.Default.Save();
+
+
             LoadingControl.Visibility = Visibility.Visible;
             Task.Run(async () =>
             {
