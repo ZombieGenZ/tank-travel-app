@@ -197,8 +197,8 @@ namespace TiketManagementV2.ViewModel
         }
         private void ExecuteAddCommand(object obj)
         {
-            var addVehicleView = new AddVehicleView();
-            addVehicleView.Show();
+            //var addVehicleView = new AddVehicleView(this);
+            //addVehicleView.Show();
         }
 
         private async Task<dynamic> GetManagedVehicleData()

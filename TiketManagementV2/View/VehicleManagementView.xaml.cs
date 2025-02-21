@@ -95,10 +95,11 @@ namespace TiketManagementV2.View
             LoadManagedVehicles();
         }
 
-        private void ExecuteAddCommand(object obj)
+        private async void ExecuteAddCommand(object obj)
         {
-            var addVehicleView = new AddVehicleView();
+            var addVehicleView = new AddVehicleView(this);
             addVehicleView.ShowDialog();
+            await Reload();
         }
 
         private async Task<dynamic> GetManagedVehicleData()
@@ -128,7 +129,7 @@ namespace TiketManagementV2.View
             }
         }
 
-        private async void LoadManagedVehicles()
+        public async Task LoadManagedVehicles()
         {
             try
             {
@@ -404,6 +405,32 @@ namespace TiketManagementV2.View
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async void Reload_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Loading ở đây
+
+                _managementSessionTime = DateTime.Now.ToString("o");
+                _managementCurrent = 0;
+
+                await Reload();
+            }
+            finally
+            {
+                // Loading ở đây
+            }
+        }
+
+        public async Task Reload()
+        {
+            _managementSessionTime = DateTime.Now.ToString("o");
+            _managementCurrent = 0;
+            ManagedVehicles.Clear();
+
+            await LoadManagedVehicles();
         }
     }
 

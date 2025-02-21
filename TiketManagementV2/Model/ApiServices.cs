@@ -384,10 +384,11 @@ namespace TiketManagementV2.Model
 
         #region Upload Methods
 
-        public async Task<TResponse> UploadSingleImageWithPutAsync<TResponse>(
+        public async Task<dynamic> UploadSingleImageWithPutAsync(
             string endpoint,
             Dictionary<string, string> headers,
-            byte[] imageBytes)
+            byte[] imageBytes,
+            object requestBody = null)
         {
             try
             {
@@ -398,14 +399,31 @@ namespace TiketManagementV2.Model
                     request.Headers.Add(header.Key, header.Value);
                 }
 
-                var byteArrayContent = new ByteArrayContent(imageBytes);
-                byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Điều chỉnh content type nếu cần
-                request.Content = byteArrayContent;
+                var formData = new MultipartFormDataContent();
+
+                // Add form fields from requestBody
+                if (requestBody != null)
+                {
+                    var json = JsonConvert.SerializeObject(requestBody);
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    foreach (var item in dict)
+                    {
+                        formData.Add(new StringContent(item.Value?.ToString() ?? ""), item.Key);
+                    }
+                }
+
+                // Add image file
+                var imageContent = new ByteArrayContent(imageBytes);
+                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+                formData.Add(imageContent, "image", "image.jpg"); // Changed to "image" to match multer field name
+
+                request.Content = formData;
 
                 var response = await _httpClient.SendAsync(request);
                 EnsureValidResponse(response);
+
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<TResponse>(content, _serializerSettings);
+                return JsonConvert.DeserializeObject<dynamic>(content);
             }
             catch (Exception ex)
             {
@@ -414,10 +432,11 @@ namespace TiketManagementV2.Model
             }
         }
 
-        public async Task<TResponse> UploadMultipleImagesWithPostAsync<TResponse>(
+        public async Task<dynamic> UploadMultipleImagesWithPostAsync(
             string endpoint,
             Dictionary<string, string> headers,
-            List<Tuple<string, byte[]>> imageFiles)
+            List<Tuple<string, byte[]>> imageFiles,
+            object requestBody = null)
         {
             try
             {
@@ -428,24 +447,35 @@ namespace TiketManagementV2.Model
                     request.Headers.Add(header.Key, header.Value);
                 }
 
-                var formDataContent = new MultipartFormDataContent();
+                var formData = new MultipartFormDataContent();
 
+                // Add form fields from requestBody
+                if (requestBody != null)
+                {
+                    var json = JsonConvert.SerializeObject(requestBody);
+                    var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                    foreach (var item in dict)
+                    {
+                        formData.Add(new StringContent(item.Value?.ToString() ?? ""), item.Key);
+                    }
+                }
+
+                // Add image files
                 foreach (var imageFile in imageFiles)
                 {
                     var fileName = imageFile.Item1;
                     var fileBytes = imageFile.Item2;
-
-                    var byteArrayContent = new ByteArrayContent(fileBytes);
-                    byteArrayContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-                    formDataContent.Add(byteArrayContent, "files", fileName);
+                    var imageContent = new ByteArrayContent(fileBytes);
+                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+                    formData.Add(imageContent, "preview", fileName); // Changed to "images" to match multer field name
                 }
 
-                request.Content = formDataContent;
-
+                request.Content = formData;
                 var response = await _httpClient.SendAsync(request);
                 EnsureValidResponse(response);
+
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<TResponse>(content, _serializerSettings);
+                return JsonConvert.DeserializeObject<dynamic>(content);
             }
             catch (Exception ex)
             {

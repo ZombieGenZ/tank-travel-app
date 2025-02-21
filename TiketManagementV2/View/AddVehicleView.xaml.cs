@@ -107,14 +107,22 @@ namespace TiketManagementV2.View
     }
     public class SeatTypeItem
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class VehicleTypeItem
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
     public partial class AddVehicleView : Window, INotifyPropertyChanged
     {
@@ -151,11 +159,13 @@ namespace TiketManagementV2.View
             }
         }
 
-        public AddVehicleView()
+        private VehicleManagementView _wd;
+        public AddVehicleView(VehicleManagementView wd)
         {
-            _apiServices = new ApiServices();
-
             InitializeComponent();
+            _wd = wd;
+            _apiServices = new ApiServices();
+            _notificationService = new NotificationService();
             LoadingControl.Visibility = Visibility.Collapsed;
             SeatTypes = new ObservableCollection<SeatTypeItem>();
             VehicleTypes = new ObservableCollection<VehicleTypeItem>();
@@ -266,7 +276,7 @@ namespace TiketManagementV2.View
                     });
                 }
 
-                cmbEditVehicle.ItemsSource = VehicleTypes;
+                cmbVehicle.ItemsSource = VehicleTypes;
             }
             finally
             {
@@ -347,7 +357,6 @@ namespace TiketManagementV2.View
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 _notificationService.ShowNotification(
                     "Lỗi!",
                     "Có lỗi xảy ra khi tải dữ liệu",
@@ -375,17 +384,161 @@ namespace TiketManagementV2.View
             }
         }
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (cmbEditVehicle.SelectedItem is ComboBoxItem comboBoxItem)
+            try
             {
-                string vehicleType = comboBoxItem.Content.ToString();
-                // Process the form submission
-                MessageBox.Show($"Vehicle added successfully: {vehicleType} with {ImageFiles.Count} images");
+                LoadingControl.Visibility = Visibility.Visible;
+
+                VehicleTypeItem type = (VehicleTypeItem)cmbVehicle.SelectedItem;
+                SeatTypeItem seattype = (SeatTypeItem)cmbSeatType.SelectedItem;
+                string seatt = txtSeats.Text;
+                int seat;
+                string rule = txtRules.Text.Trim();
+                string ame = txtAmenities.Text.Trim();
+                string lic = txtLicensePlate.Text.Trim();
+
+                if (type == null || seattype == null || !int.TryParse(seatt, out seat) || string.IsNullOrWhiteSpace(rule) ||
+                    string.IsNullOrWhiteSpace(ame) || string.IsNullOrWhiteSpace(lic))
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Vui lòng điền đẩy đủ thông tin",
+                        NotificationType.Warning
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                dynamic data = await CreateVehicle(type.Id, seattype.Id, seat, rule, ame, lic);
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Không thể kết nối đến máy chủ",
+                        NotificationType.Warning
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi kiểu dử liệu đầu vào",
+                            (string)item.Value.msg,
+                            NotificationType.Warning
+                        );
+                    }
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Tạo thông tin phương tiện thành công!")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Thành công",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    Close();
+                }
+                else
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lõi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Please select a vehicle type");
+                _notificationService.ShowNotification(
+                    "Lỗi!",
+                    ex.Message,
+                    NotificationType.Error
+                );
+                LoadingControl.Visibility = Visibility.Collapsed;
+                throw;
+            }
+            finally
+            {
+                LoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async Task<dynamic> CreateVehicle(int vehicle_type, int seat_type, int seats, string rules, string amenities, string license_plate)
+        {
+            try
+            {
+                Dictionary<string, string> statisticsHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var statisticsBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    vehicle_type,
+                    seat_type,
+                    seats,
+                    rules,
+                    amenities,
+                    license_plate
+                };
+
+                dynamic data = await _apiServices.UploadMultipleImagesWithPostAsync("api/vehicle/create", statisticsHeader, fileList, statisticsBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
             }
         }
 
@@ -393,8 +546,8 @@ namespace TiketManagementV2.View
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
-                Filter = "PNG and JPG Files|*.png;*.jpg",
-                Title = "Chọn ảnh xem trước cho phương tiện",
+                Filter = "Image Files|*.jpg;*.jpeg;*.png",
+                Title = "Select Vehicle Images",
                 Multiselect = true
             };
 
@@ -402,10 +555,32 @@ namespace TiketManagementV2.View
             {
                 foreach (var filePath in openFileDialog.FileNames)
                 {
-                    byte[] fileData = File.ReadAllBytes(filePath);
-                    string fileName = Path.GetFileName(filePath);
+                    try
+                    {
+                        byte[] fileData = File.ReadAllBytes(filePath);
+                        string fileName = Path.GetFileName(filePath);
+                        string extension = Path.GetExtension(filePath).ToLower();
 
-                    SimulateFileUpload(fileName, fileData);
+                        // Validate file type
+                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                        {
+                            MessageBox.Show("Only JPG, JPEG and PNG files are allowed.");
+                            continue;
+                        }
+
+                        // Validate file size (e.g., max 5MB)
+                        if (fileData.Length > 5 * 1024 * 1024)
+                        {
+                            MessageBox.Show($"File {fileName} is too large. Maximum size is 5MB.");
+                            continue;
+                        }
+
+                        SimulateFileUpload(fileName, fileData);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error reading file: {ex.Message}");
+                    }
                 }
             }
         }
@@ -414,22 +589,24 @@ namespace TiketManagementV2.View
         {
             if (sender is Button button && button.DataContext is string fileName)
             {
-                ImageFiles.Remove(fileName);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ImageFiles.Remove(fileName);
+                    var fileToRemove = fileList.FirstOrDefault(f => f.Item1 == fileName);
+                    if (fileToRemove != null)
+                    {
+                        fileList.Remove(fileToRemove);
+                    }
 
-                var fileToRemove = fileList.FirstOrDefault(f => f.Item1 == fileName);
-                if (fileToRemove != null)
-                {
-                    fileList.Remove(fileToRemove);
-                }
-
-                if (ImageFiles.Count > 0)
-                {
-                    SelectedImagePath = ImageFiles[0];
-                }
-                else
-                {
-                    SelectedImagePath = string.Empty;
-                }
+                    if (ImageFiles.Count > 0)
+                    {
+                        SelectedImagePath = ImageFiles[0];
+                    }
+                    else
+                    {
+                        SelectedImagePath = string.Empty;
+                    }
+                });
             }
         }
 
@@ -437,17 +614,20 @@ namespace TiketManagementV2.View
         {
             if (sender is Button button && button.CommandParameter is string fileName)
             {
-                var fileToCancel = GetUploadingFileByName(fileName);
-                if (fileToCancel != null)
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    fileToCancel.CancelUpload();
-
-                    var fileToRemove = fileList.FirstOrDefault(f => f.Item1 == fileName);
-                    if (fileToRemove != null)
+                    var fileToCancel = GetUploadingFileByName(fileName);
+                    if (fileToCancel != null)
                     {
-                        fileList.Remove(fileToRemove);
+                        fileToCancel.CancelUpload();
+
+                        var fileToRemove = fileList.FirstOrDefault(f => f.Item1 == fileName);
+                        if (fileToRemove != null)
+                        {
+                            fileList.Remove(fileToRemove);
+                        }
                     }
-                }
+                });
             }
         }
 
