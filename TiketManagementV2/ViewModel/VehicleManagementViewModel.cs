@@ -340,8 +340,8 @@ namespace TiketManagementV2.ViewModel
 
         private void EditVehicle(object obj)
         {
-            var editVehicle = new EditVehicleView();
-            editVehicle.Show();
+            //var editVehicle = new EditVehicleView();
+            //editVehicle.Show();
         }
 
         private async void DeleteVehicle(object obj)

@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TiketManagementV2.Commands;
+using TiketManagementV2.Controls;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.View;
@@ -66,10 +67,11 @@ namespace TiketManagementV2.View
         public ICommand LoadMoreCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
         public ICommand ImageCommand { get; private set; }
-
-        public VehicleManagementView(INotificationService notificationService)
+        private CircularLoadingControl _circularLoadingControl;
+        public VehicleManagementView(INotificationService notificationService, CircularLoadingControl loading)
         {
             InitializeComponent();
+            _circularLoadingControl = loading;
             //LoadingControl.Visibility = Visibility.Collapsed;
             _notificationService = notificationService;
             _managementSessionTime = DateTime.Now.ToString("o");
@@ -133,12 +135,16 @@ namespace TiketManagementV2.View
         {
             try
             {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
                 dynamic data = await GetManagedVehicleData();
 
                 if (data == null || data.message == "You must log in to use this function" ||
-                    data.message == "Invalid refresh token" || data.message == "You do not have permission to perform this action")
+                    data.message == "Invalid refresh token" ||
+                    data.message == "You do not have permission to perform this action")
                 {
-                    _notificationService.ShowNotification("Error", data?.message ?? "Error loading data", NotificationType.Error);
+                    _notificationService.ShowNotification("Error", data?.message ?? "Error loading data",
+                        NotificationType.Error);
                     return;
                 }
 
@@ -150,8 +156,10 @@ namespace TiketManagementV2.View
                 {
                     foreach (dynamic item in data.errors)
                     {
-                        _notificationService.ShowNotification("Input data error", (string)item.Value.msg, NotificationType.Warning);
+                        _notificationService.ShowNotification("Input data error", (string)item.Value.msg,
+                            NotificationType.Warning);
                     }
+
                     return;
                 }
 
@@ -175,11 +183,16 @@ namespace TiketManagementV2.View
                         VehicleType = (string)item.vehicle_type
                     });
                 }
+
                 FilterManagedVehicles();
             }
             catch (Exception ex)
             {
                 _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -239,14 +252,15 @@ namespace TiketManagementV2.View
             }
         }
 
-        private void EditVehicle(object obj)
+        private async void EditVehicle(object obj)
         {
             if (obj is Vehicle vehicle)
             {
-                var editVehicle = new EditVehicleView();
-                // You might need to pass the vehicle data to the edit view
-                // editVehicle.DataContext = vehicle;
+                var editVehicle = new EditVehicleView(vehicle);
                 editVehicle.ShowDialog();
+
+                await Reload();
+
             }
         }
 
@@ -254,54 +268,141 @@ namespace TiketManagementV2.View
         {
             if (obj is Vehicle vehicle)
             {
-                await ProcessManagedVehicleDecision(vehicle, false);
+                await LDeleteVehicle(vehicle);
+                Reload();
             }
         }
 
-        private async Task ProcessManagedVehicleDecision(Vehicle vehicle, bool isAccepted)
+        private async Task<dynamic> DeleteVehicle(string id)
         {
-            dynamic data = await CensorManagedVehicleRegistration(vehicle.Id, isAccepted);
-
-            if (data == null)
+            try
             {
-                _notificationService.ShowNotification("Error", "Failed to process vehicle", NotificationType.Error);
-                return;
+                Dictionary<string, string> vehicleHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+
+                var vehicleBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    vehicle_id = id,
+                };
+
+                dynamic data = await _service.DeleteWithHeaderAndBodyAsync("api/vehicle/delete", vehicleHeader, vehicleBody);
+
+                return data;
             }
-
-            if (data.message == "You must log in to use this function" ||
-                data.message == "Invalid refresh token" ||
-                data.message == "You do not have permission to perform this action")
+            catch (Exception ex)
             {
-                _notificationService.ShowNotification("Error", data.message, NotificationType.Error);
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
 
-                if (data.authenticate != null)
+        private async Task LDeleteVehicle(Vehicle vehicle)
+        {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await DeleteVehicle(vehicle.Id);
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Không thể kết nối đến máy chủ",
+                        NotificationType.Warning
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn không có quyền thực hiện hành động này")
                 {
                     Properties.Settings.Default.access_token = data.authenticate.access_token;
                     Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
                     Properties.Settings.Default.Save();
-                }
-                return;
-            }
 
-            if (data.message == "Input data error")
-            {
-                foreach (dynamic items in data.errors)
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
                 {
-                    _notificationService.ShowNotification("Error", (string)items.Value.msg, NotificationType.Warning);
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi kiểu dử liệu đầu vào",
+                            (string)item.Value.msg,
+                            NotificationType.Warning
+                        );
+                    }
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Xóa thông tin phương tiện thành công!")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Thành công",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lõi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                 }
             }
-            else if (data.message == "Vehicle approved successfully!")
+            catch (Exception ex)
             {
-                _notificationService.ShowNotification("Successfully", data.message, NotificationType.Success);
-                ManagedVehicles.Remove(vehicle);
-                FilterManagedVehicles();
+                _notificationService.ShowNotification(
+                    "Lỗi!",
+                    ex.Message,
+                    NotificationType.Error
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                throw;
             }
-
-            if (data.authenticate != null)
+            finally
             {
-                Properties.Settings.Default.access_token = data.authenticate.access_token;
-                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
-                Properties.Settings.Default.Save();
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -469,10 +570,10 @@ namespace TiketManagementV2.View
         {
             get
             {
-                if (vehicleType == "0") return "Bus";
-                if (vehicleType == "1") return "Train";
-                if (vehicleType == "2") return "Plane";
-                return "Unknown";
+                if (vehicleType == "0") return "Xe khách";
+                if (vehicleType == "1") return "Tàu hỏa";
+                if (vehicleType == "2") return "Máy bay";
+                return "Không xác định";
             }
             set
             {
@@ -495,10 +596,10 @@ namespace TiketManagementV2.View
         {
             get
             {
-                if (seatType == "0") return "Seating seat";
-                if (seatType == "1") return "Sleeper seat";
-                if (seatType == "2") return "Hybrid seat";
-                return "Unknown";
+                if (seatType == "0") return "Ghế ngồi";
+                if (seatType == "1") return "Giường nằm";
+                if (seatType == "2") return "Ghế vừa nằm vừa ngồi";
+                return "Không xác định";
             }
             set
             {

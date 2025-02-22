@@ -94,12 +94,24 @@
                  FontWeight="Medium"
                  FontFamily="Montserrat"                             
                  Margin="0,15,0,0"/>
-                    <ComboBox x:Name="cmbEditVehicle"
-                  Style="{StaticResource CustomComboBoxStyle}"
-                Margin="0,5,0,0"
-                Padding="20,0,0,0" Background="#353340">
-                        <ComboBoxItem Content="Bus"/>
-                        <ComboBoxItem Content="Train"/>
+                    <ComboBox x:Name="cmbVehicle"
+                              Style="{StaticResource CustomComboBoxStyle}"
+                              Margin="0,5,0,0"
+                              Padding="20,0,0,0"
+                              ItemsSource="{Binding VehicleTypes}"
+                              Background="#353340">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                           Foreground="White"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
                     </ComboBox>
 
                     <TextBlock Text="Seat Type"
@@ -109,14 +121,25 @@
                  FontFamily="Montserrat"                             
                  Margin="0,15,0,0"/>
                     <ComboBox x:Name="cmbSeatType"
-                  Style="{StaticResource CustomComboBoxStyle}"
-                Margin="0,5,0,0"
-                Padding="20,0,0,0" Background="#353340">
-                        <ComboBoxItem Content="Bus"/>
-                        <ComboBoxItem Content="Train"/>
+                               Style="{StaticResource CustomComboBoxStyle}"
+                               Margin="0,5,0,0"
+                               Padding="20,0,0,0"
+                               ItemsSource="{Binding SeatTypes}" Background="#353340">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                           Foreground="White"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
                     </ComboBox>
 
-                    <TextBlock Text="Seats"
+                        <TextBlock Text="Seats"
                                    Foreground="DarkGray"
                                    FontSize="12"
                                    FontWeight="Medium"
@@ -194,7 +217,7 @@
                  FontWeight="Medium"
                  FontFamily="Montserrat"                             
                  Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditArrivalTime"
+                    <TextBox x:Name="txtLic"
                 FontSize="13"
                 FontWeight="Medium"
                 FontFamily="Montserrat"                            
@@ -238,7 +261,8 @@
                 <Controls:CircularLoadingControl x:Name="LoadingControl"
                                                  HorizontalAlignment="Center" 
                                                  Height="500" Width="500" 
-                                                 VerticalAlignment="Top" Grid.RowSpan="2"/>
+                                                 VerticalAlignment="Top" Grid.RowSpan="2"
+                                                 Visibility="Collapsed"/>
             </Grid>
         </Border>
     </Border>
