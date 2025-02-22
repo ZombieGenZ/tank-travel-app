@@ -58,7 +58,7 @@
                                  Command="{Binding ShowHomeViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Trang chủ" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -66,7 +66,7 @@
                                  Command="{Binding ShowBankViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="Bank" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Bank" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Ngân hàng" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -74,7 +74,7 @@
                                  Command="{Binding ShowAccountViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="UserGroup" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Account Management" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Quản lý tài khoản" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -82,7 +82,7 @@
                                  Command="{Binding ShowBusRouteViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="Route" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Bus Routes" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Quản lý tuyến" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -90,7 +90,7 @@
                                  Command="{Binding ShowBusCensorViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="BusinessTime" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Business censor" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Duyệt doanh nghiệp" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -98,7 +98,7 @@
                                  Command="{Binding ShowVehicleCensorViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="BusAlt" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Vehicle censor" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Duyệt phương tiện" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -106,7 +106,7 @@
                                  Command="{Binding ShowVehicleManagementViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="TicketAlt" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="vehicle Management" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Quản lý phương tiện" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
@@ -114,7 +114,7 @@
                                  Command="{Binding ShowChartViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="ChartLine" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Chart" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Thống kê" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
