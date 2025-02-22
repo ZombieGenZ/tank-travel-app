@@ -190,6 +190,7 @@
 
                 <!-- TextBlock Load More -->
                 <TextBlock Text="Load More"
+                           x:Name="LoadMore"
                            FontSize="15"
                            FontFamily="Montserrat"
                            Cursor="Hand"
@@ -197,7 +198,7 @@
                            VerticalAlignment="Bottom"
                            Style="{StaticResource TextBlockLoadMore}"
                            MouseDown="TextBlock_MouseDown"
-                           Visibility="{Binding CanLoadMore, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                           Visibility="{Binding ManagementCanLoadMore, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             </Grid>
         </Border>

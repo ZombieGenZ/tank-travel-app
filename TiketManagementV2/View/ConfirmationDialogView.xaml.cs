@@ -19,6 +19,7 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class ConfirmationDialogView : Window
     {
+        public event Action<bool> OnDialogClosed;
         public ConfirmationDialogView()
         {
             InitializeComponent();
@@ -31,7 +32,8 @@ namespace TiketManagementV2.View
 
         private void btnAccept_Click(object sender, RoutedEventArgs e)
         {
-
+            OnDialogClosed?.Invoke(true);
+            Close();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -44,6 +46,7 @@ namespace TiketManagementV2.View
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
+            OnDialogClosed?.Invoke(false);
             this.Close();
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ControlzEx.Standard;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -139,9 +140,9 @@ namespace TiketManagementV2.View
 
                 dynamic data = await GetManagedVehicleData();
 
-                if (data == null || data.message == "You must log in to use this function" ||
-                    data.message == "Invalid refresh token" ||
-                    data.message == "You do not have permission to perform this action")
+                if (data == null || data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ" ||
+                    data.message == "Bạn không có quyền thực hiện hành động này")
                 {
                     _notificationService.ShowNotification("Error", data?.message ?? "Error loading data",
                         NotificationType.Error);
@@ -152,20 +153,26 @@ namespace TiketManagementV2.View
                 Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
                 Properties.Settings.Default.Save();
 
-                if (data.message == "Input data error")
+                if (data.message == "Lỗi dữ liệu đầu vào")
                 {
                     foreach (dynamic item in data.errors)
                     {
-                        _notificationService.ShowNotification("Input data error", (string)item.Value.msg,
+                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
                             NotificationType.Warning);
                     }
 
                     return;
                 }
 
-                if (data.message == "Failed to get vehicle information")
+                if (data.message == "Lấy thông tin phương tiện thất bại")
                 {
                     _notificationService.ShowNotification("Error", (string)data.message, NotificationType.Warning);
+                    return;
+                }
+
+                if (data.result.message == "Không tìm thấy kết quả phù hợp")
+                {
+                    // hiển thị không tìm thấy kết quả phù hợp
                     return;
                 }
 
@@ -182,6 +189,17 @@ namespace TiketManagementV2.View
                         Seats = (int)item.seats,
                         VehicleType = (string)item.vehicle_type
                     });
+                }
+
+                _managementCurrent = data.result.current;
+
+                if ((bool)data.result.continued)
+                {
+                    LoadMore.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LoadMore.Visibility = Visibility.Collapsed;
                 }
 
                 FilterManagedVehicles();
@@ -214,18 +232,9 @@ namespace TiketManagementV2.View
             ManagementCanLoadMore = ManagedFilteredVehicles.Count < ManagedVehicles.Count;
         }
 
-        public void LoadMoreManagedVehicles()
+        public async void LoadMoreManagedVehicles()
         {
-            int currentCount = ManagedFilteredVehicles.Count;
-            if (currentCount < ManagedVehicles.Count)
-            {
-                var moreVehicles = ManagedVehicles.Skip(currentCount).Take(_managementItemsToLoad).ToList();
-                foreach (var vehicle in moreVehicles)
-                {
-                    ManagedFilteredVehicles.Add(vehicle);
-                }
-            }
-            ManagementCanLoadMore = ManagedFilteredVehicles.Count < ManagedVehicles.Count;
+            await LoadManagedVehicles();
         }
 
         private async Task<dynamic> CensorManagedVehicleRegistration(string id, bool decision)
@@ -268,8 +277,16 @@ namespace TiketManagementV2.View
         {
             if (obj is Vehicle vehicle)
             {
-                await LDeleteVehicle(vehicle);
-                Reload();
+                var dialog = new ConfirmationDialogView();
+                dialog.OnDialogClosed += async (isDelete) =>
+                {
+                    if (isDelete)
+                    {
+                        await LDeleteVehicle(vehicle);
+                        Reload();
+                    }
+                };
+                dialog.ShowDialog();
             }
         }
 
@@ -410,40 +427,40 @@ namespace TiketManagementV2.View
         {
             if (obj is Vehicle vehicle)
             {
-                var imageGalleryView = new ImageGalleryView();
-                LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
+                var imageGalleryView = new ImageGalleryView(vehicle);
+                //LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
                 imageGalleryView.ShowDialog();
             }
         }
 
-        private async void LoadVehicleImagesIntoGallery(string vehicleId, ImageGalleryView galleryView)
-        {
-            try
-            {
-                var images = await GetVehicleImagesAsync(vehicleId);
+        //private async void LoadVehicleImagesIntoGallery(string vehicleId, ImageGalleryView galleryView)
+        //{
+        //    try
+        //    {
+        //        var images = await GetVehicleImagesAsync(vehicleId);
 
-                if (images != null && images.Count > 0)
-                {
-                    foreach (string imagePath in images)
-                    {
-                        galleryView.ImagePaths.Add(imagePath);
-                    }
+        //        if (images != null && images.Count > 0)
+        //        {
+        //            foreach (string imagePath in images)
+        //            {
+        //                galleryView.ImagePaths.Add(imagePath);
+        //            }
 
-                    if (galleryView.ImagePaths.Count > 0)
-                    {
-                        galleryView.ThumbnailList.SelectedIndex = 0;
-                    }
-                }
-                else
-                {
-                    _notificationService.ShowNotification("Warning", "No images found for this vehicle", NotificationType.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                _notificationService.ShowNotification("Error", "Failed to load vehicle images: " + ex.Message, NotificationType.Error);
-            }
-        }
+        //            if (galleryView.ImagePaths.Count > 0)
+        //            {
+        //                galleryView.ThumbnailList.SelectedIndex = 0;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _notificationService.ShowNotification("Warning", "No images found for this vehicle", NotificationType.Warning);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _notificationService.ShowNotification("Error", "Failed to load vehicle images: " + ex.Message, NotificationType.Error);
+        //    }
+        //}
 
         private async Task<List<string>> GetVehicleImagesAsync(string vehicleId)
         {
@@ -526,13 +543,138 @@ namespace TiketManagementV2.View
         }
 
         public async Task Reload()
-        {
+        {7
             _managementSessionTime = DateTime.Now.ToString("o");
             _managementCurrent = 0;
             ManagedVehicles.Clear();
 
             await LoadManagedVehicles();
         }
+
+        //private async void Search_OnClick(object sender, RoutedEventArgs e)
+        //{
+        //    if (!string.IsNullOrWhiteSpace(SearchTextBox.Text))
+        //    {
+        //        await FindManagedVehicles(SearchTextBox.Text);
+        //    }
+        //    else
+        //    {
+        //        await LoadManagedVehicles();
+        //    }
+        //}
+
+        //private async Task<dynamic> FidnManagedVehicleData(string keyworld)
+        //{
+        //    try
+        //    {
+        //        _managementSessionTime = DateTime.Now.ToString("o");
+        //        _managementCurrent = 0;
+
+        //        string access_token = Properties.Settings.Default.access_token;
+        //        string refresh_token = Properties.Settings.Default.refresh_token;
+
+        //        Dictionary<string, string> getVehicleDataHeader = new Dictionary<string, string>()
+        //        {
+        //            { "Authorization", $"Bearer {access_token}" }
+        //        };
+        //        var getVehicleDataBody = new
+        //        {
+        //            refresh_token,
+        //            session_time = _managementSessionTime,
+        //            current = _managementCurrent,
+        //            keywords = keyworld
+        //        };
+
+        //        return await _service.PostWithHeaderAndBodyAsync("api/vehicle/find-vehicle", getVehicleDataHeader, getVehicleDataBody);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex);
+        //        return null;
+        //    }
+        //}
+
+        //public async Task FindManagedVehicles(string keyword)
+        //{
+        //    try
+        //    {
+        //        _circularLoadingControl.Visibility = Visibility.Visible;
+
+        //        dynamic data = await FidnManagedVehicleData(keyword);
+
+        //        if (data == null || data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+        //            data.message == "Refresh token không hợp lệ" ||
+        //            data.message == "Bạn không có quyền thực hiện hành động này")
+        //        {
+        //            _notificationService.ShowNotification("Lỗi", (string)data.message,
+        //                NotificationType.Error);
+        //            return;
+        //        }
+
+        //        Properties.Settings.Default.access_token = data.authenticate.access_token;
+        //        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+        //        Properties.Settings.Default.Save();
+
+        //        if (data.message == "Lỗi dữ liệu đầu vào")
+        //        {
+        //            foreach (dynamic item in data.errors)
+        //            {
+        //                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+        //                    NotificationType.Warning);
+        //            }
+
+        //            return;
+        //        }
+
+        //        if (data.message == "Tìm kiếm thông tin phương tiện thất bại")
+        //        {
+        //            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Warning);
+        //            return;
+        //        }
+
+        //        if (data.result.message == "Không tìm thấy kết quả phù hợp")
+        //        {
+        //            // hiển thị không tìm thấy kết quả nào phù hợp
+        //            return;
+        //        }
+
+        //        foreach (dynamic item in data.result.vehicle)
+        //        {
+        //            ManagedVehicles.Add(new Vehicle()
+        //            {
+        //                Id = item._id,
+        //                User = item.user.display_name,
+        //                Amenities = item.amenities,
+        //                LicensePlate = item.license_plate,
+        //                Rules = item.rules,
+        //                SeatType = (string)item.seat_type,
+        //                Seats = (int)item.seats,
+        //                VehicleType = (string)item.vehicle_type
+        //            });
+        //        }
+
+        //        _managementCurrent = data.result.current;
+
+        //        if ((bool)data.result.continued)
+        //        {
+        //            LoadMore.Visibility = Visibility.Visible;
+        //        }
+        //        else
+        //        {
+        //            LoadMore.Visibility = Visibility.Collapsed;
+        //        }
+
+        //        FilterManagedVehicles();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
+        //    }
+        //    finally
+        //    {
+        //        _circularLoadingControl.Visibility = Visibility.Collapsed;
+        //    }
+        //}
     }
 
     public class Vehicle : INotifyPropertyChanged

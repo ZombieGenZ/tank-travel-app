@@ -11,7 +11,7 @@ namespace TiketManagementV2.View
     {
         public ObservableCollection<string> ImagePaths { get; set; }
 
-        public ImageGalleryView()
+        public ImageGalleryView(Vehicle vehicle)
         {
             InitializeComponent();
             DataContext = this;
