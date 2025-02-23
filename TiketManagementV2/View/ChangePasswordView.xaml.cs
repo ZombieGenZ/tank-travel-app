@@ -81,8 +81,8 @@ namespace TiketManagementV2.View
             if (string.IsNullOrEmpty(txtNewPassword.Password))
             {
                 notificationService.ShowNotification(
-                    "Warning",
-                    "Please enter your new password!",
+                    "Lỗi",
+                    "Vui lòng nhập mật khẩu mới!",
                     NotificationType.Warning
                 );
                 txtNewPassword.Focus();
@@ -94,7 +94,7 @@ namespace TiketManagementV2.View
             {
                 notificationService.ShowNotification(
                     "Warning",
-                    "Please confirm your new password!",
+                    "Vui lòng xác nhận lại mật khẩu!",
                     NotificationType.Warning
                 );
                 txtConfirmPassword.Focus();
@@ -105,8 +105,8 @@ namespace TiketManagementV2.View
             if (txtNewPassword.Password != txtConfirmPassword.Password)
             {
                 notificationService.ShowNotification(
-                    "Warning",
-                    "New password and confirm password do not match!",
+                    "Lỗi",
+                    "Mật khẩu mới và mật khẩu xác nhận không khớp!",
                     NotificationType.Warning
                 );
                 txtConfirmPassword.Password = "";
@@ -120,20 +120,20 @@ namespace TiketManagementV2.View
             if (data == null)
             {
                 notificationService.ShowNotification(
-                    "Error",
-                    "Error connecting to server!",
+                    "Lỗi",
+                    "Lỗi Kết nối máy chủ!",
                     NotificationType.Error
                 );
                 LoadingControl.Visibility = Visibility.Hidden;
                 return;
             }
 
-            if (data.message == "Input data error")
+            if (data.message == "Lỗi dữ liệu đầu vào")
             {
                 foreach (dynamic item in data.errors)
                 {
                     notificationService.ShowNotification(
-                         "Warning",
+                         "Lỗi",
                          (string)item.Value.msg,
                          NotificationType.Warning
                      );
@@ -142,10 +142,10 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            if (data.message == "Temporary password changed successfully! Please log in again")
+            if (data.message == "Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại")
             {
                 notificationService.ShowNotification(
-                    "Success",
+                    "Thành công",
                     (string)data.message,
                     NotificationType.Success
                 );
