@@ -427,7 +427,7 @@ namespace TiketManagementV2.View
         {
             if (obj is Vehicle vehicle)
             {
-                var imageGalleryView = new ImageGalleryView(vehicle);
+                var imageGalleryView = new ImageGalleryView(vehicle.Id);
                 //LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
                 imageGalleryView.ShowDialog();
             }

@@ -44,8 +44,31 @@ namespace TiketManagementV2.View
             }
         }
 
+        public class StartPointItem
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
+        public class EndPointItem
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
         public ObservableCollection<SeatTypeItem> SeatTypes { get; set; }
         public ObservableCollection<PlateItem> PlateItems { get; set; }
+        public ObservableCollection<StartPointItem> StartPointItems { get; set; }
+        public ObservableCollection<EndPointItem> EndPointItems { get; set; }
+
 
         public AddBusRouteView()
         {
@@ -56,6 +79,8 @@ namespace TiketManagementV2.View
 
             SeatTypes = new ObservableCollection<SeatTypeItem>();
             PlateItems = new ObservableCollection<PlateItem>();
+            StartPointItems = new ObservableCollection<StartPointItem>();
+            EndPointItems = new ObservableCollection<EndPointItem>();
 
             var selectedDate = DateTime.Now;
 
@@ -83,11 +108,29 @@ namespace TiketManagementV2.View
             txtSelectedDateTime.Text = combinedDateTime.ToString("yyyy-MM-dd HH:mm");
         }
 
+        private void BtnSelectArrivalDateTime_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedDate = ArrivalCalendar.SelectedDate ?? DateTime.Now;
+
+            var time = ArrivalClock.Time;
+
+            var combinedDateTime = new DateTime(
+                selectedDate.Year,
+                selectedDate.Month,
+                selectedDate.Day,
+                time.Hour,
+                time.Minute,
+                0
+            );
+
+            txtSelectedArrivalDateTime.Text = combinedDateTime.ToString("yyyy-MM-dd HH:mm");
+        }
+
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             string vehicle = cmbVehicle.Text.Trim();
-            string startPoint = txtStartPoint.Text.Trim();
-            string endPoint = txtEndPoint.Text.Trim();
+            //string startPoint = txtStartPoint.Text.Trim();
+            //string endPoint = txtEndPoint.Text.Trim();
             //string departureTimeInput = txtDepartureTime.Text.Trim();
             //string arrivalTimeInput = txtArrivalTime.Text.Trim();
             string priceInput = txtPrice.Text.Trim();
@@ -103,24 +146,24 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(startPoint))
-            {
-                _notificationService.ShowNotification(
-                    "Validation Error",
-                    "Start point cannot be empty",
-                    NotificationType.Error
-                );
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(endPoint))
-            {
-                _notificationService.ShowNotification(
-                    "Validation Error",
-                    "End point cannot be empty",
-                    NotificationType.Error
-                );
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(startPoint))
+            //{
+            //    _notificationService.ShowNotification(
+            //        "Validation Error",
+            //        "Start point cannot be empty",
+            //        NotificationType.Error
+            //    );
+            //    return;
+            //}
+            //if (string.IsNullOrWhiteSpace(endPoint))
+            //{
+            //    _notificationService.ShowNotification(
+            //        "Validation Error",
+            //        "End point cannot be empty",
+            //        NotificationType.Error
+            //    );
+            //    return;
+            //}
 
             //if (!IsValidDateTime(departureTimeInput, out string formattedDepartureTime))
             //{
@@ -195,25 +238,6 @@ namespace TiketManagementV2.View
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-
-        private void BtnSelectArrivalDateTime_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedDate = ArrivalCalendar.SelectedDate ?? DateTime.Now;
-
-            var time = ArrivalClock.Time;
-
-            var combinedDateTime = new DateTime(
-                selectedDate.Year,
-                selectedDate.Month,
-                selectedDate.Day,
-                time.Hour,
-                time.Minute,
-                0  
-            );
-
-            txtSelectedArrivalDateTime.Text = combinedDateTime.ToString("yyyy-MM-dd HH:mm");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

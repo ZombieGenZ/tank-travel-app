@@ -146,23 +146,25 @@
                                FontWeight="Medium"
                                FontFamily="Montserrat"                             
                                Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtStartPoint"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                            
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalContentAlignment="Center"
-                             Margin="0,5,0,0"
-                             Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                                        AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
+                    <ComboBox x:Name="cmbStartPoint"
+                                  Style="{StaticResource CustomComboBoxStyle}"
+                                  Margin="0,5,0,0"
+                                  Padding="20,0,0,0"
+                                  ItemsSource="{Binding PlateItems}"
+                                  Background="#353340">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                               Foreground="White"
+                                               FontSize="13"
+                                               FontFamily="Montserrat"
+                                               Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
 
                     <TextBlock Text="Điểm đến"
                                Foreground="DarkGray"
@@ -170,23 +172,25 @@
                                FontWeight="Medium"
                                FontFamily="Montserrat"                             
                                Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEndPoint"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                            
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalContentAlignment="Center"
-                             Margin="0,5,0,0"
-                             Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                                        AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
+                    <ComboBox x:Name="cmbEndPoint"
+                                  Style="{StaticResource CustomComboBoxStyle}"
+                                  Margin="0,5,0,0"
+                                  Padding="20,0,0,0"
+                                  ItemsSource="{Binding PlateItems}"
+                                  Background="#353340">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                               Foreground="White"
+                                               FontSize="13"
+                                               FontFamily="Montserrat"
+                                               Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
 
                     <Grid Margin="0,15,0,0">
                         <Grid.ColumnDefinitions>
@@ -209,11 +213,12 @@
                                                FontSize="13"
                                                FontFamily="Montserrat"
                                                Foreground="White"/>
-                                    <Button Background="Transparent"
-                                            BorderBrush="Transparent"                                            
+                                    <Button Style="{StaticResource calendarButton}"   
+                                            Margin="5 0 0 0"
                                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                        <fa:IconImage Icon="CaretDown" Foreground="White"/>
-                                    </Button>
+                                        <fa:IconImage Icon="CalendarAlt" 
+                                                      Width="17"
+                                                      Foreground="White"/>                                    </Button>
                                 </StackPanel>
 
                                 <materialDesign:DialogHost.DialogContent>
@@ -259,11 +264,12 @@
                                                FontSize="13"
                                                FontFamily="Montserrat"
                                                Foreground="White"/>
-                                    <Button Background="Transparent"
-                                            BorderBrush="Transparent"
+                                    <Button Style="{StaticResource calendarButton}"
+                                            Margin="5 0 0 0"
                                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                        <fa:IconImage Icon="CaretDown" Foreground="White"/>
-                                    </Button>
+                                        <fa:IconImage Icon="CalendarAlt" 
+                                                      Width="17"
+                                                      Foreground="White"/>                                    </Button>
                                 </StackPanel>
 
                                 <materialDesign:DialogHost.DialogContent>

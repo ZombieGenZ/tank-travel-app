@@ -88,7 +88,7 @@
                Orientation="Vertical"
                Margin="0,20,0,0">
 
-                    <TextBlock Text="Vehicle Type"
+                    <TextBlock Text="Loại phương tiện"
                  Foreground="DarkGray"
                  FontSize="12"
                  FontWeight="Medium"
@@ -114,7 +114,7 @@
                         </ComboBox.ItemContainerStyle>
                     </ComboBox>
 
-                    <TextBlock Text="Seat Type"
+                    <TextBlock Text="Loại ghế"
                  Foreground="DarkGray"
                  FontSize="12"
                  FontWeight="Medium"
@@ -139,7 +139,7 @@
                         </ComboBox.ItemContainerStyle>
                     </ComboBox>
 
-                        <TextBlock Text="Seats"
+                        <TextBlock Text="Số ghế"
                                    Foreground="DarkGray"
                                    FontSize="12"
                                    FontWeight="Medium"
@@ -163,7 +163,7 @@
                         </TextBox.Background>
                     </TextBox>
 
-                    <TextBlock Text="Rules"
+                    <TextBlock Text="Luật"
                                Foreground="DarkGray"
                                FontSize="12"
                                FontWeight="Medium"
@@ -187,7 +187,7 @@
                         </TextBox.Background>
                     </TextBox>
 
-                    <TextBlock Text="Amenities"
+                    <TextBlock Text="Tiện nghi"
                  Foreground="DarkGray"
                  FontSize="12"
                  FontWeight="Medium"
@@ -211,7 +211,7 @@
                         </TextBox.Background>
                     </TextBox>
 
-                    <TextBlock Text="License Plate"
+                    <TextBlock Text="Biển số xe"
                  Foreground="DarkGray"
                  FontSize="12"
                  FontWeight="Medium"

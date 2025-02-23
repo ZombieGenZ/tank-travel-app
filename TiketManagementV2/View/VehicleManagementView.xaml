@@ -109,8 +109,9 @@
             <Grid>
                 <!-- DataGrid -->
                 <DataGrid ItemsSource="{Binding ManagedFilteredVehicles}" 
-                         Height="600" 
-                         VerticalAlignment="Top">
+                         Height="550" 
+                         VerticalAlignment="Top"
+                         HorizontalScrollBarVisibility="Disabled" >
                     <DataGrid.Resources>
                         <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource TransparentDataGridCell}"/>
                         <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource TransparentDataGridRow}">
@@ -130,18 +131,68 @@
                         <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CustomColumnHeader}"/>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding User}" Header="Owner"/>
-                        <DataGridTextColumn Binding="{Binding LicensePlate}" Header="License Plate"/>
-                        <DataGridTextColumn Binding="{Binding VehicleType}" Header="Vehicle"/>
-                        <DataGridTextColumn Binding="{Binding SeatType}" Header="Seat Type"/>
-                        <DataGridTextColumn Binding="{Binding Seats}" Header="Seats"/>
-                        <DataGridTextColumn Binding="{Binding Rules}" Header="Rules"/>
-                        <DataGridTextColumn Binding="{Binding Amenities}" Header="amenities"/>
+                        <DataGridTextColumn Binding="{Binding User}" Header="Người sở hữu" Width="auto" MinWidth="120" MaxWidth="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding LicensePlate}" Header="Biển số xe" Width="auto" MinWidth="115">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding VehicleType}" Header="Loại phương tiện" Width="auto" MinWidth="140">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding SeatType}" Header="Loại ghế" Width="auto" MinWidth="85">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Seats}" Header="Số ghế" Width="auto" MinWidth="70">
+                            
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Rules}" Header="Luật" MinWidth="140" MaxWidth="140">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Amenities}" Header="Tiện nghi" MinWidth="140" MaxWidth="140">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <!-- Thêm cột mới chứa các nút -->
                         <DataGridTemplateColumn Width="140">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Command="{Binding DataContext.ImageCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                CommandParameter="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonImage}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="ShowButtons">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                         <Button Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                 CommandParameter="{Binding}">
                                             <Button.Style>
@@ -167,19 +218,6 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
-
-                                        <Button Command="{Binding DataContext.ImageCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                CommandParameter="{Binding}">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonImage}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="ShowButtons">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -189,7 +227,7 @@
                 </DataGrid>
 
                 <!-- TextBlock Load More -->
-                <TextBlock Text="Load More"
+                <TextBlock Text="Tải thêm"
                            x:Name="LoadMore"
                            FontSize="15"
                            FontFamily="Montserrat"

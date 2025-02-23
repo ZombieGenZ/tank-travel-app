@@ -68,7 +68,7 @@
                 <!-- DataGrid -->
                 <DataGrid ItemsSource="{Binding Vehicles}" 
                          Style="{StaticResource TransparentDataGrid}" 
-                         Height="600" 
+                         Height="550" 
                          VerticalAlignment="Top"
                          AutoGenerateColumns="False">
                     <DataGrid.Resources>
@@ -98,42 +98,42 @@
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomColumnHeader}"/>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding VehicleType}" Header="Vehicle Type" Width="Auto" MinWidth="120">
+                        <DataGridTextColumn Binding="{Binding VehicleType}" Header="Loại phương tiện" Width="Auto" MinWidth="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding LicensePlate}" Header="License Plate" Width="Auto" MinWidth="120">
+                        <DataGridTextColumn Binding="{Binding LicensePlate}" Header="Biển số xe" Width="Auto" MinWidth="115">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding SeatType}" Header="Seat Type" Width="Auto" MinWidth="100">
+                        <DataGridTextColumn Binding="{Binding SeatType}" Header="Loại ghế" Width="Auto" MinWidth="90">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding Seats}" Header="Seats" Width="Auto" MinWidth="80">
+                        <DataGridTextColumn Binding="{Binding Seats}" Header="Số ghế" Width="Auto" MinWidth="75">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding Rules}" Header="Rules" MaxWidth="200" MinWidth="200">
+                        <DataGridTextColumn Binding="{Binding Rules}" Header="Rules" MaxWidth="220" MinWidth="200">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding Amenities}" Header="Amenities" MaxWidth="200" MinWidth="200">
+                        <DataGridTextColumn Binding="{Binding Amenities}" Header="Amenities" MaxWidth="220" MinWidth="200">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
@@ -144,6 +144,18 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Command="{Binding DataContext.ImageCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                CommandParameter="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonImage}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="ShowButtons">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                         <Button Command="{Binding DataContext.AcceptCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}">
                                             <Button.Style>
@@ -177,7 +189,7 @@
                 </DataGrid>
 
                 <!-- TextBlock Load More -->
-                <TextBlock Text="Load More"
+                <TextBlock Text="Tải thêm"
                        FontSize="15"
                        FontFamily="Montserrat"
                        Cursor="Hand"

@@ -117,9 +117,6 @@
     <Compile Include="View\AddBusRouteView.xaml.cs">
       <DependentUpon>AddBusRouteView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AddBusView.xaml.cs">
-      <DependentUpon>AddBusView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\AddVehicleView.xaml.cs">
       <DependentUpon>AddVehicleView.xaml</DependentUpon>
     </Compile>
@@ -131,9 +128,6 @@
     </Compile>
     <Compile Include="View\BusCensorView.xaml.cs">
       <DependentUpon>BusCensorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\BusManagementView.xaml.cs">
-      <DependentUpon>BusManagementView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\BusRouteView.xaml.cs">
       <DependentUpon>BusRouteView.xaml</DependentUpon>
@@ -235,10 +229,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AddBusView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\AddVehicleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -252,10 +242,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\BusCensorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\BusManagementView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

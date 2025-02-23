@@ -24,5 +24,15 @@ namespace TiketManagementV2.View
         {
             InitializeComponent();
         }
+
+        private void btnReload_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

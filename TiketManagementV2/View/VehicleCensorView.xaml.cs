@@ -81,6 +81,7 @@ namespace TiketManagementV2.View
         public ICommand AcceptCommand { get; private set; }
         public ICommand RejectCommand { get; private set; }
         public ICommand LoadMoreCommand { get; private set; }
+        public ICommand ImageCommand { get; private set; }
 
         public class Vehicle : INotifyPropertyChanged
         {
@@ -223,11 +224,21 @@ namespace TiketManagementV2.View
             AcceptCommand = new RelayCommandGeneric<Vehicle>(AcceptVehicle);
             RejectCommand = new RelayCommandGeneric<Vehicle>(RejectVehicle);
             LoadMoreCommand = new RelayCommandGeneric<Vehicle>(_ => LoadMore());
-
+            ImageCommand = new RelayCommandGeneric<Vehicle>(ShowVehicleImages);
             // Set the DataContext to this
             DataContext = this;
 
             StartLoadingVehicle();
+        }
+
+        private void ShowVehicleImages(object obj)
+        {
+            if (obj is Vehicle vehicle)
+            {
+                var imageGalleryView = new ImageGalleryView(vehicle.Id);
+                //LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
+                imageGalleryView.ShowDialog();
+            }
         }
 
         private async void StartLoadingVehicle()

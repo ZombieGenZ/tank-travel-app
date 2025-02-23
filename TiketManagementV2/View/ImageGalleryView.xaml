@@ -19,6 +19,9 @@
                 <GradientStop Color="{StaticResource winBorderColor3}" Offset="1"/>
             </LinearGradientBrush>
         </Border.BorderBrush>
+        
+        
+
         <!-- Main Content -->
         <Grid Background="#1C0E49">
             <Grid.RowDefinitions>

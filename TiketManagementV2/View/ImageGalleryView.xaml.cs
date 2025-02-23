@@ -37,7 +37,7 @@ namespace TiketManagementV2.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ImageGalleryView(Vehicle vehicle)
+        public ImageGalleryView(string id)
         {
             InitializeComponent();
             DataContext = this;
@@ -46,7 +46,7 @@ namespace TiketManagementV2.View
 
             ImagePaths = new ObservableCollection<string>();
 
-            LoadManagedVehicles(vehicle.Id);
+            LoadManagedVehicles(id);
         }
 
         private async Task<dynamic> GetManagedVehicleData(string vehicle_id)
