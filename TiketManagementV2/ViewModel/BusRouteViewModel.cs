@@ -176,7 +176,7 @@ namespace TiketManagementV2.ViewModel
         }
         private void ExecuteAddCommand(object obj)
         {
-            var addBusRouteView = new AddBusRouteView(_notificationService);
+            var addBusRouteView = new AddBusRouteView();
             addBusRouteView.Show();
         }
 

@@ -478,11 +478,11 @@
                                                                 Margin="20,0,0,0"
                                                                 VerticalAlignment="Center"/>
                                                     <Path x:Name="arrow"
-                                                    Grid.Column="1"
-                                                    Fill="White"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Data="M0,0 L8,0 L4,4 Z"/>
+                                                          Grid.Column="1"
+                                                          Fill="White"
+                                                          HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"
+                                                          Data="M0,0 L8,0 L4,4 Z"/>
                                                 </Grid>
                                             </Border>
                                         </ControlTemplate>
@@ -543,6 +543,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 
     <!-- Calendar Style -->
     <Style x:Key="CustomCalendarStyle" TargetType="{x:Type Calendar}">

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -18,38 +20,66 @@ using TiketManagementV2.ViewModel;
 namespace TiketManagementV2.View
 {
 
-    public partial class AddBusRouteView : Window
+    public partial class AddBusRouteView : Window, INotifyPropertyChanged
     {
         private INotificationService _notificationService;
 
-        public AddBusRouteView(INotificationService notificationService)
+        public class SeatTypeItem
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
+        public class PlateItem
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
+        public ObservableCollection<SeatTypeItem> SeatTypes { get; set; }
+        public ObservableCollection<PlateItem> PlateItems { get; set; }
+
+        public AddBusRouteView()
         {
             InitializeComponent();
             var viewmodel = new BusRouteViewModel();
-
             DataContext = viewmodel;
-            _notificationService = notificationService;
+            _notificationService = new NotificationService();
+
+            SeatTypes = new ObservableCollection<SeatTypeItem>();
+            PlateItems = new ObservableCollection<PlateItem>();
+
+            var selectedDate = DateTime.Now;
+
+            txtSelectedDateTime.Text = selectedDate.ToString("yyyy-MM-dd HH:mm");
+
+            txtSelectedArrivalDateTime.Text = selectedDate.ToString("yyyy-MM-dd HH:mm");
         }
 
         private void BtnSelectDateTime_Click(object sender, RoutedEventArgs e)
         {
-            // Get selected date, default to current date if none selected
             var selectedDate = Calendar.SelectedDate ?? DateTime.Now;
 
-            // Get time components from clock
             var time = Clock.Time;
 
-            // Create new DateTime combining selected date and time
             var combinedDateTime = new DateTime(
                 selectedDate.Year,
                 selectedDate.Month,
                 selectedDate.Day,
                 time.Hour,
                 time.Minute,
-                0  // Seconds set to 0
+                0 
             );
 
-            // Update display with formatted date and time
+            txtSelectedDateTime.Text = "yyyy-MM-dd HH:mm";
             txtSelectedDateTime.Text = combinedDateTime.ToString("yyyy-MM-dd HH:mm");
         }
 
@@ -59,7 +89,7 @@ namespace TiketManagementV2.View
             string startPoint = txtStartPoint.Text.Trim();
             string endPoint = txtEndPoint.Text.Trim();
             //string departureTimeInput = txtDepartureTime.Text.Trim();
-            string arrivalTimeInput = txtArrivalTime.Text.Trim();
+            //string arrivalTimeInput = txtArrivalTime.Text.Trim();
             string priceInput = txtPrice.Text.Trim();
             string quantityInput = txtQuantity.Text.Trim();
 
@@ -102,15 +132,15 @@ namespace TiketManagementV2.View
             //    return;
             //}
 
-            if (!IsValidDateTime(arrivalTimeInput, out string formattedArrivalTime))
-            {
-                _notificationService.ShowNotification(
-                    "Validation Error",
-                    "Invalid arrival time format. Please use yyyy-MM-dd HH:mm:ss",
-                    NotificationType.Error
-                );
-                return;
-            }
+            //if (!IsValidDateTime(arrivalTimeInput, out string formattedArrivalTime))
+            //{
+            //    _notificationService.ShowNotification(
+            //        "Validation Error",
+            //        "Invalid arrival time format. Please use yyyy-MM-dd HH:mm:ss",
+            //        NotificationType.Error
+            //    );
+            //    return;
+            //}
 
             // Kiểm tra giá (Price)
             if (!decimal.TryParse(priceInput, out decimal price) || price <= 0)
@@ -134,7 +164,7 @@ namespace TiketManagementV2.View
             }
 
             //txtDepartureTime.Text = formattedDepartureTime;
-            txtArrivalTime.Text = formattedArrivalTime;
+            //txtArrivalTime.Text = formattedArrivalTime;
 
             _notificationService.ShowNotification(
                 "Success",
@@ -165,6 +195,31 @@ namespace TiketManagementV2.View
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+
+        private void BtnSelectArrivalDateTime_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedDate = ArrivalCalendar.SelectedDate ?? DateTime.Now;
+
+            var time = ArrivalClock.Time;
+
+            var combinedDateTime = new DateTime(
+                selectedDate.Year,
+                selectedDate.Month,
+                selectedDate.Day,
+                time.Hour,
+                time.Minute,
+                0  
+            );
+
+            txtSelectedArrivalDateTime.Text = combinedDateTime.ToString("yyyy-MM-dd HH:mm");
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

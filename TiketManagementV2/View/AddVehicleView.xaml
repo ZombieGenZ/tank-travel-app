@@ -95,13 +95,14 @@
                             Margin="0,20,0,20">
 
                         <TextBlock Text="Vehicle Type"
-                         Foreground="DarkGray"
-                         FontSize="12"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                             
-                         Margin="0,15,0,0"/>
+                                   Foreground="DarkGray"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   FontFamily="Montserrat"                             
+                                   Margin="0,15,0,0"/>
                         <ComboBox x:Name="cmbVehicle"
                                   Style="{StaticResource CustomComboBoxStyle}"
+                                  
                                   Margin="0,5,0,0"
                                   Padding="20,0,0,0"
                                   ItemsSource="{Binding VehicleTypes}"
