@@ -389,6 +389,7 @@ namespace TiketManagementV2.View
                     (string)data.message,
                     NotificationType.Success
                 );
+                Close();
                 return;
             }
             else

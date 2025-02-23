@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TiketManagementV2.Commands;
+using TiketManagementV2.Controls;
+using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
 
@@ -23,9 +28,6 @@ namespace TiketManagementV2.View
         public EditBusRouteView(INotificationService notificationService)
         {
             InitializeComponent();
-            var viewmodel = new BusRouteViewModel();
-
-            DataContext = viewmodel;
             _notificationService = notificationService;
         }
 
