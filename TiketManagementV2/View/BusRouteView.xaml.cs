@@ -15,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TiketManagementV2.Commands;
-using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
 
@@ -26,18 +25,12 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class BusRouteView : UserControl, INotifyPropertyChanged
     {
-        private int _itemsToLoad = 20;
+        private int _itemsToLoad = 2;
         private ObservableCollection<BusRoute> _filteredBusRoutes;
         private bool _canLoadMore;
-        private string _managementSessionTime;
-        private ApiServices _service;
-        private INotificationService _notificationService;
-        private ObservableCollection<BusRoute> BusRoutes;
-        public ObservableCollection<BusRoute> busRoutes
-        {
-            get { return busRoutes; }
-            set { BusRoutes = value; OnPropertyChanged(nameof(busRoutes)); }
-        }
+        private readonly INotificationService _notificationService;
+
+        public ObservableCollection<BusRoute> BusRoutes { get; set; }
         public ObservableCollection<BusRoute> filteredBusRoutes
         {
             get { return _filteredBusRoutes; }
@@ -173,10 +166,15 @@ namespace TiketManagementV2.View
 
         public ICommand AddCommand { get; }
 
+        private void ExecuteAddCommand(object obj)
+        {
+            var addBusRouteView = new AddBusRouteView();
+            addBusRouteView.Show();
+        }
+
         public BusRouteView()
         {
             InitializeComponent();
-            _notificationService = new NotificationService();
             BusRoutes = new ObservableCollection<BusRoute>
             {
                 new BusRoute {Vehicle = "0", StartPoint = "Doe", EndPoint = "123456789",DepartureTime = "11-11-2000", ArrivalTime = "11-11-2000", Price = 500000, Quantity = 50, Sold = 0},
@@ -201,11 +199,6 @@ namespace TiketManagementV2.View
             }
         }
 
-        private void ExecuteAddCommand(object obj)
-        {
-            var addBusRouteView = new AddBusRouteView();
-            addBusRouteView.Show();
-        }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -229,7 +222,12 @@ namespace TiketManagementV2.View
         }
         private void RemoveBusRoute(BusRoute busRoute)
         {
-
+            if (busRoute != null)
+            {
+                filteredBusRoutes.Remove(busRoute);
+                BusRoutes.Remove(busRoute);
+                CanLoadMore = filteredBusRoutes.Count < BusRoutes.Count;
+            }
         }
 
         private void EditBusRoute(object obj)
