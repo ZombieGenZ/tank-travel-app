@@ -7,7 +7,7 @@
         xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="AddBusRouteView" Height="580" Width="500"
+        Title="AddBusRouteView" Height="500" Width="500"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -89,32 +89,6 @@
                            Orientation="Vertical"
                            Margin="0,20,0,0">
 
-                    <TextBlock Text="Loại phương tiện"
-                             Foreground="DarkGray"
-                             FontSize="12"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                             
-                             Margin="0,15,0,0"/>
-                    <ComboBox x:Name="cmbVehicle"
-                                  Style="{StaticResource CustomComboBoxStyle}"
-                                  Margin="0,5,0,0"
-                                  Padding="20,0,0,0"
-                                  ItemsSource="{Binding VehicleTypes}"
-                                  Background="#353340">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" 
-                                               Foreground="White"
-                                               FontSize="13"
-                                               FontFamily="Montserrat"
-                                               Padding="5"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                        <ComboBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
-                        </ComboBox.ItemContainerStyle>
-                    </ComboBox>
-
                     <TextBlock Text="Biển số xe"
                              Foreground="DarkGray"
                              FontSize="12"
@@ -125,8 +99,8 @@
                                   Style="{StaticResource CustomComboBoxStyle}"
                                   Margin="0,5,0,0"
                                   Padding="20,0,0,0"
-                                  ItemsSource="{Binding PlateItems}"
-                                  Background="#353340">
+                                  Background="#353340"
+                                  SelectedValuePath="Id">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}" 
@@ -150,7 +124,7 @@
                                   Style="{StaticResource CustomComboBoxStyle}"
                                   Margin="0,5,0,0"
                                   Padding="20,0,0,0"
-                                  ItemsSource="{Binding PlateItems}"
+                                  SelectedValuePath="Id"
                                   Background="#353340">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -176,7 +150,7 @@
                                   Style="{StaticResource CustomComboBoxStyle}"
                                   Margin="0,5,0,0"
                                   Padding="20,0,0,0"
-                                  ItemsSource="{Binding PlateItems}"
+                                  SelectedValuePath="Id"
                                   Background="#353340">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

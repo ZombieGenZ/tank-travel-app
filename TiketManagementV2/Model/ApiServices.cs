@@ -50,6 +50,21 @@ namespace TiketManagementV2.Model
                 throw;
             }
         }
+        public async Task<dynamic> GetLocationAsync(string endpoint)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(endpoint);
+                EnsureValidResponse(response);
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GET request: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<dynamic> GetWithHeaderAsync(string endpoint, Dictionary<string, string> headers)
         {

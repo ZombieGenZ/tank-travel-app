@@ -246,7 +246,6 @@
                             OverridesDefaultStyle="True"/>
                     </StackPanel>
                 </StackPanel>
-                <local:AccountView HorizontalAlignment="Left" Margin="170,239,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                 <controls:CircularLoadingControl x:Name="LoadingControl"
                                                  HorizontalAlignment="Center" 
                                                  VerticalAlignment="Top" 
