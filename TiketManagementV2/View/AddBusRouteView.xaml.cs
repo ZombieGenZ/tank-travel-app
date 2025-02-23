@@ -31,12 +31,34 @@ namespace TiketManagementV2.View
             _notificationService = notificationService;
         }
 
+        private void BtnSelectDateTime_Click(object sender, RoutedEventArgs e)
+        {
+            // Get selected date, default to current date if none selected
+            var selectedDate = Calendar.SelectedDate ?? DateTime.Now;
+
+            // Get time components from clock
+            var time = Clock.Time;
+
+            // Create new DateTime combining selected date and time
+            var combinedDateTime = new DateTime(
+                selectedDate.Year,
+                selectedDate.Month,
+                selectedDate.Day,
+                time.Hour,
+                time.Minute,
+                0  // Seconds set to 0
+            );
+
+            // Update display with formatted date and time
+            txtSelectedDateTime.Text = combinedDateTime.ToString("yyyy-MM-dd HH:mm");
+        }
+
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             string vehicle = cmbVehicle.Text.Trim();
             string startPoint = txtStartPoint.Text.Trim();
             string endPoint = txtEndPoint.Text.Trim();
-            string departureTimeInput = txtDepartureTime.Text.Trim();
+            //string departureTimeInput = txtDepartureTime.Text.Trim();
             string arrivalTimeInput = txtArrivalTime.Text.Trim();
             string priceInput = txtPrice.Text.Trim();
             string quantityInput = txtQuantity.Text.Trim();
@@ -70,15 +92,15 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            if (!IsValidDateTime(departureTimeInput, out string formattedDepartureTime))
-            {
-                _notificationService.ShowNotification(
-                    "Validation Error",
-                    "Invalid departure time format. Please use yyyy-MM-dd HH:mm:ss",
-                    NotificationType.Error
-                );
-                return;
-            }
+            //if (!IsValidDateTime(departureTimeInput, out string formattedDepartureTime))
+            //{
+            //    _notificationService.ShowNotification(
+            //        "Validation Error",
+            //        "Invalid departure time format. Please use yyyy-MM-dd HH:mm:ss",
+            //        NotificationType.Error
+            //    );
+            //    return;
+            //}
 
             if (!IsValidDateTime(arrivalTimeInput, out string formattedArrivalTime))
             {
@@ -111,7 +133,7 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            txtDepartureTime.Text = formattedDepartureTime;
+            //txtDepartureTime.Text = formattedDepartureTime;
             txtArrivalTime.Text = formattedArrivalTime;
 
             _notificationService.ShowNotification(

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TiketManagementV2.View"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="AddBusRouteView" Height="600" Width="500"
         WindowStyle="None"
@@ -158,23 +159,51 @@
                              FontWeight="Medium"
                              FontFamily="Montserrat"                             
                              Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtDepartureTime"
-                            FontSize="13"
-                            FontWeight="Medium"
-                            FontFamily="Montserrat"                            
-                            Foreground="White"
-                            CaretBrush="LightGray"
-                            BorderBrush="DarkGray"
-                            BorderThickness="0,0,0,2"
-                            Height="28"
-                            VerticalContentAlignment="Center"
-                            Margin="0,5,0,0"
-                            Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                                        AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
+                    <TextBlock Text="Departure Time"
+                               Foreground="DarkGray"
+                               FontSize="12"
+                               FontWeight="Medium"
+                               FontFamily="Montserrat"                             
+                               Margin="0,15,0,0"/>
+                    <materialDesign:DialogHost>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="txtSelectedDateTime"
+                                       VerticalAlignment="Center"
+                                       FontSize="13"
+                                       FontFamily="Montserrat"
+                                       Foreground="White"/>
+                            <Button Content="..."
+                                    Margin="8,0,0,0"
+                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"/>
+                        </StackPanel>
+
+                        <materialDesign:DialogHost.DialogContent>
+                            <Grid Margin="-1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <Calendar x:Name="Calendar" Margin="-1,-4,-1,0"/>
+                                    <materialDesign:Clock x:Name="Clock" Is24Hours="True"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1"
+                                            Margin="8"
+                                            HorizontalAlignment="Right"
+                                            Orientation="Horizontal">
+                                    <Button Content="CANCEL"
+                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"/>
+                                    <Button Content="OK"
+                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Click="BtnSelectDateTime_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </materialDesign:DialogHost.DialogContent>
+                    </materialDesign:DialogHost>
 
                     <TextBlock Text="Arrival Time"
                              Foreground="DarkGray"
