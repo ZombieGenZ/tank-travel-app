@@ -437,7 +437,6 @@
         </Setter>
     </Style>
 
-    <!-- ComboBox Style -->
     <Style x:Key="CustomComboBoxStyle" TargetType="{x:Type ComboBox}">
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="Medium"/>
@@ -458,36 +457,22 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
-                                <ToggleButton x:Name="toggleButton"
-                                        BorderBrush="Transparent"
-                                        Background="Transparent"
-                                        Foreground="{TemplateBinding Foreground}"
-                                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-                                    <ToggleButton.Template>
-                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                            <Border Background="Transparent" BorderThickness="0" SnapsToDevicePixels="true">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="20"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <ContentPresenter Grid.Column="0"
-                                                                Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"
-                                                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                HorizontalAlignment="Left"
-                                                                Margin="20,0,0,0"
-                                                                VerticalAlignment="Center"/>
-                                                    <Path x:Name="arrow"
-                                                          Grid.Column="1"
-                                                          Fill="White"
-                                                          HorizontalAlignment="Center"
-                                                          VerticalAlignment="Center"
-                                                          Data="M0,0 L8,0 L4,4 Z"/>
-                                                </Grid>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </ToggleButton.Template>
-                                </ToggleButton>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0"
+                                                  HorizontalAlignment="Left"
+                                                  Margin="20,0,0,0"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding SelectionBoxItem}"/>
+                                <Path x:Name="arrow"
+                                      Grid.Column="1"
+                                      Fill="White"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,10,0"
+                                      Data="M0,0 L8,0 L4,4 Z"/>
                                 <Popup x:Name="PART_Popup"
                                  IsOpen="{TemplateBinding IsDropDownOpen}"
                                  AllowsTransparency="True"
@@ -505,12 +490,19 @@
                             </Grid>
                         </Border>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter Property="IsDropDownOpen" Value="True"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!-- ComboBoxItem Style -->
     <Style x:Key="CustomComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -543,7 +535,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <!-- Calendar Style -->
     <Style x:Key="CustomCalendarStyle" TargetType="{x:Type Calendar}">
