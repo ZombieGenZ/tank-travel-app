@@ -4,62 +4,154 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.ComponentModel;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using TiketManagementV2.Controls;
+using TiketManagementV2.Model;
+using TiketManagementV2.Services;
 
 namespace TiketManagementV2.View
 {
-    public partial class ImageGalleryView : Window
+    public partial class ImageGalleryView : Window, INotifyPropertyChanged
     {
-        public ObservableCollection<string> ImagePaths { get; set; }
+        private ObservableCollection<string> _imagePaths;
+        public ObservableCollection<string> ImagePaths
+        {
+            get { return _imagePaths; }
+            set
+            {
+                _imagePaths = value;
+                OnPropertyChanged(nameof(ImagePaths));
+            }
+        }
+
+        private ApiServices _service;
+        private INotificationService _notificationService;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public ImageGalleryView(Vehicle vehicle)
         {
             InitializeComponent();
             DataContext = this;
+            _service = new ApiServices();
+            _notificationService = new NotificationService();
 
-            // Sử dụng Pack URI format cho project resources
-            ImagePaths = new ObservableCollection<string>
-            {
-                "pack://application:,,,/Images/bell_icon.png",
-                "pack://application:,,,/Images/Close_Icon.png",
-                "pack://application:,,,/Images/DefaultAvatar.png",
-                "pack://application:,,,/Images/ducanh.jpg",
-                "pack://application:,,,/Images/Error_Icon.png",
-                "pack://application:,,,/Images/key-icon.png",
-                "pack://application:,,,/Images/management.jpg",
-                "pack://application:,,,/Images/success_icon.png",
-                "pack://application:,,,/Images/TANK_logo_rmbg.ico",
-                "pack://application:,,,/Images/TANK_logo_rmbg.png",
-                "pack://application:,,,/Images/user-icon.png",
-                "pack://application:,,,/Images/Warning_Icon.png"
-            };
+            ImagePaths = new ObservableCollection<string>();
 
-            if (ImagePaths.Count > 0)
-            {
-                LoadImageToMainDisplay(ImagePaths[0]);
-                ThumbnailList.SelectedIndex = 0;
-            }
+            LoadManagedVehicles(vehicle.Id);
         }
 
-        private void ThumbnailList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async Task<dynamic> GetManagedVehicleData(string vehicle_id)
         {
-            if (ThumbnailList.SelectedItem is string selectedImagePath)
+            try
             {
-                LoadImageToMainDisplay(selectedImagePath);
-                ThumbnailList.ScrollIntoView(selectedImagePath);
-                ThumbnailList.Focus();
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> getVehicleDataHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var getVehicleDataBody = new
+                {
+                    refresh_token,
+                    vehicle_id
+                };
+
+                return await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-vehicle-preview", getVehicleDataHeader, getVehicleDataBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
             }
         }
 
-        private void LoadImageToMainDisplay(string imagePath)
+        public async Task LoadManagedVehicles(string vehicle_id)
+        {
+            try
+            {
+                //_circularLoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await GetManagedVehicleData(vehicle_id);
+
+                if (data == null || data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ" ||
+                    data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    _notificationService.ShowNotification("Error", data?.message ?? "Error loading data",
+                        NotificationType.Error);
+                    return;
+                }
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                            NotificationType.Warning);
+                    }
+
+                    return;
+                }
+
+                if (data.message == "Lấy thông tin phương tiện thất bại")
+                {
+                    _notificationService.ShowNotification("Error", (string)data.message, NotificationType.Warning);
+                    return;
+                }
+
+                foreach (string item in data.result)
+                {
+                    ImagePaths.Add(item);
+                }
+
+                if (ImagePaths.Count > 0)
+                {
+                    LoadImageToMainDisplay(ImagePaths[0]);
+                    ThumbnailList.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
+            }
+            finally
+            {
+                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async void LoadImageToMainDisplay(string imageUrl)
         {
             try
             {
                 var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.UriSource = new Uri(imagePath);
-                bitmap.EndInit();
-                MainImage.Source = bitmap;
+
+                using (var client = new HttpClient())
+                {
+                    var imageData = await client.GetByteArrayAsync(imageUrl);
+
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.StreamSource = new MemoryStream(imageData);
+                    bitmap.EndInit();
+                    bitmap.Freeze(); // Tối ưu hiệu suất
+
+                    MainImage.Source = bitmap;
+                }
             }
             catch (Exception ex)
             {
@@ -67,10 +159,19 @@ namespace TiketManagementV2.View
             }
         }
 
+        private void ThumbnailList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ThumbnailList.SelectedItem is string selectedImageUrl)
+            {
+                LoadImageToMainDisplay(selectedImageUrl);
+                ThumbnailList.ScrollIntoView(selectedImageUrl);
+                ThumbnailList.Focus();
+            }
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-
             if (e.Key == Key.Down || e.Key == Key.Right)
             {
                 if (ThumbnailList.SelectedIndex < ImagePaths.Count - 1)

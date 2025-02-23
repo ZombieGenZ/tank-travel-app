@@ -401,16 +401,16 @@ namespace TiketManagementV2.ViewModel
 
         private void ShowVehicleImages(object obj)
         {
-            if (obj is Vehicle vehicle)
-            {
-                var imageGalleryView = new ImageGalleryView();
+            //if (obj is Vehicle vehicle)
+            //{
+            //    var imageGalleryView = new ImageGalleryView(vehicle);
 
-                // You'll need to load vehicle images based on vehicle ID
-                // For example, you might have a path like: Images/{vehicleId}/...
-                LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
+            //    // You'll need to load vehicle images based on vehicle ID
+            //    // For example, you might have a path like: Images/{vehicleId}/...
+            //    LoadVehicleImagesIntoGallery(vehicle.Id, imageGalleryView);
 
-                imageGalleryView.Show();
-            }
+            //    imageGalleryView.Show();
+            //}
         }
 
         private async void LoadVehicleImagesIntoGallery(string vehicleId, ImageGalleryView galleryView)

@@ -543,7 +543,7 @@ namespace TiketManagementV2.View
         }
 
         public async Task Reload()
-        {7
+        {
             _managementSessionTime = DateTime.Now.ToString("o");
             _managementCurrent = 0;
             ManagedVehicles.Clear();
