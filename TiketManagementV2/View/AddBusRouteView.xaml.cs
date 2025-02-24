@@ -151,7 +151,7 @@ namespace TiketManagementV2.View
         {
             try
             {
-                //_circularLoadingControl.Visibility = Visibility.Visible;
+                _circularLoadingControl.Visibility = Visibility.Visible;
 
                 dynamic data = await GetManagedVehicleData();
 
@@ -208,7 +208,7 @@ namespace TiketManagementV2.View
             }
             finally
             {
-                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -250,6 +250,7 @@ namespace TiketManagementV2.View
 
         private async void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            _circularLoadingControl.Visibility = Visibility.Visible;
             dynamic plate = cmbPlate.SelectedItem;
             dynamic start = cmbStartPoint.SelectedItem;
             dynamic end = cmbEndPoint.SelectedItem;
@@ -279,6 +280,7 @@ namespace TiketManagementV2.View
                     "Vui lòng điền đầy đủ thông tin",
                     NotificationType.Warning
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -289,6 +291,7 @@ namespace TiketManagementV2.View
                     "Thời gian khởi hành và thời gian tới dự kiến phải lớn hơn thời gian hiện tại",
                     NotificationType.Warning
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -299,6 +302,7 @@ namespace TiketManagementV2.View
                     "Thời gian khởi hành không được bé hơn thời gian đến dự kiến",
                     NotificationType.Warning
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -309,6 +313,7 @@ namespace TiketManagementV2.View
                     "Điểm khởi hành và điểm đến không được trùng nhau",
                     NotificationType.Warning
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -319,6 +324,7 @@ namespace TiketManagementV2.View
                     "Số lượng phải lớn hơn 0",
                     NotificationType.Warning
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -329,6 +335,7 @@ namespace TiketManagementV2.View
                     "Giá vé phải lớn hơn 0",
                     NotificationType.Warning
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -343,6 +350,7 @@ namespace TiketManagementV2.View
                     "Không thể kết nối đến máy chủ",
                     NotificationType.Error
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -354,6 +362,7 @@ namespace TiketManagementV2.View
                     (string)data.message,
                     NotificationType.Error
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -368,6 +377,7 @@ namespace TiketManagementV2.View
                     (string)data.message,
                     NotificationType.Error
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -378,7 +388,7 @@ namespace TiketManagementV2.View
                     _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
                         NotificationType.Warning);
                 }
-
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
 
@@ -389,6 +399,7 @@ namespace TiketManagementV2.View
                     (string)data.message,
                     NotificationType.Success
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 Close();
                 return;
             }
@@ -399,6 +410,7 @@ namespace TiketManagementV2.View
                     (string)data.message,
                     NotificationType.Error
                 );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 return;
             }
         }

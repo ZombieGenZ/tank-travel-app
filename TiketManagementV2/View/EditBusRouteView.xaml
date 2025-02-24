@@ -1,9 +1,12 @@
-﻿<Window x:Class="TiketManagementV2.View.EditBusRouteView"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:TiketManagementV2.View"
+        xmlns:Controls="clr-namespace:TiketManagementV2.Controls" x:Class="TiketManagementV2.View.EditBusRouteView"
         mc:Ignorable="d"
         Title="EditBusRouteView" Height="600" Width="500"
         WindowStyle="None"
@@ -42,7 +45,7 @@
                         <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="EDIT BUS ROUTE"
+                    <TextBlock Text="ADD BUS ROUTE"
                          Foreground="DarkGray"
                          FontSize="10"
                          FontFamily="Monsterrat"
@@ -87,160 +90,239 @@
                        Orientation="Vertical"
                        Margin="0,20,0,0">
 
-                    <TextBlock Text="Vehicle"
+                    <TextBlock Text="Biển số xe"
                          Foreground="DarkGray"
                          FontSize="12"
                          FontWeight="Medium"
                          FontFamily="Montserrat"                             
                          Margin="0,15,0,0"/>
-                    <ComboBox x:Name="cmbEditVehicle"
-                          Style="{StaticResource CustomComboBoxStyle}"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
-                        <ComboBox.Background>
-                            <SolidColorBrush Color="#353340"/>
-                        </ComboBox.Background>
-                        <ComboBoxItem>Bus</ComboBoxItem>
-                        <ComboBoxItem>Train</ComboBoxItem>
+                    <ComboBox x:Name="cmbPlate"
+                              Style="{StaticResource CustomComboBoxStyle}"
+                              Margin="0,5,0,0"
+                              Padding="20,0,0,0"
+                              Background="#353340"
+                              SelectedValuePath="Id">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                           Foreground="White"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
                     </ComboBox>
-
-                    <TextBlock Text="Start Point"
-                         Foreground="DarkGray"
-                         FontSize="12"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                             
-                         Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditStartPoint"
-                        FontSize="13"
-                        FontWeight="Medium"
-                        FontFamily="Montserrat"                            
-                        Foreground="White"
-                        CaretBrush="LightGray"
-                        BorderBrush="DarkGray"
-                        BorderThickness="0,0,0,2"
-                        Height="28"
-                        VerticalContentAlignment="Center"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                                    AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
-
-                    <TextBlock Text="End Point"
-                         Foreground="DarkGray"
-                         FontSize="12"
-                         FontWeight="Medium"
-                         FontFamily="Montserrat"                             
-                         Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditEndPoint"
-                        FontSize="13"
-                        FontWeight="Medium"
-                        FontFamily="Montserrat"                            
-                        Foreground="White"
-                        CaretBrush="LightGray"
-                        BorderBrush="DarkGray"
-                        BorderThickness="0,0,0,2"
-                        Height="28"
-                        VerticalContentAlignment="Center"
-                        Margin="0,5,0,0"
-                        Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                                    AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
-
-                    <TextBlock Text="Departure Time (yyyy-MM-dd HH:mm:ss)"
-                               Foreground="DarkGray"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               FontFamily="Montserrat"                             
-                               Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditDepartureTime"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                            
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalContentAlignment="Center"
-                             Margin="0,5,0,0"
-                             Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
-
-                    <TextBlock Text="Arrival Time (yyyy-MM-dd HH:mm:ss)"
-                               Foreground="DarkGray"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               FontFamily="Montserrat"                             
-                               Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditArrivalTime"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                            
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalContentAlignment="Center"
-                             Margin="0,5,0,0"
-                             Padding="20,0,0,0">
-                        <TextBox.Background>
-                            <ImageBrush Stretch="None"
-                AlignmentX="Left"/>
-                        </TextBox.Background>
-                    </TextBox>
-                    <TextBlock Text="Price"
+                    <TextBlock Text="Điểm khởi hành"
                            Foreground="DarkGray"
                            FontSize="12"
                            FontWeight="Medium"
                            FontFamily="Montserrat"                             
                            Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditPrice"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                            
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalContentAlignment="Center"
-                             Margin="0,5,0,0"
-                             Padding="20,0,0,0">
+                    <ComboBox x:Name="cmbStartPoint"
+                              Style="{StaticResource CustomComboBoxStyle}"
+                              Margin="0,5,0,0"
+                              Padding="20,0,0,0"
+                              SelectedValuePath="Id"
+                              Background="#353340">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                           Foreground="White"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+
+                    <TextBlock Text="Điểm đến"
+                           Foreground="DarkGray"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Montserrat"                             
+                           Margin="0,15,0,0"/>
+                    <ComboBox x:Name="cmbEndPoint"
+                              Style="{StaticResource CustomComboBoxStyle}"
+                              Margin="0,5,0,0"
+                              Padding="20,0,0,0"
+                              SelectedValuePath="Id"
+                              Background="#353340">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" 
+                                           Foreground="White"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource CustomComboBoxItemStyle}"/>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+
+                    <Grid Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Departure Time -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Thời gian khởi hành"
+                                   Foreground="DarkGray"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   FontFamily="Montserrat"/>
+                            <materialDesign:DialogHost>
+
+                                <materialDesign:DialogHost.DialogContent>
+                                    <Grid Margin="-1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                            <Calendar x:Name="Calendar" Margin="-1,-4,-1,0"/>
+                                            <materialDesign:Clock x:Name="Clock" Is24Hours="True"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1"
+                                                Margin="8"
+                                                HorizontalAlignment="Right"
+                                                Orientation="Horizontal">
+                                            <Button Content="CANCEL"
+                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                Style="{StaticResource MaterialDesignFlatButton}"/>
+                                            <Button Content="OK"
+                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Click="BtnSelectDateTime_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:DialogHost.DialogContent>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="txtSelectedDateTime"
+                                           VerticalAlignment="Center"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Foreground="White"/>
+                                    <Button Style="{StaticResource calendarButton}"   
+                                        Margin="5 0 0 0"
+                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                        <fa:IconImage Icon="CalendarAlt" 
+                                                  Width="17"
+                                                  Foreground="White"/>
+                                    </Button>
+                                </StackPanel>
+
+                            </materialDesign:DialogHost>
+                        </StackPanel>
+
+                        <!-- Arrival Time -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Dự kiến đến"
+                                   Foreground="DarkGray"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   FontFamily="Montserrat"/>
+                            <materialDesign:DialogHost>
+
+                                <materialDesign:DialogHost.DialogContent>
+                                    <Grid Margin="-1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                            <Calendar x:Name="ArrivalCalendar" Margin="-1,-4,-1,0"/>
+                                            <materialDesign:Clock x:Name="ArrivalClock" Is24Hours="True"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1"
+                                                Margin="8"
+                                                HorizontalAlignment="Right"
+                                                Orientation="Horizontal">
+                                            <Button Content="CANCEL"
+                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                Style="{StaticResource MaterialDesignFlatButton}"/>
+                                            <Button x:Name="BtnSelectArrivalDateTime"
+                                                Content="OK"
+                                                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Click="BtnSelectArrivalDateTime_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:DialogHost.DialogContent>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="txtSelectedArrivalDateTime"
+                                           VerticalAlignment="Center"
+                                           FontSize="13"
+                                           FontFamily="Montserrat"
+                                           Foreground="White"/>
+                                    <Button Style="{StaticResource calendarButton}"
+                                        Margin="5 0 0 0"
+                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                        <fa:IconImage Icon="CalendarAlt" 
+                                                  Width="17"
+                                                  Foreground="White"/>
+                                    </Button>
+                                </StackPanel>
+
+                            </materialDesign:DialogHost>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Giá tiền"
+                           Foreground="DarkGray"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Montserrat"                             
+                           Margin="0,15,0,0"/>
+                    <TextBox x:Name="txtPrice"
+                         FontSize="13"
+                         FontWeight="Medium"
+                         FontFamily="Montserrat"                            
+                         Foreground="White"
+                         CaretBrush="LightGray"
+                         BorderBrush="DarkGray"
+                         BorderThickness="0,0,0,2"
+                         Height="28"
+                         VerticalContentAlignment="Center"
+                         Margin="0,5,0,0"
+                         Padding="20,0,0,0">
                         <TextBox.Background>
                             <ImageBrush Stretch="None"
-                                        AlignmentX="Left"/>
+                                    AlignmentX="Left"/>
                         </TextBox.Background>
                     </TextBox>
 
-                    <TextBlock Text="Quantity"
-                               Foreground="DarkGray"
-                               FontSize="12"
-                               FontWeight="Medium"
-                               FontFamily="Montserrat"                             
-                               Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtEditQuantity"
-                             FontSize="13"
-                             FontWeight="Medium"
-                             FontFamily="Montserrat"                            
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,2"
-                             Height="28"
-                             VerticalContentAlignment="Center"
-                             Margin="0,5,0,0"
-                             Padding="20,0,0,0">
+                    <TextBlock Text="Số lượng"
+                           Foreground="DarkGray"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Montserrat"                             
+                           Margin="0,15,0,0"/>
+                    <TextBox x:Name="txtQuantity"
+                         FontSize="13"
+                         FontWeight="Medium"
+                         FontFamily="Montserrat"                            
+                         Foreground="White"
+                         CaretBrush="LightGray"
+                         BorderBrush="DarkGray"
+                         BorderThickness="0,0,0,2"
+                         Height="28"
+                         VerticalContentAlignment="Center"
+                         Margin="0,5,0,0"
+                         Padding="20,0,0,0">
                         <TextBox.Background>
                             <ImageBrush Stretch="None"
                                     AlignmentX="Left"/>
@@ -248,15 +330,15 @@
                     </TextBox>
 
                     <Button x:Name="btnSubmit"                          
-                            BorderThickness="0"
-                            Content="SUBMIT"
-                            Foreground="White"
-                            FontSize="12"
-                            FontFamily="Montserrat"
-                            Cursor="Hand"                           
-                            Margin="0,20,0,0"
-                            Click="btnSubmit_Click"
-                            IsDefault="True">
+                        BorderThickness="0"
+                        Content="CONFIRM"
+                        Foreground="White"
+                        FontSize="12"
+                        FontFamily="Montserrat"
+                        Cursor="Hand"                           
+                        Margin="0,20,0,0"
+                        Click="btnSubmit_Click"
+                        IsDefault="True">
                         <Button.Template>
                             <ControlTemplate TargetType="{x:Type Button}">
                                 <Border Width="150" Height="40"
@@ -269,6 +351,12 @@
                         </Button.Template>
                     </Button>
                 </StackPanel>
+                <Controls:CircularLoadingControl  x:Name="_circularLoadingControl"
+                                                  HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Top" 
+                                                  Height="500" Width="500" 
+                                                  Visibility="Collapsed"
+                                                  Grid.RowSpan="2"/>
             </Grid>
         </Border>
     </Border>

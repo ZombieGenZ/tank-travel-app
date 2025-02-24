@@ -546,5 +546,10 @@ namespace TiketManagementV2.View
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void btnReload_Click(object sender, RoutedEventArgs e)
+        {
+            Reload();
+        }
     }
 }
