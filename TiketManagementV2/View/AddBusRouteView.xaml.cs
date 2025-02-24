@@ -81,8 +81,35 @@ namespace TiketManagementV2.View
 
             txtSelectedArrivalDateTime.Text = selectedDate.ToString("HH:mm dd/MM/yyyy");
 
-            LoadManagedVehicles();
-            LoadLocation();
+            LoadAllDataAsync();
+        }
+
+        private async Task LoadAllDataAsync()
+        {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
+                var tasks = new[]
+                {
+                    LoadManagedVehicles(),
+                    LoadLocation()
+                };
+
+                await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification(
+                    "Error",
+                    "Lỗi khi tải dử liệu: " + ex.Message,
+                    NotificationType.Error
+                );
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
         }
 
         private async Task<dynamic> GetManagedVehicleData()
@@ -339,7 +366,7 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            dynamic data = await CreateBusRoute((string)plate.Id, (string)start.Name, (string)end.Name,
+            dynamic data = await CreateBusRoute((string)plate.Id, (string)start.Id, (string)end.Id,
                 startTime.ToString("o"),
                 endTime.ToString("o"), price, quate);
 

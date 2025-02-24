@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:TiketManagementV2.View"
         xmlns:Controls="clr-namespace:TiketManagementV2.Controls" x:Class="TiketManagementV2.View.EditBusRouteView"
         mc:Ignorable="d"
-        Title="EditBusRouteView" Height="600" Width="500"
+        Title="EditBusRouteView" Height="500" Width="500"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -45,7 +45,7 @@
                         <ColumnDefinition Width="5"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="ADD BUS ROUTE"
+                    <TextBlock Text="EDIT BUS ROUTE"
                          Foreground="DarkGray"
                          FontSize="10"
                          FontFamily="Monsterrat"

@@ -209,8 +209,8 @@ namespace TiketManagementV2.ViewModel
 
         private void EditBusRoute(object obj)
         {
-            var editBusRouteView = new EditBusRouteView(_notificationService);
-            editBusRouteView.Show();
+            //var editBusRouteView = new EditBusRouteView(_notificationService);
+            //editBusRouteView.Show();
         }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

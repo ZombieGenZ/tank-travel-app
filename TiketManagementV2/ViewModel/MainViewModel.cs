@@ -175,7 +175,7 @@ namespace TiketManagementV2.ViewModel
             {
                 return;
             }
-            CurrentView = new BusRouteView();
+            CurrentView = new BusRouteView(_circularLoadingControl);
         }
         private void ExecuteShowMailView(object obj)
         {

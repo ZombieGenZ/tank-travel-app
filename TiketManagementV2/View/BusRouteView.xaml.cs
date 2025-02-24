@@ -180,12 +180,15 @@ namespace TiketManagementV2.View
         {
             var addBusRouteView = new AddBusRouteView();
             addBusRouteView.ShowDialog();
-            await Reload();
+            Reload();
         }
 
-        public BusRouteView()
+        private CircularLoadingControl _circularLoadingControl;
+
+        public BusRouteView(CircularLoadingControl loading)
         {
             InitializeComponent();
+            _circularLoadingControl = loading;
             _notificationService = new NotificationService();
             _SessionTime = DateTime.Now.ToString("o");
             _service = new ApiServices();
@@ -219,8 +222,8 @@ namespace TiketManagementV2.View
                 {
                     if (isDelete)
                     {
-                        await DeleteBusRoute(busRoute.Id);
-                        await Reload();
+                        await LDeleteBusRoute(busRoute);
+                        Reload();
                     }
                 };
                 dialog.ShowDialog();
@@ -253,11 +256,11 @@ namespace TiketManagementV2.View
             }
         }
 
-        private async Task LDeleteBusRoute(Vehicle vehicle)
+        private async Task LDeleteBusRoute(BusRoute vehicle)
         {
             try
             {
-                //_circularLoadingControl.Visibility = Visibility.Visible;
+                _circularLoadingControl.Visibility = Visibility.Visible;
 
                 dynamic data = await DeleteBusRoute(vehicle.Id);
 
@@ -268,7 +271,7 @@ namespace TiketManagementV2.View
                         "Không thể kết nối đến máy chủ",
                         NotificationType.Warning
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -280,7 +283,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Warning
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -295,7 +298,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Warning
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -313,7 +316,7 @@ namespace TiketManagementV2.View
                             NotificationType.Warning
                         );
                     }
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -328,7 +331,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Success
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
@@ -341,7 +344,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Error
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -351,16 +354,16 @@ namespace TiketManagementV2.View
                     ex.Message,
                     NotificationType.Error
                 );
-                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
                 throw;
             }
             finally
             {
-                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
-        private async Task Reload()
+        private async void Reload()
         {
             _SessionTime = DateTime.Now.ToString("o");
             _Current = 0;
@@ -400,7 +403,7 @@ namespace TiketManagementV2.View
         {
             try
             {
-                //_circularLoadingControl.Visibility = Visibility.Visible;
+                _circularLoadingControl.Visibility = Visibility.Visible;
 
                 dynamic data = await GetBusRoute();
 
@@ -484,7 +487,7 @@ namespace TiketManagementV2.View
             }
             finally
             {
-                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -535,10 +538,14 @@ namespace TiketManagementV2.View
             CanLoadMore = filteredBusRoutes.Count < BusRoutes.Count;
         }
 
-        private void EditBusRoute(object obj)
+        private async void EditBusRoute(object obj)
         {
-            var editBusRouteView = new EditBusRouteView(_notificationService);
-            editBusRouteView.Show();
+            if (obj is BusRoute busRoute)
+            {
+                var editBusRouteView = new EditBusRouteView(busRoute, _notificationService);
+                editBusRouteView.ShowDialog();
+                Reload();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
