@@ -86,17 +86,26 @@ namespace TiketManagementV2.View
 
             LoadAllDataAsync();
 
-            //DateTime startTime = new DateTime();
-            //DateTime endTime = new DateTime();
+            DateTime startTime = DateTime.ParseExact(_busRoute.DepartureTime, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime endTime = DateTime.ParseExact(_busRoute.ArrivalTime, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
-            
+            Calendar.SelectedDate = startTime.Date;
+            Clock.Time = startTime;
+            txtSelectedDateTime.Text = startTime.ToString("HH:mm dd/MM/yyyy");
+
+            ArrivalCalendar.SelectedDate = endTime.Date;
+            ArrivalClock.Time = endTime;
+            txtSelectedArrivalDateTime.Text = endTime.ToString("HH:mm dd/MM/yyyy");
+
+            txtPrice.Text = busRoute.Price.ToString();
+            txtQuantity.Text = busRoute.Quantity.ToString();
         }
 
         private async Task LoadAllDataAsync()
         {
+            _circularLoadingControl.Visibility = Visibility.Visible;
             try
             {
-                _circularLoadingControl.Visibility = Visibility.Visible;
 
                 var tasks = new[]
                 {
@@ -105,6 +114,8 @@ namespace TiketManagementV2.View
                 };
 
                 await Task.WhenAll(tasks);
+
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
@@ -113,9 +124,6 @@ namespace TiketManagementV2.View
                     "Lỗi khi tải dử liệu: " + ex.Message,
                     NotificationType.Error
                 );
-            }
-            finally
-            {
                 _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
@@ -184,8 +192,11 @@ namespace TiketManagementV2.View
             LocationItem sItem = StartPointItems.FirstOrDefault(l => l.Id == _busRoute.StartPoint);
             LocationItem eItem = EndPointItems.FirstOrDefault(l => l.Id == _busRoute.EndPoint);
 
-            cmbStartPoint.SelectedValue = sItem.Id;
-            cmbEndPoint.SelectedValue = eItem.Id;
+            if (sItem != null || eItem != null)
+            {
+                cmbStartPoint.SelectedValue = sItem.Id;
+                cmbEndPoint.SelectedValue = eItem.Id;
+            }
         }
 
         public async Task LoadManagedVehicles()
@@ -298,9 +309,203 @@ namespace TiketManagementV2.View
             this.Close();
         }
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async Task<dynamic> CreateBusRoute(string bus_route_id, string vehicle_id, string start_point, string end_point, string departure_time, string arrival_time, int price, int quantity)
         {
-            
+            try
+            {
+                Dictionary<string, string> busRouteHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var busRouteBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    bus_route_id,
+                    vehicle_id,
+                    start_point,
+                    end_point,
+                    departure_time,
+                    arrival_time,
+                    price,
+                    quantity
+                };
+
+                dynamic data = await _service.PutWithHeaderAndBodyAsync("api/bus-route/update", busRouteHeader, busRouteBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async void btnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            _circularLoadingControl.Visibility = Visibility.Visible;
+            dynamic plate = cmbPlate.SelectedItem;
+            dynamic start = cmbStartPoint.SelectedItem;
+            dynamic end = cmbEndPoint.SelectedItem;
+            dynamic startTimeStr = txtSelectedDateTime.Text;
+            dynamic endTimeStr = txtSelectedArrivalDateTime.Text;
+            DateTime startTime = new DateTime();
+            DateTime endTime = new DateTime();
+            DateTime now = DateTime.Now;
+            string pricee = txtPrice.Text;
+            string quatee = txtQuantity.Text;
+
+            int price = 0;
+            int quate = 0;
+
+            if (plate == null || start == null || end == null || !DateTime.TryParseExact(startTimeStr,
+                    "HH:mm dd/MM/yyyy",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out startTime) || !DateTime.TryParseExact(endTimeStr,
+                    "HH:mm dd/MM/yyyy",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out endTime) || !int.TryParse(pricee, out price) || !int.TryParse(quatee, out quate))
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Vui lòng điền đầy đủ thông tin",
+                    NotificationType.Warning
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (now > startTime || now > endTime)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Thời gian khởi hành và thời gian tới dự kiến phải lớn hơn thời gian hiện tại",
+                    NotificationType.Warning
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (startTime > endTime)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Thời gian khởi hành không được bé hơn thời gian đến dự kiến",
+                    NotificationType.Warning
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (start.Name == end.Name)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Điểm khởi hành và điểm đến không được trùng nhau",
+                    NotificationType.Warning
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (quate < 0)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Số lượng phải lớn hơn 0",
+                    NotificationType.Warning
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (price < 0)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Giá vé phải lớn hơn 0",
+                    NotificationType.Warning
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            dynamic data = await CreateBusRoute(_busRoute.Id, (string)plate.Id, (string)start.Id, (string)end.Id,
+                startTime.ToString("o"),
+                endTime.ToString("o"), price, quate);
+
+            if (data == null)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    "Không thể kết nối đến máy chủ",
+                    NotificationType.Error
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                data.message == "Refresh token không hợp lệ")
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    (string)data.message,
+                    NotificationType.Error
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            Properties.Settings.Default.access_token = data.authenticate.access_token;
+            Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+            Properties.Settings.Default.Save();
+
+            if (data.message == "Bạn không có quyền thực hiện hành động này")
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    (string)data.message,
+                    NotificationType.Error
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (data.message == "Lỗi dữ liệu đầu vào")
+            {
+                foreach (dynamic item in data.errors)
+                {
+                    _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                        NotificationType.Warning);
+                }
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            if (data.message == "Cập nhật thông tin tuyến thành công!")
+            {
+                _notificationService.ShowNotification(
+                    "Thành công",
+                    (string)data.message,
+                    NotificationType.Success
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                Close();
+                return;
+            }
+            else
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi",
+                    (string)data.message,
+                    NotificationType.Error
+                );
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
         }
 
         private bool IsValidDateTime(string input, out string formattedDateTime)

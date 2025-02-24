@@ -102,6 +102,8 @@ namespace TiketManagementV2.View
         {
             var addVehicleView = new AddVehicleView(this);
             addVehicleView.ShowDialog();
+            _circularLoadingControl.Visibility = Visibility.Visible;
+            await Task.Delay(1000);
             await Reload();
         }
 
@@ -267,7 +269,8 @@ namespace TiketManagementV2.View
             {
                 var editVehicle = new EditVehicleView(vehicle);
                 editVehicle.ShowDialog();
-
+                _circularLoadingControl.Visibility = Visibility.Visible;
+                await Task.Delay(1000);
                 await Reload();
 
             }
@@ -544,7 +547,7 @@ namespace TiketManagementV2.View
 
         public async Task Reload()
         {
-            _managementSessionTime = DateTime.Now.AddSeconds(5).ToString("o");
+            _managementSessionTime = DateTime.Now.AddSeconds(10).ToString("o");
             _managementCurrent = 0;
             ManagedVehicles.Clear();
             ManagedFilteredVehicles.Clear();

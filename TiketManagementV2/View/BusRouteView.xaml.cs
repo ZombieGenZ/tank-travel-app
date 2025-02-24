@@ -180,6 +180,8 @@ namespace TiketManagementV2.View
         {
             var addBusRouteView = new AddBusRouteView();
             addBusRouteView.ShowDialog();
+            _circularLoadingControl.Visibility = Visibility.Visible;
+            await Task.Delay(1000);
             Reload();
         }
 
@@ -365,7 +367,7 @@ namespace TiketManagementV2.View
 
         private async void Reload()
         {
-            _SessionTime = DateTime.Now.ToString("o");
+            _SessionTime = DateTime.Now.AddSeconds(10).ToString("o");
             _Current = 0;
             busRoutes.Clear();
 
@@ -544,6 +546,8 @@ namespace TiketManagementV2.View
             {
                 var editBusRouteView = new EditBusRouteView(busRoute, _notificationService);
                 editBusRouteView.ShowDialog();
+                _circularLoadingControl.Visibility = Visibility.Visible;
+                await Task.Delay(1000);
                 Reload();
             }
         }
