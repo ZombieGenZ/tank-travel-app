@@ -290,6 +290,7 @@
             x:Name="LoadingControl"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"/>
+            VerticalAlignment="Stretch"
+            Visibility="Collapsed"/>
     </Grid>
 </Window>

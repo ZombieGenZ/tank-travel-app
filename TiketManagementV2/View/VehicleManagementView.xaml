@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              xmlns:local="clr-namespace:TiketManagementV2.View"
-             xmlns:Controls="clr-namespace:TiketManagementV2.Controls" x:Class="TiketManagementV2.View.VehicleManagementView"
+             xmlns:Controls="clr-namespace:TiketManagementV2.Controls" 
+             x:Class="TiketManagementV2.View.VehicleManagementView"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>

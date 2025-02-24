@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Routing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,9 +16,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TiketManagementV2.Commands;
+using TiketManagementV2.Controls;
 using TiketManagementV2.Model;
 using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
+using static TiketManagementV2.View.BusCensorView;
 
 namespace TiketManagementV2.View
 {
@@ -29,13 +32,15 @@ namespace TiketManagementV2.View
         private int _itemsToLoad = 20;
         private ObservableCollection<BusRoute> _filteredBusRoutes;
         private bool _canLoadMore;
-        private string _managementSessionTime;
+        private string _SessionTime;
         private ApiServices _service;
         private INotificationService _notificationService;
         private ObservableCollection<BusRoute> BusRoutes;
+        private int _Current = 0;
+
         public ObservableCollection<BusRoute> busRoutes
         {
-            get { return busRoutes; }
+            get { return BusRoutes; }
             set { BusRoutes = value; OnPropertyChanged(nameof(busRoutes)); }
         }
         public ObservableCollection<BusRoute> filteredBusRoutes
@@ -50,10 +55,22 @@ namespace TiketManagementV2.View
             set { _canLoadMore = value; OnPropertyChanged(nameof(CanLoadMore)); }
         }
 
+        private string _SearchText;
+        public string SearchText
+        {
+            get { return _SearchText; }
+            set
+            {
+                _SearchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                FilterManagedVehicles();
+            }
+        }
+
         public class BusRoute : INotifyPropertyChanged
         {
             private string id;
-            private string vehicle;
+            private string plate;
             private string startPoint;
             private string endPoint;
             private string departureTime;
@@ -71,31 +88,17 @@ namespace TiketManagementV2.View
                     OnPropertyChanged(nameof(Id));
                 }
             }
-            public string Vehicle
-            {
-                get
-                {
-                    if (vehicle == "0")
-                    {
-                        return "Bus";
-                    }
-                    if (vehicle == "1")
-                    {
-                        return "Train";
-                    }
-                    if (vehicle == "2")
-                    {
-                        return "Plane";
-                    }
 
-                    return "Unknown";
-                }
+            public string Plate
+            {
+                get => plate;
                 set
                 {
-                    vehicle = value;
-                    OnPropertyChanged(nameof(Vehicle));
+                    id = value;
+                    OnPropertyChanged(nameof(Plate));
                 }
             }
+
             public string StartPoint
             {
                 get => startPoint;
@@ -177,11 +180,10 @@ namespace TiketManagementV2.View
         {
             InitializeComponent();
             _notificationService = new NotificationService();
-            BusRoutes = new ObservableCollection<BusRoute>
-            {
-                new BusRoute {Vehicle = "0", StartPoint = "Doe", EndPoint = "123456789",DepartureTime = "11-11-2000", ArrivalTime = "11-11-2000", Price = 500000, Quantity = 50, Sold = 0},
+            _SessionTime = DateTime.Now.ToString("o");
+            _service = new ApiServices();
 
-            };
+            BusRoutes = new ObservableCollection<BusRoute>();
 
             filteredBusRoutes = new ObservableCollection<BusRoute>(BusRoutes.Take(_itemsToLoad));
             CanLoadMore = BusRoutes.Count > _itemsToLoad;
@@ -190,9 +192,142 @@ namespace TiketManagementV2.View
             BanCommand = new RelayCommandGeneric<BusRoute>(RemoveBusRoute);
             LoadMoreCommand = new RelayCommandGeneric<BusRoute>(_ => LoadMore());
             AddCommand = new RelayCommand(ExecuteAddCommand);
+            DataContext = this;
+
+            busRoutes.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(busRoutes));
+            };
 
         }
 
+        private async Task<dynamic> GetBusRoute()
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> getBusRouteDataHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var getBusRouteDataBody = new
+                {
+                    refresh_token,
+                    session_time = _SessionTime,
+                    current = _Current
+                };
+
+                return await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-bus-route", getBusRouteDataHeader, getBusRouteDataBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public async Task LoadManagedVehicles()
+        {
+            try
+            {
+                //_circularLoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await GetBusRoute();
+
+                if (data == null || data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ" ||
+                    data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    _notificationService.ShowNotification("Error", data?.message ?? "Error loading data",
+                        NotificationType.Error);
+                    return;
+                }
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                            NotificationType.Warning);
+                    }
+
+                    return;
+                }
+
+                if (data.message == "Lấy thông tin tuyến thất bại")
+                {
+                    _notificationService.ShowNotification("Error", (string)data.message, NotificationType.Warning);
+                    return;
+                }
+
+                if (data.result.message == "Không tìm thấy kết quả phù hợp")
+                {
+                    // hiển thị không tìm thấy kết quả phù hợp
+                    return;
+                }
+
+                foreach (dynamic item in data.result.get_bus_route)
+                {
+                    busRoutes.Add(new BusRoute()
+                    {
+                        Id = item._id,
+                        Plate = item.vehicle_id,
+                        StartPoint = item.start_point,
+                        EndPoint = item.end_point,
+                        DepartureTime = item.departure_time,
+                        ArrivalTime = item.arrival_time,
+                        Price = item.price,
+                        Quantity = item.quantity
+                    });
+                }
+
+                _Current = data.result.current;
+
+                if ((bool)data.result.continued)
+                {
+
+                    LoadBusRoute.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LoadBusRoute.Visibility = Visibility.Collapsed;
+                }   
+
+                FilterManagedVehicles();
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
+            }
+            finally
+            {
+                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void FilterManagedVehicles()
+        {
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                filteredBusRoutes = new ObservableCollection<BusRoute>(busRoutes.Take(_itemsToLoad));
+            }
+            else
+            {
+                //var filteredList = SearchText.Where(v =>
+                //    v.VehicleType.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                //    v.LicensePlate.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+
+                //_filteredBusRoutes = new ObservableCollection<BusRoute>(filteredList);
+            }
+
+            CanLoadMore = _filteredBusRoutes.Count < BusRoutes.Count;
+        }
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is BusRouteViewModel viewModel)

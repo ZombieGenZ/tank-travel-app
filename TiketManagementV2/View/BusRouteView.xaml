@@ -36,11 +36,11 @@
                  TextChanged="SearchTextBox_TextChanged"/>
 
                     <TextBlock x:Name="SearchPlaceholder"
-                   Text="Search..."
-                   Foreground="Gray"
-                   VerticalAlignment="Center"
-                   Margin="5,0,0,0"
-                   IsHitTestVisible="False"/>
+                               Text="Search..."
+                               Foreground="Gray"
+                               VerticalAlignment="Center"
+                               Margin="5,0,0,0"
+                               IsHitTestVisible="False"/>
                 </Grid>
 
                 <Button x:Name="AddButton"
@@ -74,7 +74,7 @@
                 Padding="10">
             <Grid>
                 <!-- DataGrid -->
-                <DataGrid ItemsSource="{Binding filteredBusRoutes}" 
+                <DataGrid ItemsSource="{Binding busRoutes}" 
                          Style="{StaticResource TransparentDataGrid}" 
                          Height="600" 
                          VerticalAlignment="Top">
@@ -142,6 +142,7 @@
 
                 <!-- TextBlock Load More -->
                 <TextBlock Text="Load More"
+                           x:Name="LoadBusRoute"
                            FontSize="15"
                            FontFamily="Montserrat"
                            Cursor="Hand"
