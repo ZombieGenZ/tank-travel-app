@@ -29,7 +29,7 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class BusRouteView : UserControl, INotifyPropertyChanged
     {
-        private int _itemsToLoad = 20;
+        private int _itemsToLoad = 2;
         private ObservableCollection<BusRoute> _filteredBusRoutes;
         private bool _canLoadMore;
         private string _SessionTime;
@@ -175,6 +175,12 @@ namespace TiketManagementV2.View
         public ICommand LoadMoreCommand { get; }
 
         public ICommand AddCommand { get; }
+
+        private void ExecuteAddCommand(object obj)
+        {
+            var addBusRouteView = new AddBusRouteView();
+            addBusRouteView.Show();
+        }
 
         public BusRouteView()
         {
@@ -336,11 +342,6 @@ namespace TiketManagementV2.View
             }
         }
 
-        private void ExecuteAddCommand(object obj)
-        {
-            var addBusRouteView = new AddBusRouteView();
-            addBusRouteView.Show();
-        }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -364,7 +365,12 @@ namespace TiketManagementV2.View
         }
         private void RemoveBusRoute(BusRoute busRoute)
         {
-
+            if (busRoute != null)
+            {
+                filteredBusRoutes.Remove(busRoute);
+                BusRoutes.Remove(busRoute);
+                CanLoadMore = filteredBusRoutes.Count < BusRoutes.Count;
+            }
         }
 
         private void EditBusRoute(object obj)

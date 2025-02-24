@@ -75,6 +75,7 @@
             <Grid>
                 <!-- DataGrid -->
                 <DataGrid ItemsSource="{Binding busRoutes}" 
+                <DataGrid x:Name="dgv"
                          Style="{StaticResource TransparentDataGrid}" 
                          Height="600" 
                          VerticalAlignment="Top">
@@ -146,6 +147,7 @@
                            FontSize="15"
                            FontFamily="Montserrat"
                            Cursor="Hand"
+                           x:Name="loadMore"
                            Foreground="White"
                            VerticalAlignment="Bottom"
                            Style="{StaticResource TextBlockLoadMore}"
