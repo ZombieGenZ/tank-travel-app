@@ -74,7 +74,6 @@
                 Padding="10">
             <Grid>
                 <!-- DataGrid -->
-                <DataGrid ItemsSource="{Binding busRoutes}" 
                 <DataGrid x:Name="dgv"
                          Style="{StaticResource TransparentDataGrid}" 
                          Height="600" 
@@ -95,7 +94,7 @@
                         <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomColumnHeader}"/>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Vehicle}" Header="Vehicle"/>
+                        <DataGridTextColumn Binding="{Binding Plate}" Header="Plate"/>
                         <DataGridTextColumn Binding="{Binding StartPoint}" Header="Start Point"/>
                         <DataGridTextColumn Binding="{Binding EndPoint}" Header="End Point"/>
                         <DataGridTextColumn Binding="{Binding DepartureTime}" Header="Departure Time"/>
@@ -147,12 +146,10 @@
                            FontSize="15"
                            FontFamily="Montserrat"
                            Cursor="Hand"
-                           x:Name="loadMore"
                            Foreground="White"
                            VerticalAlignment="Bottom"
                            Style="{StaticResource TextBlockLoadMore}"
-                           MouseDown="TextBlock_MouseDown"
-                           Visibility="{Binding CanLoadMore, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                           MouseDown="TextBlock_MouseDown"/>
 
             </Grid>
         </Border>

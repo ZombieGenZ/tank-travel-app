@@ -253,11 +253,11 @@ namespace TiketManagementV2.View
             dynamic plate = cmbPlate.SelectedItem;
             dynamic start = cmbStartPoint.SelectedItem;
             dynamic end = cmbEndPoint.SelectedItem;
-            dynamic startTimeStr = txtSelectedArrivalDateTime.Text;
-            dynamic endTimeStr = txtSelectedDateTime.Text;
+            dynamic startTimeStr = txtSelectedDateTime.Text;
+            dynamic endTimeStr = txtSelectedArrivalDateTime.Text;
             DateTime startTime = new DateTime();
             DateTime endTime = new DateTime();
-            DateTime now = new DateTime();
+            DateTime now = DateTime.Now;
             string pricee = txtPrice.Text;
             string quatee = txtQuantity.Text;
 
@@ -282,7 +282,7 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            if (now < startTime || now < endTime)
+            if (now > startTime || now > endTime)
             {
                 _notificationService.ShowNotification(
                     "Lỗi",

@@ -94,7 +94,7 @@ namespace TiketManagementV2.View
                 get => plate;
                 set
                 {
-                    id = value;
+                    plate = value;
                     OnPropertyChanged(nameof(Plate));
                 }
             }
@@ -176,10 +176,11 @@ namespace TiketManagementV2.View
 
         public ICommand AddCommand { get; }
 
-        private void ExecuteAddCommand(object obj)
+        private async void ExecuteAddCommand(object obj)
         {
             var addBusRouteView = new AddBusRouteView();
-            addBusRouteView.Show();
+            addBusRouteView.ShowDialog();
+            await Reload();
         }
 
         public BusRouteView()
@@ -205,6 +206,167 @@ namespace TiketManagementV2.View
                 OnPropertyChanged(nameof(busRoutes));
             };
 
+            LoadManagedBusRoute();
+
+        }
+
+        private async void RemoveBusRoute(BusRoute busRoute)
+        {
+            if (busRoute != null)
+            {
+                var dialog = new ConfirmationDialogView();
+                dialog.OnDialogClosed += async (isDelete) =>
+                {
+                    if (isDelete)
+                    {
+                        await DeleteBusRoute(busRoute.Id);
+                        await Reload();
+                    }
+                };
+                dialog.ShowDialog();
+            }
+        }
+
+        private async Task<dynamic> DeleteBusRoute(string id)
+        {
+            try
+            {
+                Dictionary<string, string> busRouteHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+
+                var busRouteBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    bus_route_id = id,
+                };
+
+                dynamic data = await _service.DeleteWithHeaderAndBodyAsync("api/bus-route/delete", busRouteHeader, busRouteBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task LDeleteBusRoute(Vehicle vehicle)
+        {
+            try
+            {
+                //_circularLoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await DeleteBusRoute(vehicle.Id);
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Không thể kết nối đến máy chủ",
+                        NotificationType.Warning
+                    );
+                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi kiểu dử liệu đầu vào",
+                            (string)item.Value.msg,
+                            NotificationType.Warning
+                        );
+                    }
+                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Xóa thông tin tuyến thành công!")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Thành công",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lõi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification(
+                    "Lỗi!",
+                    ex.Message,
+                    NotificationType.Error
+                );
+                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                throw;
+            }
+            finally
+            {
+                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async Task Reload()
+        {
+            _SessionTime = DateTime.Now.ToString("o");
+            _Current = 0;
+            busRoutes.Clear();
+
+            await LoadManagedBusRoute();
         }
 
         private async Task<dynamic> GetBusRoute()
@@ -225,7 +387,7 @@ namespace TiketManagementV2.View
                     current = _Current
                 };
 
-                return await _service.PostWithHeaderAndBodyAsync("api/vehicle/get-bus-route", getBusRouteDataHeader, getBusRouteDataBody);
+                return await _service.PostWithHeaderAndBodyAsync("api/bus-route/get-bus-route", getBusRouteDataHeader, getBusRouteDataBody);
             }
             catch (Exception ex)
             {
@@ -234,7 +396,7 @@ namespace TiketManagementV2.View
             }
         }
 
-        public async Task LoadManagedVehicles()
+        public async Task LoadManagedBusRoute()
         {
             try
             {
@@ -242,11 +404,18 @@ namespace TiketManagementV2.View
 
                 dynamic data = await GetBusRoute();
 
-                if (data == null || data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
-                    data.message == "Refresh token không hợp lệ" ||
-                    data.message == "Bạn không có quyền thực hiện hành động này")
+                if (data == null)
                 {
-                    _notificationService.ShowNotification("Error", data?.message ?? "Error loading data",
+                    _notificationService.ShowNotification("Lỗi", "Lỗi kết nối đến áy chủ",
+                        NotificationType.Error);
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                data.message == "Refresh token không hợp lệ" ||
+                data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    _notificationService.ShowNotification("Lỗi", (string)data.message,
                         NotificationType.Error);
                     return;
                 }
@@ -278,12 +447,12 @@ namespace TiketManagementV2.View
                     return;
                 }
 
-                foreach (dynamic item in data.result.get_bus_route)
+                foreach (dynamic item in data.result.busRoute)
                 {
                     busRoutes.Add(new BusRoute()
                     {
                         Id = item._id,
-                        Plate = item.vehicle_id,
+                        Plate = item.vehicle.license_plate,
                         StartPoint = item.start_point,
                         EndPoint = item.end_point,
                         DepartureTime = item.departure_time,
@@ -303,9 +472,11 @@ namespace TiketManagementV2.View
                 else
                 {
                     LoadBusRoute.Visibility = Visibility.Collapsed;
-                }   
+                }
 
-                FilterManagedVehicles();
+                dgv.ItemsSource = busRoutes;
+
+                //FilterManagedVehicles();
             }
             catch (Exception ex)
             {
@@ -362,15 +533,6 @@ namespace TiketManagementV2.View
             }
 
             CanLoadMore = filteredBusRoutes.Count < BusRoutes.Count;
-        }
-        private void RemoveBusRoute(BusRoute busRoute)
-        {
-            if (busRoute != null)
-            {
-                filteredBusRoutes.Remove(busRoute);
-                BusRoutes.Remove(busRoute);
-                CanLoadMore = filteredBusRoutes.Count < BusRoutes.Count;
-            }
         }
 
         private void EditBusRoute(object obj)
