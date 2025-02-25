@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Quobject.SocketIoClientDotNet.Client;
 
 namespace TiketManagementV2.View
 {
@@ -20,6 +21,7 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class MailView : Window
     {
+        private Socket socket;
         public ObservableCollection<Notification> Notifications { get; set; }
 
         public MailView()
