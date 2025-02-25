@@ -55,18 +55,6 @@ namespace TiketManagementV2.View
             set { _canLoadMore = value; OnPropertyChanged(nameof(CanLoadMore)); }
         }
 
-        private string _SearchText;
-        public string SearchText
-        {
-            get { return _SearchText; }
-            set
-            {
-                _SearchText = value;
-                OnPropertyChanged(nameof(SearchText));
-                FilterManagedVehicles();
-            }
-        }
-
         public class BusRoute : INotifyPropertyChanged
         {
             private string id;
@@ -170,6 +158,17 @@ namespace TiketManagementV2.View
             }
         }
 
+        private string busrouteSearchText;
+        public string BusRouteSearchText
+        {
+            get { return busrouteSearchText; }
+            set
+            {
+                busrouteSearchText = value;
+                OnPropertyChanged(nameof(BusRouteSearchText));
+                FilterManagedVehicles();
+            }
+        }
         public ICommand EditCommand { get; }
         public ICommand BanCommand { get; }
         public ICommand LoadMoreCommand { get; }
@@ -195,16 +194,22 @@ namespace TiketManagementV2.View
             _SessionTime = DateTime.Now.ToString("o");
             _service = new ApiServices();
 
+            busrouteSearchText = string.Empty;
+
+
             BusRoutes = new ObservableCollection<BusRoute>();
 
-            filteredBusRoutes = new ObservableCollection<BusRoute>(BusRoutes.Take(_itemsToLoad));
-            CanLoadMore = BusRoutes.Count > _itemsToLoad;
+            //filteredBusRoutes = new ObservableCollection<BusRoute>(BusRoutes.Take(_itemsToLoad));
+            //CanLoadMore = BusRoutes.Count > _itemsToLoad;
 
             EditCommand = new RelayCommandGeneric<BusRoute>(EditBusRoute);
             BanCommand = new RelayCommandGeneric<BusRoute>(RemoveBusRoute);
             LoadMoreCommand = new RelayCommandGeneric<BusRoute>(_ => LoadMore());
             AddCommand = new RelayCommand(ExecuteAddCommand);
             DataContext = this;
+
+            dgv.ItemsSource = BusRoutes;
+
 
             busRoutes.CollectionChanged += (s, e) =>
             {
@@ -495,20 +500,26 @@ namespace TiketManagementV2.View
 
         private void FilterManagedVehicles()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
+            if (string.IsNullOrWhiteSpace(BusRouteSearchText))
             {
-                filteredBusRoutes = new ObservableCollection<BusRoute>(busRoutes.Take(_itemsToLoad));
+                // Nếu không có text tìm kiếm, hiển thị tất cả dữ liệu
+                dgv.ItemsSource = busRoutes;
             }
             else
             {
-                //var filteredList = SearchText.Where(v =>
-                //    v.VehicleType.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                //    v.LicensePlate.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                // Tìm kiếm theo nhiều tiêu chí
+                var filteredList = busRoutes.Where(route =>
+                    route.Plate?.IndexOf(BusRouteSearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    route.StartPoint?.IndexOf(BusRouteSearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    route.EndPoint?.IndexOf(BusRouteSearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    route.DepartureTime?.IndexOf(BusRouteSearchText, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    route.ArrivalTime?.IndexOf(BusRouteSearchText, StringComparison.OrdinalIgnoreCase) >= 0
+                ).ToList();
 
-                //_filteredBusRoutes = new ObservableCollection<BusRoute>(filteredList);
+                dgv.ItemsSource = filteredList;
             }
 
-            CanLoadMore = _filteredBusRoutes.Count < BusRoutes.Count;
+            //CanLoadMore = _filteredBusRoutes.Count < BusRoutes.Count;
         }
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -521,7 +532,11 @@ namespace TiketManagementV2.View
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+            SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            BusRouteSearchText = SearchTextBox.Text;
         }
 
         public void LoadMore()

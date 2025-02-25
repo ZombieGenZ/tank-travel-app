@@ -15,34 +15,64 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <Button x:Name="btnReload"                          
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Grid.Column="1">
+                <Grid>
+
+                    <TextBox x:Name="SearchTextBox"
+                     Width="300"
+                     Height="24"
+                     FontSize="13"
+                     Background="Transparent"
+                     Foreground="{StaticResource plainTextColor3}"
+                     BorderBrush="{StaticResource plainTextColor3}"
+                     BorderThickness="0,0,0,1"
+                     VerticalContentAlignment="Center"
+                     TextChanged="SearchTextBox_TextChanged"/>
+
+                    <TextBlock x:Name="SearchPlaceholder"
+                       Text="Search..."
+                       Foreground="Gray"
+                       VerticalAlignment="Center"
+                       Margin="5,0,0,0"
+                       IsHitTestVisible="False"/>
+                </Grid>
+
+                <Button x:Name="AddButton"
                 BorderThickness="0"
-                Foreground="White"
-                FontSize="12"
-                FontFamily="Montserrat"
-                Cursor="Hand"                           
-                Margin="0,10,5,0"
-                Click="btnReload_Click"
-                HorizontalAlignment="Right">
-                <Button.Template>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Width="110" Height="35"
-                                    CornerRadius="5"
-                                    Background="{TemplateBinding Background}">
-                            <ContentPresenter VerticalAlignment="Center"
-                                                HorizontalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
+                Padding="5"
+                Command="{Binding SeachCommand}"      
+                Style="{StaticResource hoverbutton}">
+                    <fa:IconImage Icon="Search"
+              Height="20"
+              Width="20"
+              Foreground="{StaticResource plainTextColor3}"/>
+                </Button>
+            </StackPanel>
+
+            <Button Grid.Column="0"
+            FontSize="12"
+            Command="{Binding AddCommand}"
+            FontFamily="Montserrat"
+            Cursor="Hand"
+            BorderThickness="0"
+            Foreground="White"
+            VerticalAlignment="Top"
+            Style="{StaticResource ButtonCensor}">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <fa:IconImage Icon="ArrowRotateRight" 
-                              Foreground="White" 
-                              Margin="1"
-                              Style="{StaticResource menuButtonIcon}"/>
-                    <TextBlock Text="Tải lại" 
-                           Margin="10,0,0,0" 
-                           VerticalAlignment="Center"
-                           FontWeight="Bold"/>
+                          Foreground="White" 
+                          Margin="1"
+                          Style="{StaticResource menuButtonIcon}"/>
+                    <TextBlock Text="TẢI LẠI" 
+                       Margin="5,0,0,0" 
+                       VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -62,13 +92,13 @@
             CornerRadius="10" 
             Padding="10"
             Visibility="{Binding HasItems, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid>
+            <Grid >
                 <!-- DataGrid -->
-                <DataGrid ItemsSource="{Binding Buss}"
-                      x:Name="DgvBus"
-                      Style="{StaticResource TransparentDataGrid}" 
-                      Height="600" 
-                     VerticalAlignment="Top">
+                <DataGrid ItemsSource="{Binding accounts}"
+                          x:Name="dgv"
+                          Style="{StaticResource TransparentDataGrid}" 
+                          Height="600" 
+                          VerticalAlignment="Top">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource TransparentDataGridCell}"/>
                         <Style TargetType="DataGridRow" BasedOn="{StaticResource TransparentDataGridRow}">
@@ -89,32 +119,45 @@
                         <DataGridTextColumn Binding="{Binding Name}" Header="Tên"/>
                         <DataGridTextColumn Binding="{Binding Email}" Header="Email"/>
                         <DataGridTextColumn Binding="{Binding Phone}" Header="Số điện thoại"/>
+                        <DataGridTextColumn Binding="{Binding Status}" Header="Trạng thái"/>
                         <!-- Thêm cột mới chứa các nút -->
                         <DataGridTemplateColumn Width="140">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}">
+                                        <!-- Ban Button - Show only for non-banned accounts -->
+                                        <Button Command="{Binding DataContext.BanCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding}">
                                             <Button.Style>
-                                                <Style TargetType="Button" BasedOn="{StaticResource ButtonEdit}">
+                                                <Style TargetType="Button" BasedOn="{StaticResource BanButton}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}" Value="ShowButtons">
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}" Value="ShowButtons"/>
+                                                                <Condition Binding="{Binding IsBanned}" Value="False"/>
+                                                            </MultiDataTrigger.Conditions>
                                                             <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
+                                                        </MultiDataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
                                         </Button>
 
-                                        <Button Command="{Binding DataContext.RejectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}">
+                                        <!-- Unban Button - Show only for banned accounts -->
+                                        <Button Command="{Binding DataContext.UnBanCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}">
                                             <Button.Style>
-                                                <Style TargetType="Button" BasedOn="{StaticResource ButtonBan}">
+                                                <Style TargetType="Button" BasedOn="{StaticResource UnBanButton}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}" Value="ShowButtons">
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}" Value="ShowButtons"/>
+                                                                <Condition Binding="{Binding IsBanned}" Value="True"/>
+                                                            </MultiDataTrigger.Conditions>
                                                             <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
+                                                        </MultiDataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
@@ -129,14 +172,15 @@
 
                 <!-- TextBlock Load More -->
                 <TextBlock Text="Load More"
-                       FontSize="15"
-                       FontFamily="Montserrat"
-                       Cursor="Hand"
-                       Foreground="White"
-                       VerticalAlignment="Bottom"
-                       Style="{StaticResource TextBlockLoadMore}"
-                       MouseDown="TextBlock_MouseDown"
-                       Visibility="{Binding CanLoadMore, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                           x:Name="LoadMoreAcc"
+                           FontSize="15"
+                           FontFamily="Montserrat"
+                           Cursor="Hand"
+                           Foreground="White"
+                           VerticalAlignment="Bottom"
+                           Style="{StaticResource TextBlockLoadMore}"
+                           MouseDown="TextBlock_MouseDown"
+                           Visibility="{Binding CanLoadMore, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             </Grid>
         </Border>
