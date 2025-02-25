@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Runtime.InteropServices;
-using System.Runtime;
 using System.Windows.Interop;
-using TiketManagementV2.ViewModel;
+using Newtonsoft.Json.Linq;
+using SocketIOClient;
 using TiketManagementV2.Services;
+using TiketManagementV2.ViewModel;
 using TiketManagementV2.Model;
+using SocketIO.Core;
 
 namespace TiketManagementV2.View
 {
@@ -24,16 +17,74 @@ namespace TiketManagementV2.View
     {
         private ApiServices _service;
         private dynamic _user;
+        private SocketIOClient.SocketIO socket;
+        private INotificationService _notificationService;
+
         public AdminView(dynamic user)
         {
             InitializeComponent();
             LoadingControl.Visibility = Visibility.Hidden;
-            var notificationService = new NotificationService();
+            _notificationService = new NotificationService();
             _user = user;
-            var viewModel = new MainViewModel(notificationService, _user, LoadingControl);
+            var viewModel = new MainViewModel(_notificationService, _user, LoadingControl);
             DataContext = viewModel;
             _service = new ApiServices();
+
+            InitializeSocketIO();
         }
+
+        private void InitializeSocketIO()
+        {
+            try
+            {
+                string serverUrl = Properties.Settings.Default.host;
+                socket = new SocketIOClient.SocketIO(serverUrl, new SocketIOOptions { EIO = EngineIO.V3 });
+
+                socket.OnError += (sender, e) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ: " + e,
+                            NotificationType.Error);
+                    });
+                };
+
+                socket.On("new-private-notificaton", response =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        try
+                        {
+                            dynamic data = response.GetValue<object>(0);
+                            string jsonString = data.GetRawText();
+                            var jsonObject = JObject.Parse(jsonString);
+
+                            string sender = jsonObject["sender"].ToString();
+                            string message = jsonObject["message"].ToString();
+
+                            _notificationService.ShowNotification(sender, message, NotificationType.Info);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing notification: {ex.Message}");
+                        }
+                    });
+                });
+
+                Task.Run(async () =>
+                {
+                    await socket.ConnectAsync();
+                    await socket.EmitAsync("connect-user-realtime", Properties.Settings.Default.refresh_token);
+                });
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Lỗi kết nối",
+                    $"Không thể khởi tạo kết nối Socket.IO: {ex.Message}",
+                    NotificationType.Error);
+            }
+        }
+
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
         private void pnlControlBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
