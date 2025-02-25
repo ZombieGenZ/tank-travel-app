@@ -398,6 +398,50 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="BanButton" TargetType="Button" BasedOn="{StaticResource DataGridRowButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <fa:IconImage Icon="Lock" Foreground="White" Width="16" Height="16"/>
+                            <ContentPresenter Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource color7}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource color4}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style x:Key="UnBanButton" TargetType="Button" BasedOn="{StaticResource DataGridRowButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <fa:IconImage Icon="UnlockAlt" Foreground="White" Width="16" Height="16"/>
+                            <ContentPresenter Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="{StaticResource color7}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource color4}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    
     <Style x:Key="ButtonImage" TargetType="Button" BasedOn="{StaticResource DataGridRowButton}">
         <Setter Property="Template">
             <Setter.Value>
