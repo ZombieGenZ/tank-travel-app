@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TiketManagementV2.Controls;
 using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
 
@@ -19,11 +20,11 @@ namespace TiketManagementV2.View
 {
     public partial class ProfileView : UserControl
     {
-        public ProfileView(dynamic user)
+        public ProfileView(dynamic user, CircularLoadingControl loading)
         {
             InitializeComponent();
             var notificationService = new NotificationService();
-            var viewModel = new MainViewModel(notificationService, user);
+            var viewModel = new MainViewModel(notificationService, user, loading);
             DataContext = viewModel;
         }
     }

@@ -555,6 +555,16 @@ namespace TiketManagementV2.View
             await LoadManagedVehicles();
         }
 
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            _managementSessionTime = DateTime.Now.AddSeconds(10).ToString("o");
+            _managementCurrent = 0;
+            ManagedVehicles.Clear();
+            ManagedFilteredVehicles.Clear();
+
+            await LoadManagedVehicles();
+        }
+
         //private async void Search_OnClick(object sender, RoutedEventArgs e)
         //{
         //    if (!string.IsNullOrWhiteSpace(SearchTextBox.Text))

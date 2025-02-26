@@ -58,7 +58,7 @@
 
             <Button Grid.Column="0"
             FontSize="12"
-            Command="{Binding AddCommand}"
+            Click="Reload_OnClick"
             FontFamily="Montserrat"
             Cursor="Hand"
             BorderThickness="0"

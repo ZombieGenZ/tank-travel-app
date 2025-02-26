@@ -165,17 +165,153 @@ namespace TiketManagementV2.View
 
         private async void ExecuteBanCommand(object obj)
         {
-            var banaccountview = new BanAccountView();
-            banaccountview.ShowDialog();
-            _circularLoadingControl.Visibility = Visibility.Visible;
-            await Task.Delay(1000);
-            //Reload();
+            if (obj is Account account)
+            {
+                var banaccountview = new BanAccountView(account.Id);
+                banaccountview.ShowDialog();
+                await Task.Delay(1000);
+                await Reload();
+            }
         }
+
+        private async Task<dynamic> UnBan(string user_id)
+        {
+            try
+            {
+                Dictionary<string, string> accountHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var accountBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    user_id
+                };
+
+                dynamic data = await _service.PutWithHeaderAndBodyAsync("api/account-management/unban-account", accountHeader, accountBody);
+
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async void LUnban(string user_id)
+        {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
+                dynamic data = await UnBan(user_id);
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        "Không thể kết nối đến máy chủ",
+                        NotificationType.Warning
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lỗi!",
+                        (string)data.message,
+                        NotificationType.Warning
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification(
+                            "Lỗi kiểu dử liệu đầu vào",
+                            (string)item.Value.msg,
+                            NotificationType.Warning
+                        );
+                    }
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (data.message == "Mở khóa tài khoản thành công!")
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Thành công",
+                        (string)data.message,
+                        NotificationType.Success
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Properties.Settings.Default.access_token = data.authenticate.access_token;
+                    Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                    Properties.Settings.Default.Save();
+
+                    _notificationService.ShowNotification(
+                        "Lõi!",
+                        (string)data.message,
+                        NotificationType.Error
+                    );
+                    _circularLoadingControl.Visibility = Visibility.Collapsed;
+                }
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private async void ExecuteUnBanCommand(object obj)
         {
-            var unbanaccount = new ConfirmationDialogView();
-            unbanaccount.ShowDialog();
-            _circularLoadingControl.Visibility= Visibility.Visible;
+            if (obj is Account account)
+            {
+                var dialog = new ConfirmationDialogView();
+                dialog.OnDialogClosed += async (isDelete) =>
+                {
+                    if (isDelete)
+                    {
+                        LUnban(account.Id);
+                        await Task.Delay(1000);
+                        await Reload();
+                    }
+                };
+                dialog.ShowDialog();
+            }
 
         }
         private CircularLoadingControl _circularLoadingControl;
@@ -342,6 +478,20 @@ namespace TiketManagementV2.View
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async Task Reload()
+        {
+            _SessionTime = DateTime.Now.AddSeconds(10).ToString("o");
+            _Current = 0;
+            accounts.Clear();
+
+            await LoadAccount();
+        }
+
+        private async void Reload_OnClick(object sender, RoutedEventArgs e)
+        {
+            await Reload();
         }
     }
 }

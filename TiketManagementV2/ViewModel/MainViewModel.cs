@@ -109,7 +109,7 @@ namespace TiketManagementV2.ViewModel
             {
                 return;
             }
-            CurrentView = new ProfileView(_user);
+            CurrentView = new ProfileView(_user, _circularLoadingControl);
         }
 
         private void ExecuteShowAccountView(object obj)

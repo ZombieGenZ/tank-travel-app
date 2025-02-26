@@ -20,22 +20,27 @@ using System.Globalization;
 using TiketManagementV2.ViewModel;
 using static TiketManagementV2.ViewModel.MainViewModel;
 using TiketManagementV2.Controls;
+using Newtonsoft.Json.Linq;
+using SocketIO.Core;
+using SocketIOClient;
 
 namespace TiketManagementV2.View
 {
     public partial class HomeView : UserControl
     {
         private MainViewModel _mainViewModel;
+        private SocketIOClient.SocketIO socket;
         private DispatcherTimer timer;
         private Popup currentPopup;
         private CircularLoadingControl _circularLoadingControl;
         //private readonly NotificationService notificationService;
         //private ApiServices _service;
         //private dynamic _user;
-
+        private INotificationService _notificationService;
         public HomeView(dynamic user, MainViewModel mainViewModel, CircularLoadingControl loading)
         {
             InitializeComponent();
+            _notificationService = new NotificationService();
             _circularLoadingControl = loading;
             //_service = new ApiServices();
             //_user = user;
@@ -46,6 +51,212 @@ namespace TiketManagementV2.View
             var viewModel = new HomeViewModel(user, mainViewModel, _circularLoadingControl);
             DataContext = viewModel;
             _mainViewModel = mainViewModel;
+
+            InitializeSocketIO();
+        }
+
+        private void InitializeSocketIO()
+        {
+            try
+            {
+                string serverUrl = Properties.Settings.Default.host;
+                socket = new SocketIOClient.SocketIO(serverUrl, new SocketIOOptions { EIO = EngineIO.V3 });
+
+                socket.OnError += (sender, e) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ: " + e,
+                            NotificationType.Error);
+                    });
+                };
+
+                socket.On("update-statistics-revenue-global", response =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        try
+                        {
+                            dynamic data = response.GetValue<object>(0);
+                            string jsonString = data.GetRawText();
+                            var jsonObject = JObject.Parse(jsonString);
+
+                            string type = jsonObject["type"].ToString();
+                            double value = (double)jsonObject["value"];
+
+                            if (type == "+")
+                            {
+                                txtRevenue.Text = (double.Parse(txtRevenue.Text) + value).ToString();
+                            }
+                            else if (type == "-")
+                            {
+                                txtRevenue.Text = (double.Parse(txtRevenue.Text) - value).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing notification: {ex.Message}");
+                        }
+                    });
+                });
+
+                socket.On("update-statistics-order-global", response =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        try
+                        {
+                            dynamic data = response.GetValue<object>(0);
+                            string jsonString = data.GetRawText();
+                            var jsonObject = JObject.Parse(jsonString);
+
+                            string type = jsonObject["type"].ToString();
+                            double value = (double)jsonObject["value"];
+
+                            if (type == "+")
+                            {
+                                txtTicket.Text = (double.Parse(txtTicket.Text) + value).ToString();
+                            }
+                            else if (type == "-")
+                            {
+                                txtTicket.Text = (double.Parse(txtTicket.Text) - value).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing notification: {ex.Message}");
+                        }
+                    });
+                });
+
+                socket.On("update-statistics-deal-global", response =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        try
+                        {
+                            dynamic data = response.GetValue<object>(0);
+                            string jsonString = data.GetRawText();
+                            var jsonObject = JObject.Parse(jsonString);
+
+                            string type = jsonObject["type"].ToString();
+                            double value = (double)jsonObject["value"];
+
+                            if (type == "+")
+                            {
+                                txtDeals.Text = (double.Parse(txtDeals.Text) + value).ToString();
+                            }
+                            else if (type == "-")
+                            {
+                                txtDeals.Text = (double.Parse(txtDeals.Text) - value).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing notification: {ex.Message}");
+                        }
+                    });
+
+                    //socket.On("update-statistics-revenue", response =>
+                    //{
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        try
+                    //        {
+                    //            dynamic data = response.GetValue<object>(0);
+                    //            string jsonString = data.GetRawText();
+                    //            var jsonObject = JObject.Parse(jsonString);
+
+                    //            string type = jsonObject["type"].ToString();
+                    //            double value = (double)jsonObject["value"];
+
+                    //            if (type == "+")
+                    //            {
+                    //                txtRevenue.Text = (double.Parse(txtRevenue.Text) + value).ToString();
+                    //            }
+                    //            else if (type == "-")
+                    //            {
+                    //                txtRevenue.Text = (double.Parse(txtRevenue.Text) - value).ToString();
+                    //            }
+                    //        }
+                    //        catch (Exception ex)
+                    //        {
+                    //            Console.WriteLine($"Error processing notification: {ex.Message}");
+                    //        }
+                    //    });
+                    //});
+
+                    //socket.On("update-statistics-order", response =>
+                    //{
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        try
+                    //        {
+                    //            dynamic data = response.GetValue<object>(0);
+                    //            string jsonString = data.GetRawText();
+                    //            var jsonObject = JObject.Parse(jsonString);
+
+                    //            string type = jsonObject["type"].ToString();
+                    //            double value = (double)jsonObject["value"];
+
+                    //            if (type == "+")
+                    //            {
+                    //                txtTicket.Text = (double.Parse(txtTicket.Text) + value).ToString();
+                    //            }
+                    //            else if (type == "-")
+                    //            {
+                    //                txtTicket.Text = (double.Parse(txtTicket.Text) - value).ToString();
+                    //            }
+                    //        }
+                    //        catch (Exception ex)
+                    //        {
+                    //            Console.WriteLine($"Error processing notification: {ex.Message}");
+                    //        }
+                    //    });
+                    //});
+
+                    //socket.On("update-statistics-deal", response =>
+                    //{
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        try
+                    //        {
+                    //            dynamic data = response.GetValue<object>(0);
+                    //            string jsonString = data.GetRawText();
+                    //            var jsonObject = JObject.Parse(jsonString);
+
+                    //            string type = jsonObject["type"].ToString();
+                    //            double value = (double)jsonObject["value"];
+
+                    //            if (type == "+")
+                    //            {
+                    //                txtDeals.Text = (double.Parse(txtDeals.Text) + value).ToString();
+                    //            }
+                    //            else if (type == "-")
+                    //            {
+                    //                txtDeals.Text = (double.Parse(txtDeals.Text) - value).ToString();
+                    //            }
+                    //        }
+                    //        catch (Exception ex)
+                    //        {
+                    //            Console.WriteLine($"Error processing notification: {ex.Message}");
+                    //        }
+                    //    });
+                });
+
+                Task.Run(async () =>
+                {
+                    await socket.ConnectAsync();
+                    await socket.EmitAsync("statistics-global", Properties.Settings.Default.refresh_token);
+                    //await socket.EmitAsync("statistics-global", Properties.Settings.Default.refresh_token);
+                });
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Lỗi kết nối",
+                    $"Không thể khởi tạo kết nối Socket.IO: {ex.Message}",
+                    NotificationType.Error);
+            }
         }
 
         private void StartClock()
