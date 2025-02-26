@@ -67,14 +67,5 @@ namespace TiketManagementV2.Properties {
                 this["remember_login"] = value;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://160.191.50.59/")]
-        public string SocketUrl {
-            get {
-                return ((string)(this["SocketUrl"]));
-            }
-        }
     }
 }

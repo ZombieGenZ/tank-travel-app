@@ -433,8 +433,8 @@ namespace TiketManagementV2.View
             }
 
             dynamic data = await CreateBusRoute(_busRoute.Id, (string)plate.Id, (string)start.Id, (string)end.Id,
-                startTime.ToString("o"),
-                endTime.ToString("o"), price, quate);
+                startTime.ToUniversalTime().ToString("o"),
+                endTime.ToUniversalTime().ToString("o"), price, quate);
 
             if (data == null)
             {
