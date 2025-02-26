@@ -37,7 +37,7 @@
                      TextChanged="SearchTextBox_TextChanged"/>
 
                     <TextBlock x:Name="SearchPlaceholder"
-                       Text="Search..."
+                       Text="Tìm kiếm..."
                        Foreground="Gray"
                        VerticalAlignment="Center"
                        Margin="5,0,0,0"

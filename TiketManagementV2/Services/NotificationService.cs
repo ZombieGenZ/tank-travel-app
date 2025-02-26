@@ -34,7 +34,7 @@ namespace TiketManagementV2.Services
                     break;
 
                 case NotificationType.Info:
-                    notification.ImagePath = "/Images/Info_Icon.png";
+                    notification.ImagePath = "/Images/info.png";
                     notification.Gradient = (LinearGradientBrush)Application.Current.Resources["InfoGradient"];
                     notification.RecFill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3874CB"));
                     break;

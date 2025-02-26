@@ -301,7 +301,19 @@
                                 <Button Style="{StaticResource iconButton}"
                                         Tag="{StaticResource color4}"
                                         Command="{Binding ShowMailViewCommand}">
-                                    <fa:IconImage Icon="Envelope" Style="{StaticResource iconButtonIcon}"/>
+                                    <Grid>
+                                        <fa:IconImage Icon="Envelope" Style="{StaticResource iconButtonIcon}"/>
+
+                                        <!-- Notification Badge -->
+                                        <Border CornerRadius="10"
+                                                Background="{StaticResource color7}"
+                                                Width="10" Height="10"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Margin="0,-3,12,0"
+                                                Visibility="{Binding HasNewNotifications, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        </Border>
+                                    </Grid>
                                 </Button>
                             </StackPanel>
                         </Grid>

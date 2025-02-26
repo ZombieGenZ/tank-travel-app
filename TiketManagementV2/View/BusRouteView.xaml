@@ -129,14 +129,14 @@
                         <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CustomColumnHeader}"/>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Plate}" Header="Plate"/>
-                        <DataGridTextColumn Binding="{Binding StartPoint}" Header="Start Point"/>
-                        <DataGridTextColumn Binding="{Binding EndPoint}" Header="End Point"/>
-                        <DataGridTextColumn Binding="{Binding DepartureTime}" Header="Departure Time"/>
-                        <DataGridTextColumn Binding="{Binding ArrivalTime}" Header="Arrival Time"/>
-                        <DataGridTextColumn Binding="{Binding Price}" Header="Price"/>
-                        <DataGridTextColumn Binding="{Binding Quantity}" Header="Quantity"/>
-                        <DataGridTextColumn Binding="{Binding Sold}" Header="Sold"/>
+                        <DataGridTextColumn Binding="{Binding Plate}" Header="Biển số" MinWidth="70"/>
+                        <DataGridTextColumn Binding="{Binding StartPoint}" Header="Điểm khởi hành" MinWidth="135"/>
+                        <DataGridTextColumn Binding="{Binding EndPoint}" Header="Điểm đến" MinWidth="90"/>
+                        <DataGridTextColumn Binding="{Binding DepartureTime}" Header="TG khởi hành" Width="auto" MinWidth="110"/>
+                        <DataGridTextColumn Binding="{Binding ArrivalTime}" Header="TG dự kiến" Width="auto" MinWidth="95"/>
+                        <DataGridTextColumn Binding="{Binding Price}" Header="Giá" MinWidth="50"/>
+                        <DataGridTextColumn Binding="{Binding Quantity}" Header="Số lượng" MinWidth="80"/>
+                        <DataGridTextColumn Binding="{Binding Sold}" Header="Đã bán" MinWidth="70"/>
                         <!-- Thêm cột mới chứa các nút -->
                         <DataGridTemplateColumn Width="140">
                             <DataGridTemplateColumn.CellTemplate>

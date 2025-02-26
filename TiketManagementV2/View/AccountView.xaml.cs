@@ -35,6 +35,17 @@ namespace TiketManagementV2.View
         private INotificationService _notificationService;
         private ObservableCollection<Account> Accounts;
         private int _Current = 0;
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get { return _searchText; }
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+                FilterAccounts();
+            }
+        }
 
         public ObservableCollection<Account> accounts
         {
@@ -162,7 +173,12 @@ namespace TiketManagementV2.View
 
         public ICommand LoadMoreCommand { get; }
 
+        public ICommand SeachCommand { get; }
 
+        private void ExecuteSearchCommand(object obj)
+        {
+            FilterAccounts();
+        }
         private async void ExecuteBanCommand(object obj)
         {
             if (obj is Account account)
@@ -330,7 +346,7 @@ namespace TiketManagementV2.View
             Accounts = new ObservableCollection<Account>();
             BanCommand = new RelayCommandGeneric<Account>(ExecuteBanCommand);
             UnBanCommand = new RelayCommandGeneric<Account>(ExecuteUnBanCommand);
-
+            SeachCommand = new RelayCommand(ExecuteSearchCommand);
 
             accounts.CollectionChanged += (s, e) =>
             {
@@ -359,6 +375,7 @@ namespace TiketManagementV2.View
                 };
 
                 return await _service.PostWithHeaderAndBodyAsync("api/account-management/get-account", getAccountDataHeader, getAccountDataBody);
+                FilterAccounts();
             }
             catch (Exception ex)
             {
@@ -470,7 +487,32 @@ namespace TiketManagementV2.View
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
-            //AccountSearchText = SearchTextBox.Text;
+            SearchText = SearchTextBox.Text;
+        }
+
+        private void FilterAccounts()
+        {
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                // Nếu ô tìm kiếm trống, hiển thị tất cả tài khoản
+                dgv.ItemsSource = accounts;
+            }
+            else
+            {
+                // Lọc tài khoản dựa trên văn bản tìm kiếm (không phân biệt hoa thường)
+                var filtered = accounts.Where(a =>
+                    (a.Name != null && a.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (a.Email != null && a.Email.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (a.Phone != null && a.Phone.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (a.Role != null && a.Role.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
+                    (a.Status != null && a.Status.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                ).ToList();
+
+                dgv.ItemsSource = filtered;
+            }
+
+            // Hiển thị thông báo nếu không có kết quả
+            txtkco.Visibility = dgv.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

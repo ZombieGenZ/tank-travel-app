@@ -61,6 +61,13 @@ namespace TiketManagementV2.ViewModel
             get => _currentView;
             set => SetProperty(ref _currentView, value);
         }
+
+        private bool _hasNewNotifications;
+        public bool HasNewNotifications
+        {
+            get => _hasNewNotifications;
+            set => SetProperty(ref _hasNewNotifications, value);
+        }
         //ProfileView
         public ICommand SaveProfileCommand { get; }
         public ICommand CancelProfileCommand { get; }
@@ -181,6 +188,7 @@ namespace TiketManagementV2.ViewModel
         {
 
             var mailView = new MailView();
+            HasNewNotifications = false;
             mailView.ShowDialog();
         }
         private void ExecuteShowResetPasswordView(object obj)
