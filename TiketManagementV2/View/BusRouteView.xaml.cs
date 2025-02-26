@@ -468,7 +468,8 @@ namespace TiketManagementV2.View
                         DepartureTime = item.departure_time,
                         ArrivalTime = item.arrival_time,
                         Price = item.price,
-                        Quantity = item.quantity
+                        Quantity = item.quantity,
+                        Sold = item.sold
                     });
                 }
 

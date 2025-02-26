@@ -84,13 +84,15 @@ namespace TiketManagementV2.View
                             string type = jsonObject["type"].ToString();
                             double value = (double)jsonObject["value"];
 
+                            double statistics = double.Parse(txtRevenue.Text.Replace(".", ","));
+
                             if (type == "+")
                             {
-                                txtRevenue.Text = (double.Parse(txtRevenue.Text) + value).ToString();
+                                txtRevenue.Text = (statistics + value).ToString().Replace(",", ".");
                             }
                             else if (type == "-")
                             {
-                                txtRevenue.Text = (double.Parse(txtRevenue.Text) - value).ToString();
+                                txtRevenue.Text = (statistics - value).ToString().Replace(",", ".");
                             }
                         }
                         catch (Exception ex)
@@ -113,13 +115,15 @@ namespace TiketManagementV2.View
                             string type = jsonObject["type"].ToString();
                             double value = (double)jsonObject["value"];
 
+                            double statistics = int.Parse(txtTicket.Text);
+
                             if (type == "+")
                             {
-                                txtTicket.Text = (double.Parse(txtTicket.Text) + value).ToString();
+                                txtTicket.Text = (statistics + value).ToString();
                             }
                             else if (type == "-")
                             {
-                                txtTicket.Text = (double.Parse(txtTicket.Text) - value).ToString();
+                                txtTicket.Text = (statistics - value).ToString();
                             }
                         }
                         catch (Exception ex)
@@ -142,13 +146,15 @@ namespace TiketManagementV2.View
                             string type = jsonObject["type"].ToString();
                             double value = (double)jsonObject["value"];
 
+                            double statistics = int.Parse(txtDeals.Text);
+
                             if (type == "+")
                             {
-                                txtDeals.Text = (double.Parse(txtDeals.Text) + value).ToString();
+                                txtDeals.Text = (statistics + value).ToString();
                             }
                             else if (type == "-")
                             {
-                                txtDeals.Text = (double.Parse(txtDeals.Text) - value).ToString();
+                                txtDeals.Text = (statistics - value).ToString();
                             }
                         }
                         catch (Exception ex)
@@ -247,8 +253,7 @@ namespace TiketManagementV2.View
                 Task.Run(async () =>
                 {
                     await socket.ConnectAsync();
-                    await socket.EmitAsync("statistics-global", Properties.Settings.Default.refresh_token);
-                    //await socket.EmitAsync("statistics-global", Properties.Settings.Default.refresh_token);
+                    await socket.EmitAsync("connect-statistics-realtime", Properties.Settings.Default.refresh_token);
                 });
             }
             catch (Exception ex)
