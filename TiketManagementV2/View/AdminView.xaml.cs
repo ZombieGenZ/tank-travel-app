@@ -10,15 +10,26 @@ using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
 using TiketManagementV2.Model;
 using SocketIO.Core;
+using System.ComponentModel;
 
 namespace TiketManagementV2.View
 {
-    public partial class AdminView : Window
+    public partial class AdminView : Window, INotifyPropertyChanged
     {
         private ApiServices _service;
         private dynamic _user;
         private SocketIOClient.SocketIO socket;
         private INotificationService _notificationService;
+        private bool _hasNewNotifications;
+        public bool HasNewNotifications
+        {
+            get { return _hasNewNotifications; }
+            set
+            {
+                _hasNewNotifications = value;
+                OnPropertyChanged(nameof(HasNewNotifications));
+            }
+        }
 
         public AdminView(dynamic user)
         {
@@ -63,6 +74,11 @@ namespace TiketManagementV2.View
                             string message = jsonObject["message"].ToString();
 
                             _notificationService.ShowNotification(sender, message, NotificationType.Info);
+
+                            if (DataContext is MainViewModel viewModel)
+                            {
+                                viewModel.HasNewNotifications = true;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -168,6 +184,13 @@ namespace TiketManagementV2.View
         private void userDropdown_Closed(object sender, EventArgs e)
         {
             btnDropdown.IsEnabled = true; // Mở khóa nút khi dropdown đóng
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

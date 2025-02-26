@@ -85,7 +85,7 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <fa:IconImage Icon="{Binding Icon}"
+                                        <fa:IconImage Icon="Bell"
                                                      Height="20"
                                                      Width="20"
                                                      Margin="0,0,10,0"
