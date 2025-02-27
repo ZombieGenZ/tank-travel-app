@@ -97,7 +97,7 @@
                 <DataGrid ItemsSource="{Binding accounts}"
                           x:Name="dgv"
                           Style="{StaticResource TransparentDataGrid}" 
-                          Height="600" 
+                          Height="555" 
                           VerticalAlignment="Top">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource TransparentDataGridCell}"/>
@@ -128,7 +128,7 @@
                                         <Button Command="{Binding DataContext.SendMailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}">
                                             <Button.Style>
-                                                <Style TargetType="Button" BasedOn="{StaticResource BanButton}">
+                                                <Style TargetType="Button" BasedOn="{StaticResource SendMailButton}">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
                                                         <MultiDataTrigger>
@@ -143,10 +143,10 @@
                                             </Button.Style>
                                         </Button>
                                         <!-- Ban Button - Show only for non-banned accounts -->
-                                        <Button Command="{Binding DataContext.SendMailCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        <Button Command="{Binding DataContext.BanCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}">
                                             <Button.Style>
-                                                <Style TargetType="Button" BasedOn="{StaticResource SendMailButton}">
+                                                <Style TargetType="Button" BasedOn="{StaticResource BanButton}">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
                                                         <MultiDataTrigger>
