@@ -189,10 +189,13 @@ namespace TiketManagementV2.View
                 await Reload();
             }
         }
-        private void ExecuteSendMailCommand(object obj)
+        private async void ExecuteSendMailCommand(object obj)
         {
-            var sendmail = new SendMailView();
-            sendmail.ShowDialog();
+            if (obj is Account account)
+            {
+                var sendmail = new SendMailView(account.Id);
+                sendmail.ShowDialog();
+            }
         }
         private async Task<dynamic> UnBan(string user_id)
         {

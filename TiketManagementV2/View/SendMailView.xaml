@@ -93,7 +93,7 @@
                          FontWeight="Medium"
                          FontFamily="Montserrat"                             
                          Margin="0,15,0,0"/>
-                    <TextBox x:Name="txtSendMail"
+                    <TextBox x:Name="txtMessage"
                              FontSize="13"
                              FontWeight="Medium"
                              FontFamily="Montserrat"                            
