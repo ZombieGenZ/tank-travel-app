@@ -6,7 +6,7 @@
         xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         xmlns:local="clr-namespace:TiketManagementV2.View"
         mc:Ignorable="d"
-        Title="GlobalNotificationView" Height="500" Width="300"
+        Title="GlobalNotificationView" Height="500" Width="350"
         WindowStyle="None"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
@@ -83,12 +83,12 @@
                     </Button>
                 </Grid>
 
-                <StackPanel Width="250"
+                <StackPanel Width="300"
                        Grid.Row="1"
                        Orientation="Vertical"
                        Margin="0,20,0,0">
                     <Border x:Name="dragDropArea" 
-                            Width="240" 
+                            Width="300" 
                             Height="150" 
                             Background="Transparent"
                             BorderBrush="DarkGray" 

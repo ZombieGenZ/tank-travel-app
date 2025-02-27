@@ -315,6 +315,13 @@
                                         </Border>
                                     </Grid>
                                 </Button>
+                                <Button Style="{StaticResource iconButton}"
+                                        Tag="{StaticResource color5}"
+                                        Command="{Binding ShowGlobalViewCommand}">
+                                    <Grid>
+                                        <fa:IconImage Icon="Bell" Style="{StaticResource iconButtonIcon}"/>
+                                    </Grid>
+                                </Button>
                             </StackPanel>
                         </Grid>
                         <!--Content section / Pages-->

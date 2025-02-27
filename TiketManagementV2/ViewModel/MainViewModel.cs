@@ -89,6 +89,7 @@ namespace TiketManagementV2.ViewModel
         public ICommand ShowBusRouteViewCommand {  get; }
         public ICommand ShowMailViewCommand { get; }
         public ICommand ShowResetPasswordViewCommand { get; }
+        public ICommand ShowGlobalViewCommand { get; }
 
         //command bus
         public ICommand ShowHomeBusViewCommand { get; }
@@ -195,6 +196,11 @@ namespace TiketManagementV2.ViewModel
         {
             var resetPasswordView = new ResetPasswordView();
             resetPasswordView.ShowDialog();
+        }
+        private void ExecuteShowGlobalNotificationView(object obj)
+        {
+            var global = new GlobalNotificationView();
+            global.ShowDialog();
         }
         //BUS VIEW
         private void ExecuteShowHomeBusView(object obj)
@@ -307,6 +313,7 @@ namespace TiketManagementV2.ViewModel
             ShowBusRouteViewCommand = new RelayCommand(ExecuteShowBusRouteView);
             ShowMailViewCommand = new RelayCommand(ExecuteShowMailView);
             ShowResetPasswordViewCommand = new RelayCommand(ExecuteShowResetPasswordView);
+            ShowGlobalViewCommand = new RelayCommand(ExecuteShowGlobalNotificationView);
             //command bus
             ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
 
@@ -364,6 +371,7 @@ namespace TiketManagementV2.ViewModel
             ShowBusRouteViewCommand = new RelayCommand(ExecuteShowBusRouteView);
             ShowMailViewCommand = new RelayCommand(ExecuteShowMailView);
             ShowResetPasswordViewCommand = new RelayCommand(ExecuteShowResetPasswordView);
+            ShowGlobalViewCommand = new RelayCommand(ExecuteShowGlobalNotificationView);
             //command bus
             ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
 

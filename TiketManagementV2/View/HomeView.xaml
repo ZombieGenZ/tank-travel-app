@@ -74,7 +74,7 @@
                                      FontWeight="Bold" 
                                      Foreground="White"/>
                         </StackPanel>
-                        <TextBlock Text="Deals" 
+                        <TextBlock Text="Hóa đơn" 
                                  Foreground="White"/>
                     </StackPanel>
                 </Border>
@@ -93,7 +93,7 @@
                                      FontWeight="Bold" 
                                      Foreground="White"/>
                         </StackPanel>
-                        <TextBlock Text="Tickets booked" 
+                        <TextBlock Text="Vé đã đặt" 
                                  Foreground="White"/>
                     </StackPanel>
                 </Border>
@@ -116,7 +116,7 @@
                                      FontWeight="Medium"
                                      Margin="4,4,0,0"/>
                         </StackPanel>
-                        <TextBlock Text="Revenue" 
+                        <TextBlock Text="Doanh thu" 
                                  Foreground="White"/>
                     </StackPanel>
                 </Border>
@@ -138,7 +138,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Business Review" 
+                        <TextBlock Text="Kiểm duyệt doanh nghiệp" 
                                  FontSize="20" 
                                  FontWeight="Bold" 
                                  Foreground="White"/>
@@ -149,7 +149,7 @@
                             Click="btnSeeMoreBus_Click"
                             Background="Transparent" 
                             BorderThickness="0"
-                            Content="SEE MORE"
+                            Content="XEM THÊM"
                             Command="{Binding ShowCensorViewCommand}"
                             Margin="0,0,10,0"
                             Foreground="White"
@@ -287,7 +287,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Vehicle Review" 
+                        <TextBlock Text="Kiểm duyệt phương tiện" 
                       FontSize="20" 
                       FontWeight="Bold" 
                       Foreground="White"/>
@@ -298,7 +298,7 @@
                             Click="btnSeeMoreVehicle_Click"
                             Background="Transparent" 
                             BorderThickness="0"
-                            Content="SEE MORE"
+                            Content="XEM THÊM"
                             Command="{Binding ShowCensorViewCommand}"
                             Margin="0,0,10,0"
                             Foreground="White"
