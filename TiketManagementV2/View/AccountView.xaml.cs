@@ -170,7 +170,7 @@ namespace TiketManagementV2.View
 
         public ICommand BanCommand { get; }
         public ICommand UnBanCommand { get; }
-
+        public ICommand SendMailCommand { get; }
         public ICommand LoadMoreCommand { get; }
 
         public ICommand SeachCommand { get; }
@@ -189,7 +189,11 @@ namespace TiketManagementV2.View
                 await Reload();
             }
         }
-
+        private void ExecuteSendMailCommand(object obj)
+        {
+            var sendmail = new SendMailView();
+            sendmail.ShowDialog();
+        }
         private async Task<dynamic> UnBan(string user_id)
         {
             try
@@ -346,6 +350,7 @@ namespace TiketManagementV2.View
             Accounts = new ObservableCollection<Account>();
             BanCommand = new RelayCommandGeneric<Account>(ExecuteBanCommand);
             UnBanCommand = new RelayCommandGeneric<Account>(ExecuteUnBanCommand);
+            SendMailCommand = new RelayCommandGeneric<Account>(ExecuteSendMailCommand);
             SeachCommand = new RelayCommand(ExecuteSearchCommand);
 
             accounts.CollectionChanged += (s, e) =>
