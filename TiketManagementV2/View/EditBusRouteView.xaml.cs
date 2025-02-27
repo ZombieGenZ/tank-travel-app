@@ -189,14 +189,30 @@ namespace TiketManagementV2.View
             cmbStartPoint.ItemsSource = StartPointItems;
             cmbEndPoint.ItemsSource = EndPointItems;
 
-            LocationItem sItem = StartPointItems.FirstOrDefault(l => l.Id == _busRoute.StartPoint);
-            LocationItem eItem = EndPointItems.FirstOrDefault(l => l.Id == _busRoute.EndPoint);
-
-            if (sItem != null || eItem != null)
+            try
             {
+                LocationItem sItem = StartPointItems.FirstOrDefault(l => l.Id == _busRoute.StartPoint);
+
+                if (sItem == null)
+                {
+                    return;
+                }
+
                 cmbStartPoint.SelectedValue = sItem.Id;
+            }
+            catch {  }
+            try
+            {
+                LocationItem eItem = EndPointItems.FirstOrDefault(l => l.Id == _busRoute.EndPoint);
+
+                if (eItem == null)
+                {
+                    return;
+                }
+
                 cmbEndPoint.SelectedValue = eItem.Id;
             }
+            catch {  }
         }
 
         public async Task LoadManagedVehicles()
