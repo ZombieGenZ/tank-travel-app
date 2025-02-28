@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -12,11 +14,48 @@ namespace TiketManagementV2.Model
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerSettings _serializerSettings;
+        private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(30);
+
+        // Singleton pattern hoặc sử dụng HttpClientFactory trong startup code
+        private static readonly Lazy<HttpClient> SharedHttpClient = new Lazy<HttpClient>(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                // Cấu hình connection pooling
+                MaxConnectionsPerServer = 20,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                UseCookies = false
+            };
+
+            var client = new HttpClient(handler)
+            {
+                Timeout = RequestTimeout
+            };
+
+            // Thiết lập header chung
+            client.DefaultRequestHeaders.Add("User-Agent", "TiketManagementV2Client");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            return client;
+        });
 
         public ApiServices()
         {
             _baseUrl = Properties.Settings.Default.host;
-            _httpClient = new HttpClient();
+
+            // Đảm bảo URL cơ sở sử dụng HTTPS
+            if (_baseUrl.StartsWith("http://"))
+            {
+                _baseUrl = _baseUrl.Replace("http://", "https://");
+            }
+            else if (!_baseUrl.StartsWith("https://"))
+            {
+                _baseUrl = "https://" + _baseUrl;
+            }
+
+            // Sử dụng HttpClient được chia sẻ
+            _httpClient = SharedHttpClient.Value;
+
             _serializerSettings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
@@ -27,7 +66,7 @@ namespace TiketManagementV2.Model
         private void EnsureValidResponse(HttpResponseMessage response)
         {
             if ((int)response.StatusCode != 422 &&
-                response.StatusCode != System.Net.HttpStatusCode.Unauthorized &&
+                response.StatusCode != HttpStatusCode.Unauthorized &&
                 !response.IsSuccessStatusCode)
             {
                 response.EnsureSuccessStatusCode();
@@ -39,10 +78,18 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}");
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}"))
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -50,18 +97,27 @@ namespace TiketManagementV2.Model
                 throw;
             }
         }
+
         public async Task<dynamic> GetLocationAsync(string endpoint)
         {
             try
             {
-                var response = await _httpClient.GetAsync(endpoint);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var request = new HttpRequestMessage(HttpMethod.Get, endpoint))
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in GET request: {ex.Message}");
+                Console.WriteLine($"Error in GET location request: {ex.Message}");
                 throw;
             }
         }
@@ -70,16 +126,23 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
+                using (var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}"))
                 {
-                    request.Headers.Add(header.Key, header.Value);
-                }
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -92,14 +155,20 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}");
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -115,19 +184,25 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -142,10 +217,18 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var response = await _httpClient.PostAsync($"{_baseUrl}/{endpoint}", null);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}"))
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -158,16 +241,23 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
+                using (var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}"))
                 {
-                    request.Headers.Add(header.Key, header.Value);
-                }
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -181,11 +271,19 @@ namespace TiketManagementV2.Model
             try
             {
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync($"{_baseUrl}/{endpoint}", content);
-                EnsureValidResponse(response);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -201,19 +299,25 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -228,10 +332,18 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var response = await _httpClient.PutAsync($"{_baseUrl}/{endpoint}", null);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}"))
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -244,16 +356,23 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
+                using (var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}"))
                 {
-                    request.Headers.Add(header.Key, header.Value);
-                }
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -267,11 +386,19 @@ namespace TiketManagementV2.Model
             try
             {
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync($"{_baseUrl}/{endpoint}", content);
-                EnsureValidResponse(response);
-                var responseContent = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -287,19 +414,25 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -314,10 +447,18 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"{_baseUrl}/{endpoint}");
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}"))
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -330,16 +471,23 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
+                using (var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}"))
                 {
-                    request.Headers.Add(header.Key, header.Value);
-                }
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -352,14 +500,20 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}");
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -375,19 +529,25 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}");
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-
                 var json = JsonConvert.SerializeObject(data, _serializerSettings);
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseUrl}/{endpoint}") { Content = content })
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
 
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content, _serializerSettings);
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(responseContent, _serializerSettings);
+                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -407,38 +567,44 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}");
-
-                foreach (var header in headers)
+                using (var request = new HttpRequestMessage(HttpMethod.Put, $"{_baseUrl}/{endpoint}"))
                 {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-
-                var formData = new MultipartFormDataContent();
-
-                // Add form fields from requestBody
-                if (requestBody != null)
-                {
-                    var json = JsonConvert.SerializeObject(requestBody);
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                    foreach (var item in dict)
+                    foreach (var header in headers)
                     {
-                        formData.Add(new StringContent(item.Value?.ToString() ?? ""), item.Key);
+                        request.Headers.Add(header.Key, header.Value);
                     }
+
+                    var formData = new MultipartFormDataContent();
+
+                    // Add form fields from requestBody
+                    if (requestBody != null)
+                    {
+                        var json = JsonConvert.SerializeObject(requestBody);
+                        var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                        foreach (var item in dict)
+                        {
+                            formData.Add(new StringContent(item.Value?.ToString() ?? ""), item.Key);
+                        }
+                    }
+
+                    // Add image file
+                    var imageContent = new ByteArrayContent(imageBytes);
+                    imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                    formData.Add(imageContent, "image", "image.jpg");
+
+                    request.Content = formData;
+
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content);
                 }
-
-                // Add image file
-                var imageContent = new ByteArrayContent(imageBytes);
-                imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-                formData.Add(imageContent, "image", "image.jpg"); // Changed to "image" to match multer field name
-
-                request.Content = formData;
-
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content);
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {
@@ -455,42 +621,48 @@ namespace TiketManagementV2.Model
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}");
-
-                foreach (var header in headers)
+                using (var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}"))
                 {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-
-                var formData = new MultipartFormDataContent();
-
-                // Add form fields from requestBody
-                if (requestBody != null)
-                {
-                    var json = JsonConvert.SerializeObject(requestBody);
-                    var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                    foreach (var item in dict)
+                    foreach (var header in headers)
                     {
-                        formData.Add(new StringContent(item.Value?.ToString() ?? ""), item.Key);
+                        request.Headers.Add(header.Key, header.Value);
                     }
+
+                    var formData = new MultipartFormDataContent();
+
+                    // Add form fields from requestBody
+                    if (requestBody != null)
+                    {
+                        var json = JsonConvert.SerializeObject(requestBody);
+                        var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                        foreach (var item in dict)
+                        {
+                            formData.Add(new StringContent(item.Value?.ToString() ?? ""), item.Key);
+                        }
+                    }
+
+                    // Add image files
+                    foreach (var imageFile in imageFiles)
+                    {
+                        var fileName = imageFile.Item1;
+                        var fileBytes = imageFile.Item2;
+                        var imageContent = new ByteArrayContent(fileBytes);
+                        imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                        formData.Add(imageContent, "preview", fileName);
+                    }
+
+                    request.Content = formData;
+                    var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    EnsureValidResponse(response);
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<dynamic>(content);
                 }
-
-                // Add image files
-                foreach (var imageFile in imageFiles)
-                {
-                    var fileName = imageFile.Item1;
-                    var fileBytes = imageFile.Item2;
-                    var imageContent = new ByteArrayContent(fileBytes);
-                    imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
-                    formData.Add(imageContent, "preview", fileName); // Changed to "images" to match multer field name
-                }
-
-                request.Content = formData;
-                var response = await _httpClient.SendAsync(request);
-                EnsureValidResponse(response);
-
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(content);
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+                throw new TimeoutException("The request timed out. Please try again later.", ex);
             }
             catch (Exception ex)
             {

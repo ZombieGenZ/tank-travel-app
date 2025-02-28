@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="host" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://160.191.50.59</Value>
+      <Value Profile="(Default)">https://tank-travel.io.vn</Value>
     </Setting>
     <Setting Name="access_token" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

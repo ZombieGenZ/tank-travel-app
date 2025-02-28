@@ -25,7 +25,7 @@ namespace TiketManagementV2.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://160.191.50.59")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://tank-travel.io.vn")]
         public string host {
             get {
                 return ((string)(this["host"]));
