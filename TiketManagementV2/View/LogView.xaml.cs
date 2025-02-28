@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using SocketIO.Core;
+using SocketIOClient;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TiketManagementV2.Services;
 using TiketManagementV2.ViewModel;
 
 namespace TiketManagementV2.View
@@ -23,6 +27,7 @@ namespace TiketManagementV2.View
     /// </summary>
     public partial class LogView : UserControl, INotifyPropertyChanged
     {
+        private SocketIOClient.SocketIO socket;
         public class LogItem
         {
             public LogType LogType { get; set; }
@@ -50,58 +55,76 @@ namespace TiketManagementV2.View
         }
 
         public bool HasLogItems => LogItems?.Count > 0;
+        private INotificationService _notificationService;
         public LogView()
         {
             InitializeComponent();
             DataContext = this;
-            LoadSampleData();
+
+            LogItems = new ObservableCollection<LogItem>();
+            LogItems.CollectionChanged += (s, e) =>
+            {
+                OnPropertyChanged(nameof(LogItems));
+            };
+            InitializeSocketIO();
         }
 
-        private void LoadSampleData()
+        private void InitializeSocketIO()
         {
-            LogItems = new ObservableCollection<LogItem>
+            try
             {
-                new LogItem
-                {
-                    LogType = LogType.Success,
-                    Message = "Business registration approved for 'Saigon Express'",
-                    Timestamp = DateTime.Now.AddHours(-1),
-                },
-                new LogItem
-                {
-                    LogType = LogType.Warning,
-                    Message = "Vehicle inspection pending for XE-12345",
-                    Timestamp = DateTime.Now.AddHours(-2),
-                },
-                new LogItem
-                {
-                    LogType = LogType.Error,
-                    Message = "Failed to process payment for Booking #123456",
-                    Timestamp = DateTime.Now.AddHours(-3),
-                },
-                new LogItem
-                {
-                    LogType = 0,
-                    Message = "New route added: Saigon - Dalat",
-                    Timestamp = DateTime.Now.AddHours(-4),
-                },
-                new LogItem
-                {
-                    LogType = LogType.Success,
-                    Message = "Vehicle VIN#789012 successfully registered",
-                    Timestamp = DateTime.Now.AddHours(-5),
-                },
+                string serverUrl = Properties.Settings.Default.host;
+                socket = new SocketIOClient.SocketIO(serverUrl, new SocketIOOptions { EIO = EngineIO.V3 });
 
-                new LogItem
+                socket.OnError += (sender, e) =>
                 {
-                    LogType = LogType.Warning,
-                    Message = "Low seat availability for Route #456 tomorrow",
-                    Timestamp = DateTime.Now.AddDays(-1),
-                }
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ: " + e,
+                            NotificationType.Error);
+                    });
+                };
 
+                socket.On("new-system-log", response =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        try
+                        {
+                            dynamic data = response.GetValue<object>(0);
+                            string jsonString = data.GetRawText();
+                            var jsonObject = JObject.Parse(jsonString);
 
-            };
+                            int logType = (int)jsonObject["log_type"];
+                            string content = jsonObject["content"].ToString();
+                            DateTime time = (DateTime)jsonObject["time"];
 
+                            LogItems.Add(new LogItem()
+                            {
+                                LogType = logType == 0 ? LogType.Success : logType == 1 ? LogType.Warning : LogType.Error,
+                                Message = content,
+                                Timestamp = time
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error processing notification: {ex.Message}");
+                        }
+                    });
+                });
+
+                Task.Run(async () =>
+                {
+                    await socket.ConnectAsync();
+                    await socket.EmitAsync("connect-admin-realtime", Properties.Settings.Default.refresh_token);
+                });
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Lỗi kết nối",
+                    $"Không thể khởi tạo kết nối Socket.IO: {ex.Message}",
+                    NotificationType.Error);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
