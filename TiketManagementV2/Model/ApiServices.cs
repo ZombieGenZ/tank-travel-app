@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -562,7 +563,7 @@ namespace TiketManagementV2.Model
         public async Task<dynamic> UploadSingleImageWithPutAsync(
             string endpoint,
             Dictionary<string, string> headers,
-            byte[] imageBytes,
+            Tuple<string, byte[]> imageFile,
             object requestBody = null)
         {
             try
@@ -573,9 +574,7 @@ namespace TiketManagementV2.Model
                     {
                         request.Headers.Add(header.Key, header.Value);
                     }
-
                     var formData = new MultipartFormDataContent();
-
                     // Add form fields from requestBody
                     if (requestBody != null)
                     {
@@ -588,15 +587,33 @@ namespace TiketManagementV2.Model
                     }
 
                     // Add image file
-                    var imageContent = new ByteArrayContent(imageBytes);
-                    imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-                    formData.Add(imageContent, "image", "image.jpg");
+                    if (imageFile != null)
+                    {
+                        string fileName = imageFile.Item1;
+                        byte[] imageBytes = imageFile.Item2;
+
+                        var imageContent = new ByteArrayContent(imageBytes);
+
+                        // Xác định ContentType dựa trên phần mở rộng của tên file
+                        string extension = Path.GetExtension(fileName).ToLower();
+                        string contentType = "image/jpeg"; // Mặc định
+
+                        if (extension == ".png")
+                        {
+                            contentType = "image/png";
+                        }
+                        else if (extension == ".jpg" || extension == ".jpeg")
+                        {
+                            contentType = "image/jpeg";
+                        }
+
+                        imageContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                        formData.Add(imageContent, "image", fileName);
+                    }
 
                     request.Content = formData;
-
                     var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
                     EnsureValidResponse(response);
-
                     var content = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<dynamic>(content);
                 }

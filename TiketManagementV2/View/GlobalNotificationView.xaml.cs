@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -41,6 +42,72 @@ namespace TiketManagementV2.View
             _notificationService = new NotificationService();
             DataContext = this;
             ImageFiles.CollectionChanged += (s, e) => HasUploadedFiles = ImageFiles.Count > 0;
+            LoadNotification();
+        }
+
+        private async void LoadNotification()
+        {
+            try
+            {
+                // Loading
+
+                dynamic data = await GetNotificationGlobal();
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ", NotificationType.Error);
+                    return;
+                }
+
+                if (data.message == "Lấy thông báo thất bại")
+                {
+                    return;
+                }
+
+                txtTitle.Text = (string)data.title;
+                txtNotification.Text = (string)data.description;
+            }
+            finally
+            {
+                // Loading
+            }
+        }
+
+        private async Task<dynamic> GetNotificationGlobal()
+        {
+            try
+            {
+                return await _apiServices.GetAsync("api/notification-global/get-notification");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task<dynamic> SetNotificationGlobal(string title, string description)
+        {
+            try
+            {
+                Dictionary<string, string> notificationHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
+                };
+                var notificationBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token,
+                    title,
+                    description
+                };
+
+                return await _apiServices.UploadSingleImageWithPutAsync("api/notification-global/set-notification", notificationHeader, fileList[0], notificationBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -60,30 +127,20 @@ namespace TiketManagementV2.View
         {
             try
             {
-                string notificationText = txtNotification.Text.Trim();
+                string title = txtTitle.Text.Trim();
+                string description = txtNotification.Text.Trim();
 
-                if (string.IsNullOrWhiteSpace(notificationText))
+                if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(description) || fileList.Count < 1)
                 {
                     _notificationService.ShowNotification(
                         "Lỗi!",
-                        "Vui lòng nhập nội dung thông báo",
+                        "Vui lòng điền đầy đủ thông tin",
                         NotificationType.Warning
                     );
                     return;
                 }
 
-                Dictionary<string, string> headers = new Dictionary<string, string>()
-                {
-                    { "Authorization", $"Bearer {Properties.Settings.Default.access_token}" }
-                };
-
-                var body = new
-                {
-                    refresh_token = Properties.Settings.Default.refresh_token,
-                    content = notificationText
-                };
-
-                dynamic data = await _apiServices.UploadMultipleImagesWithPostAsync("api/notification-global/set-notification", headers, fileList, body);
+                dynamic data = await SetNotificationGlobal(title, description);
 
                 if (data == null)
                 {

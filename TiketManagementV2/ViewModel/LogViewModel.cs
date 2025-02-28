@@ -65,7 +65,7 @@ namespace TiketManagementV2.ViewModel
                 },
                 new LogItem
                 {
-                    LogType = LogType.Info,
+                    LogType = 0,
                     Message = "New route added: Saigon - Dalat",
                     Timestamp = DateTime.Now.AddHours(-4),
                     Source = "Route Management"
