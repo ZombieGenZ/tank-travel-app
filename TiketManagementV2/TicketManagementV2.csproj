@@ -152,7 +152,6 @@
     <Compile Include="ViewModel\BusRouteViewModel.cs" />
     <Compile Include="ViewModel\HomeViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
-    <Compile Include="ViewModel\LogViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\VehicleCensorViewModel.cs" />
     <Compile Include="ViewModel\VehicleManagementViewModel.cs" />

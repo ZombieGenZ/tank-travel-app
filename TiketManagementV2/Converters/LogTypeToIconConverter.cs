@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
-using TiketManagementV2.ViewModel;
+using static TiketManagementV2.View.LogView;
 
 namespace TiketManagementV2.Converters
 {
@@ -12,21 +13,23 @@ namespace TiketManagementV2.Converters
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is LogType logType))
-                return FontAwesome.Sharp.IconChar.Circle;
-
-            switch (logType)
+            if (value is LogType logType)
             {
-                case LogType.Info:
-                    return FontAwesome.Sharp.IconChar.InfoCircle;
-                case LogType.Success:
-                    return FontAwesome.Sharp.IconChar.CheckCircle;
-                case LogType.Warning:
-                    return FontAwesome.Sharp.IconChar.ExclamationTriangle;
-                case LogType.Error:
-                    return FontAwesome.Sharp.IconChar.TimesCircle;
-                default:
-                    return FontAwesome.Sharp.IconChar.Circle;
+                switch (logType)
+                {
+                    case LogType.Success:
+                        return FontAwesome.Sharp.IconChar.CheckCircle;
+                    case LogType.Warning:
+                        return FontAwesome.Sharp.IconChar.ExclamationTriangle;
+                    case LogType.Error:
+                        return FontAwesome.Sharp.IconChar.TimesCircle;
+                    default:
+                        return FontAwesome.Sharp.IconChar.Circle;
+                }
+            }
+            else
+            {
+                return FontAwesome.Sharp.IconChar.Circle;
             }
         }
 

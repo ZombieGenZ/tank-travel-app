@@ -28,16 +28,6 @@
                           Foreground="#E0E1F1"
                           Margin="15,0"/>
 
-                <!-- Clear All Button -->
-                <Button Grid.Column="1"
-                        Content="CLEAR ALL"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Margin="0,0,15,0"
-                        Command="{Binding ClearAllCommand}"
-                        Style="{StaticResource TextButton}"/>
             </Grid>
 
             <!-- Notifications List -->
@@ -89,18 +79,6 @@
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <!-- Delete Button -->
-                                    <Button Grid.Column="2"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.DeleteLogCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"
-                                            Margin="10,0,0,0">
-                                        <fa:IconImage Icon="TrashAlt"
-                                                     Foreground="#B8B9CF"
-                                                     Width="16"
-                                                     Height="16"/>
-                                    </Button>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -110,7 +88,7 @@
 
             <!-- No Notifications Message -->
             <TextBlock Grid.Row="1"
-                      Text="No notifications"
+                      Text="Không có dữ liệu"
                       FontSize="16"
                       Foreground="White"
                       HorizontalAlignment="Center"

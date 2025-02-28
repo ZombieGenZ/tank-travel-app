@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using TiketManagementV2.ViewModel;
+using static TiketManagementV2.View.LogView;
 
 namespace TiketManagementV2.Converters
 {
@@ -17,8 +17,6 @@ namespace TiketManagementV2.Converters
 
             switch (logType)
             {
-                case LogType.Info:
-                    return "#3498db";    // Blue
                 case LogType.Success:
                     return "#2ecc71";    // Green
                 case LogType.Warning:
