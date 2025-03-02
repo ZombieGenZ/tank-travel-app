@@ -479,6 +479,32 @@ namespace TiketManagementV2.View
             }
         }
 
+        private async Task<dynamic> ChangePhone(string phone)
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var userBody = new
+                {
+                    refresh_token,
+                    new_phone = phone
+                };
+
+                return await _services.PutWithHeaderAndBodyAsync("api/users/change-phone", userHeader, userBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
         private async void Confirm_Click(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement element && element.Tag is string editModeName)
@@ -554,32 +580,6 @@ namespace TiketManagementV2.View
                 }
                 else if (editModeName == "EmailEditMode")
                 {
-                    // EmailTextBox
-                    // EmailSendCodeButton
-                    // EmailConfirmationCodeTextBox
-                    //if (string.IsNullOrWhiteSpace(EmailTextBox.Text))
-                    //{
-                    //    _notificationService.ShowNotification("Lỗi", "Email không được để trống", NotificationType.Warning);
-                    //    return;
-                    //}
-
-                    //if (!IsValidEmail(EmailTextBox.Text))
-                    //{
-                    //    _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
-                    //    return;
-                    //}
-
-                    //if (EmailConfirmationCodeTextBox.Visibility == Visibility.Visible &&
-                    //    string.IsNullOrWhiteSpace(EmailConfirmationCodeTextBox.Text))
-                    //{
-                    //    _notificationService.ShowNotification("Lỗi", "Vui lòng nhập mã xác nhận", NotificationType.Warning);
-                    //    return;
-                    //}
-
-
-
-                    //Email = EmailTextBox.Text;
-
                     try
                     {
                         _circularLoadingControl.Visibility = Visibility.Visible;
@@ -657,7 +657,70 @@ namespace TiketManagementV2.View
                 }
                 else if (editModeName == "PhoneEditMode")
                 {
-                    Phone = PhoneTextBox.Text;
+                    try
+                    {
+                        _circularLoadingControl.Visibility = Visibility.Visible;
+
+                        string phone = PhoneTextBox.Text;
+
+                        if (string.IsNullOrWhiteSpace(phone))
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin",
+                                NotificationType.Warning);
+                            return;
+                        }
+
+                        dynamic data = await ChangePhone(phone.Trim());
+
+                        if (data == null)
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                            data.message == "Refresh token không hợp lệ")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+
+                        if (data.message == "Lỗi dữ liệu đầu vào")
+                        {
+                            foreach (dynamic item in data.errors)
+                            {
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                                    NotificationType.Warning);
+                            }
+
+                            return;
+                        }
+
+                        if (data.message == "Thay đổi số điện thoại thành công!")
+                        {
+                            _notificationService.ShowNotification("Thành công", (string)data.message,
+                                NotificationType.Success);
+                        }
+                        else
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
+                    }
+                    finally
+                    {
+                        _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    }
                 }
                 else if (editModeName == "PasswordEditMode")
                 {
