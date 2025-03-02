@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TiketManagementV2.View"
+             xmlns:behaviors="clr-namespace:TiketManagementV2.Helpers"
+
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
     <Border Grid.Column="1"
         Grid.RowSpan="2"
         Margin="10,20,20,20"
@@ -41,11 +47,11 @@
                     <StackPanel Grid.Column="1" 
                           Margin="20,0,0,0"
                           VerticalAlignment="Center">
-                        <TextBlock Text="Account Settings" 
+                        <TextBlock Text="Cài đặt tài khoản" 
                              FontSize="24" 
                              FontWeight="Bold" 
                              Foreground="#E0E1F1"/>
-                        <TextBlock Text="Update your personal information" 
+                        <TextBlock Text="Cập nhật thông tin cá nhân của bạn" 
                              FontSize="14" 
                              Foreground="#8A8D9F"
                              Margin="0,5,0,0"/>
@@ -64,7 +70,7 @@
                             Padding="25"
                             Margin="0,0,0,20">
                         <StackPanel>
-                            <TextBlock Text="Personal Information" 
+                            <TextBlock Text="Thông tin cá nhân" 
                                      FontSize="18" 
                                      FontWeight="SemiBold"
                                      Foreground="#E0E1F1"
@@ -75,194 +81,267 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
                                 <!-- Display Name -->
                                 <StackPanel Grid.Row="0" Margin="0,0,0,20">
-                                    <TextBlock Text="Display Name"
-                                              Foreground="#8A8D9F"
-                                              FontSize="13"
-                                              Margin="0,0,0,8"/>
-                                    <Border Background="#2d1873" 
-                                            CornerRadius="8">
-                                        <TextBox Text="{Binding CurrentUserAccount.DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                                FontSize="14"
-                                                FontWeight="Medium"
-                                                FontFamily="Montserrat"                            
-                                                Foreground="White"
-                                                CaretBrush="LightGray"
-                                                BorderThickness="0"
-                                                Height="40"
-                                                VerticalContentAlignment="Center"
-                                                Padding="15,0"
-                                                Background="Transparent"/>
-                                    </Border>
+                                    <TextBlock Text="Họ tên"
+                                               Style="{StaticResource FieldLabel}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Read-only view -->
+                                        <Border x:Name="DisplayNameReadOnly" 
+                                                Background="#2d1873" 
+                                                CornerRadius="8">
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                        </Border>
+
+                                        <!-- Edit button -->
+                                        <Button Grid.Column="1" 
+                                                x:Name="DisplayNameEditButton"
+                                                Content="✏️" 
+                                                Width="40" 
+                                                Style="{StaticResource ModernButton}"
+                                                Margin="8,0,0,0"
+                                                Click="EditButton_Click"
+                                                Tag="DisplayNameEditMode"/>
+
+                                        <!-- Edit mode -->
+                                        <Grid x:Name="DisplayNameEditMode" Grid.Column="0" Visibility="Collapsed">
+                                            <TextBox x:Name="DisplayNameTextBox"
+                                                     Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     LostFocus="TextBox_LostFocus"/>
+                                        </Grid>
+
+                                        <!-- Edit buttons -->
+                                        <StackPanel Grid.Column="2" 
+                                                    Orientation="Horizontal" 
+                                                    Margin="8,0,0,0"
+                                                    x:Name="DisplayNameButtons"
+                                                    Visibility="Collapsed">
+                                            <Button Content="✓" 
+                                                    Width="40" 
+                                                    Style="{StaticResource ConfirmButton}"
+                                                    Margin="0,0,5,0"
+                                                    Click="Confirm_Click"
+                                                    Tag="DisplayNameEditMode"/>
+                                            <Button Content="✕" 
+                                                    Width="40" 
+                                                    Style="{StaticResource CancelButton}"
+                                                    Click="Cancel_Click"
+                                                    Tag="DisplayNameEditMode"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </StackPanel>
 
                                 <!-- Email -->
                                 <StackPanel Grid.Row="1" Margin="0,0,0,20">
                                     <TextBlock Text="Email"
-                                              Foreground="#8A8D9F"
-                                              FontSize="13"
-                                              Margin="0,0,0,8"/>
-                                    <Border Background="#2d1873" 
-                                            CornerRadius="8">
-                                        <TextBox Text="{Binding CurrentUserAccount.Email, UpdateSourceTrigger=PropertyChanged}"
-                                                FontSize="14"
-                                                FontWeight="Medium"
-                                                FontFamily="Montserrat"                            
-                                                Foreground="White"
-                                                CaretBrush="LightGray"
-                                                BorderThickness="0"
-                                                Height="40"
-                                                VerticalContentAlignment="Center"
-                                                Padding="15,0"
-                                                Background="Transparent"/>
-                                    </Border>
+                                               Style="{StaticResource FieldLabel}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <!-- Read-only view -->
+                                        <Border x:Name="EmailReadOnly" 
+                                                Background="#2d1873" 
+                                                CornerRadius="8">
+                                            <TextBlock Text="{Binding Email}"
+                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                        </Border>
+                                        <!-- Edit button -->
+                                        <Button Grid.Column="1" 
+                                                x:Name="EmailEditButton"
+                                                Content="✏️" 
+                                                Width="40" 
+                                                Style="{StaticResource ModernButton}"
+                                                Margin="8,0,0,0"
+                                                Click="EditButton_Click"
+                                                Tag="EmailEditMode"/>
+                                        <!-- Edit mode -->
+                                        <Grid x:Name="EmailEditMode" Grid.Column="0" Visibility="Collapsed">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <!-- Email input -->
+                                            <TextBox x:Name="EmailTextBox"
+                                                     Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     Grid.Row="0"
+                                                     LostFocus="TextBox_LostFocus"/>
+                                            <!-- Confirmation code input -->
+                                            <TextBox x:Name="EmailConfirmationCodeTextBox"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     Grid.Row="1"
+                                                     Margin="0,5,0,0"
+                                                     Visibility="Collapsed"/>
+                                        </Grid>
+                                        <!-- Edit buttons -->
+                                        <StackPanel Grid.Column="2" 
+                                                    Orientation="Horizontal" 
+                                                    Margin="8,0,0,0"
+                                                    x:Name="EmailButtons"
+                                                    Visibility="Collapsed">
+                                            <Button x:Name="EmailSendCodeButton"
+                                                    Content="Send Code" 
+                                                    Width="80" 
+                                                    Style="{StaticResource ConfirmButton}"
+                                                    Margin="0,0,5,0"
+                                                    Click="SendEmailCode_Click"
+                                                    Tag="EmailEditMode"/>
+                                            <Button x:Name="EmailConfirmButton"
+                                                    Content="✓" 
+                                                    Width="40" 
+                                                    Style="{StaticResource ConfirmButton}"
+                                                    Margin="0,0,5,0"
+                                                    Click="Confirm_Click"
+                                                    Tag="EmailEditMode"
+                                                    Visibility="Collapsed"/>
+                                            <Button Content="✕" 
+                                                    Width="40" 
+                                                    Style="{StaticResource CancelButton}"
+                                                    Click="Cancel_Click"
+                                                    Tag="EmailEditMode"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </StackPanel>
 
                                 <!-- Phone -->
-                                <StackPanel Grid.Row="2">
-                                    <TextBlock Text="Phone Number"
-                                              Foreground="#8A8D9F"
-                                              FontSize="13"
-                                              Margin="0,0,0,8"/>
-                                    <Border Background="#2d1873" 
-                                            CornerRadius="8">
-                                        <TextBox Text="{Binding CurrentUserAccount.Phone, UpdateSourceTrigger=PropertyChanged}"
-                                                FontSize="14"
-                                                FontWeight="Medium"
-                                                FontFamily="Montserrat"                            
-                                                Foreground="White"
-                                                CaretBrush="LightGray"
-                                                BorderThickness="0"
-                                                Height="40"
-                                                VerticalContentAlignment="Center"
-                                                Padding="15,0"
-                                                Background="Transparent"/>
-                                    </Border>
+                                <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                                    <TextBlock Text="Số điện thoại"
+                                               Style="{StaticResource FieldLabel}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Read-only view -->
+                                        <Border x:Name="PhoneReadOnly" 
+                                                Background="#2d1873" 
+                                                CornerRadius="8">
+                                            <TextBlock Text="{Binding Phone}"
+                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                        </Border>
+
+                                        <!-- Edit button -->
+                                        <Button Grid.Column="1" 
+                                                x:Name="PhoneEditButton"
+                                                Content="✏️" 
+                                                Width="40" 
+                                                Style="{StaticResource ModernButton}"
+                                                Margin="8,0,0,0"
+                                                Click="EditButton_Click"
+                                                Tag="PhoneEditMode"/>
+
+                                        <!-- Edit mode -->
+                                        <Grid x:Name="PhoneEditMode" Grid.Column="0" Visibility="Collapsed">
+                                            <TextBox x:Name="PhoneTextBox"
+                                                     Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource ModernTextBox}"
+                                                     LostFocus="TextBox_LostFocus"/>
+                                        </Grid>
+
+                                        <!-- Edit buttons -->
+                                        <StackPanel Grid.Column="2" 
+                                                    Orientation="Horizontal" 
+                                                    Margin="8,0,0,0"
+                                                    x:Name="PhoneButtons"
+                                                    Visibility="Collapsed">
+                                            <Button Content="✓" 
+                                                    Width="40" 
+                                                    Style="{StaticResource ConfirmButton}"
+                                                    Margin="0,0,5,0"
+                                                    Click="Confirm_Click"
+                                                    Tag="PhoneEditMode"/>
+                                            <Button Content="✕" 
+                                                    Width="40" 
+                                                    Style="{StaticResource CancelButton}"
+                                                    Click="Cancel_Click"
+                                                    Tag="PhoneEditMode"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!--Password-->
+                                <StackPanel Grid.Row="4" Margin="0,0,0,20">
+                                    <TextBlock Text="Password"
+                                               Style="{StaticResource FieldLabel}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <!-- Read-only view -->
+                                        <Border x:Name="PasswordReadOnly" 
+                                                Background="#2d1873" 
+                                                CornerRadius="8">
+                                            <TextBlock Text="************"
+                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                        </Border>
+                                        <!-- Edit button -->
+                                        <Button Grid.Column="1" 
+                                                x:Name="PasswordEditButton"
+                                                Content="✏️" 
+                                                Width="40" 
+                                                Style="{StaticResource ModernButton}"
+                                                Margin="8,0,0,0"
+                                                Click="EditButton_Click"
+                                                Tag="PasswordEditMode"/>
+                                        <!-- Edit mode -->
+                                        <Grid x:Name="PasswordEditMode" Grid.Column="0" Visibility="Collapsed">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <!-- Password input -->
+                                            <PasswordBox x:Name="PasswordTextBox"
+                                                         Style="{StaticResource ModernPasswordBox}"
+                                                         Grid.Row="0"
+                                                         LostFocus="TextBox_LostFocus"/>
+                                            <!-- Confirm password input -->
+                                            <PasswordBox x:Name="ConfirmPasswordTextBox"
+                                                         Style="{StaticResource ModernPasswordBox}"
+                                                         Grid.Row="1"
+                                                         Margin="0,5,0,0"
+                                                         LostFocus="TextBox_LostFocus"/>
+                                        </Grid>
+                                        <!-- Edit buttons -->
+                                        <StackPanel Grid.Column="2" 
+                                                    Orientation="Horizontal" 
+                                                    Margin="8,0,0,0"
+                                                    x:Name="PasswordButtons"
+                                                    Visibility="Collapsed">
+                                            <Button Content="✓" 
+                                                    Width="40"
+                                                    Style="{StaticResource ConfirmButton}"
+                                                    Margin="0,0,5,0"
+                                                    Click="Confirm_Click"
+                                                    Tag="PasswordEditMode"/>
+                                            <Button Content="✕" 
+                                                    Width="40"
+                                                    Style="{StaticResource CancelButton}"
+                                                    Click="Cancel_Click"
+                                                    Tag="PasswordEditMode"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Border>
-
-                    <!-- Buttons -->
-                    <StackPanel Orientation="Horizontal" 
-                                            HorizontalAlignment="Right">
-                        <Button x:Name="btnCancel"
-                                            Content="Cancel"
-                                            Command="{Binding CancelProfileCommand}"
-                                            Width="120"
-                                            Height="40"
-                                            Margin="0,0,15,0"
-                                            Background="Transparent"
-                                            BorderBrush="#8A8D9F"
-                                            BorderThickness="1"
-                                            Foreground="#8A8D9F"
-                                            FontSize="14"
-                                            FontFamily="Montserrat">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="8">
-                                                    <ContentPresenter HorizontalAlignment="Center" 
-                                                VerticalAlignment="Center"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#2d1873"/>
-                                                        <Setter TargetName="border" Property="BorderBrush" Value="#6C5DD3"/>
-                                                        <Setter Property="Cursor" Value="Hand"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#251361"/>
-                                                        <Setter TargetName="border" Property="BorderBrush" Value="#5849AA"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button x:Name="btnUpdate"
-                                Content="Save Changes"
-                                Command="{Binding SaveProfileCommand}"
-                                Width="120"
-                                Height="40"
-                                Background="#6C5DD3"
-                                BorderThickness="0"
-                                Foreground="White"
-                                FontSize="14"
-                                FontFamily="Montserrat"
-                                FontWeight="SemiBold">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border x:Name="border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="8">
-                                                    <Grid>
-                                                        <ContentPresenter x:Name="content"
-                                                    HorizontalAlignment="Center" 
-                                                    VerticalAlignment="Center"/>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#5849AA"/>
-                                                        <Setter Property="Cursor" Value="Hand"/>
-                                                        <!-- Add slight scale animation -->
-                                                        <Trigger.EnterActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <DoubleAnimation Storyboard.TargetName="border"
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                               To="1.05" Duration="0:0:0.1"/>
-                                                                    <DoubleAnimation Storyboard.TargetName="border"
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                               To="1.05" Duration="0:0:0.1"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.EnterActions>
-                                                        <Trigger.ExitActions>
-                                                            <BeginStoryboard>
-                                                                <Storyboard>
-                                                                    <DoubleAnimation Storyboard.TargetName="border"
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                                                               To="1" Duration="0:0:0.1"/>
-                                                                    <DoubleAnimation Storyboard.TargetName="border"
-                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                                                               To="1" Duration="0:0:0.1"/>
-                                                                </Storyboard>
-                                                            </BeginStoryboard>
-                                                        </Trigger.ExitActions>
-                                                    </Trigger>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="border" Property="Background" Value="#483C8A"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                            <Button.RenderTransform>
-                                <ScaleTransform ScaleX="1" ScaleY="1"/>
-                            </Button.RenderTransform>
-                        </Button>
-                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
