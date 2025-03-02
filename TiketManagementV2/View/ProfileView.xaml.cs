@@ -8,6 +8,10 @@ using TiketManagementV2.Controls;
 using TiketManagementV2.Helpers;
 using TiketManagementV2.Services;
 using Microsoft.Win32;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TiketManagementV2.Model;
+using TiketManagementV2.ViewModel;
 
 namespace TiketManagementV2.View
 {
@@ -83,10 +87,17 @@ namespace TiketManagementV2.View
         // Commands
         public ICommand ChangeProfileImageCommand { get; private set; }
 
-        public ProfileView(dynamic user, CircularLoadingControl circularLoadingControl)
+        private ApiServices _services;
+        private MainViewModel _mainViewModel;
+        private TextBlock _display_name;
+        private AdminView _adminView;
+        public ProfileView(dynamic user, CircularLoadingControl circularLoadingControl, MainViewModel mainView, TextBlock display_name, AdminView adminView)
         {
             InitializeComponent();
-
+            _adminView = adminView;
+            _display_name = display_name;
+            _mainViewModel = mainView;
+            _services = new ApiServices();
             _user = user;
             _circularLoadingControl = circularLoadingControl;
             _notificationService = new NotificationService();
@@ -203,33 +214,137 @@ namespace TiketManagementV2.View
             }
         }
 
-        private void SendEmailCode_Click(object sender, RoutedEventArgs e)
+        private async Task<dynamic> SendCode(string email, bool type)
         {
-            if (string.IsNullOrWhiteSpace(EmailTextBox.Text))
-            {
-                _notificationService.ShowNotification("Lỗi", "Email không được để trống", NotificationType.Warning);
-                return;
-            }
-
-            if (!IsValidEmail(EmailTextBox.Text))
-            {
-                _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
-                return;
-            }
-
             try
             {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
 
+                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var userBody = new
+                {
+                    refresh_token,
+                    email
+                };
 
-                EmailConfirmationCodeTextBox.Visibility = Visibility.Visible;
+                if (type)
+                {
+                    return await _services.PostWithHeaderAndBodyAsync("api/users/send-email-verify-change-email", userHeader, userBody);
+                }
+                else
+                {
+                    return await _services.PutWithHeaderAndBodyAsync("api/users/resend-email-verify-change-email", userHeader, userBody);
+                }
 
-                EmailSendCodeButton.Visibility = Visibility.Collapsed;
-                EmailConfirmButton.Visibility = Visibility.Visible;
-                _notificationService.ShowNotification("Thành công", "Mã xác nhận đã được gửi đến email của bạn", NotificationType.Info);
             }
             catch (Exception ex)
             {
-                _notificationService.ShowNotification("Lỗi", "Không thể gửi mã xác nhận", NotificationType.Warning);
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async void SendEmailCode_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
+                string email = EmailTextBox.Text;
+                string btnContent = (string)EmailSendCodeButton.Content;
+
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(btnContent))
+                {
+                    _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin", NotificationType.Warning);
+                    return;
+                }
+
+                if (!IsValidEmail(email))
+                {
+                    _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
+                    return;
+                }
+
+                bool isSend = btnContent == "Send Code";
+
+                dynamic data = await SendCode(email.Trim(), isSend);
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
+                        NotificationType.Error);
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification("Lỗi", (string)data.message,
+                        NotificationType.Error);
+                    return;
+                }
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        if ((string)item.Value.msg == "Email đã được gửi, vui lòng kiểm tra hộp thư của bạn")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)item.Value.msg,
+                                NotificationType.Warning);
+                            EmailSendCodeButton.Content = "Gửi lại?";
+                            return;
+                        }
+                        else if ((string)item.Value.msg == "Mã xác minh email chưa được gửi")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)item.Value.msg,
+                                NotificationType.Warning);
+                            EmailSendCodeButton.Content = "Send Code";
+                            return;
+                        }
+
+                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                            NotificationType.Warning);
+                    }
+
+                    return;
+                }
+
+                if (data.message == "Mã xác minh email đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn" ||
+                    data.message == "Mã xác minh email đã được gửi lại thành công! Vui lòng kiểm tra hộp thư của bạn")
+                {
+                    _notificationService.ShowNotification("Thành công", (string)data.message,
+                        NotificationType.Success);
+
+                    EmailConfirmationCodeTextBox.Visibility = Visibility.Visible;
+
+                    EmailConfirmButton.Visibility = Visibility.Visible;
+
+                    EmailSendCodeButton.Content = "Gửi lại?";
+                }
+                else
+                {
+                    _notificationService.ShowNotification("Lỗi", (string)data.message,
+                        NotificationType.Error);
+                }
+            }
+            catch (Exception err)
+            {
+                _notificationService.ShowNotification("Lỗi", err.Message, NotificationType.Error);
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -286,43 +401,259 @@ namespace TiketManagementV2.View
                 }
             }
         }
-        private void Confirm_Click(object sender, RoutedEventArgs e)
+
+        private async Task<dynamic> ChangeDisplayName(string newDisplayName)
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var userBody = new
+                {
+                    refresh_token,
+                    new_display_name = newDisplayName
+                };
+
+                return await _services.PutWithHeaderAndBodyAsync("api/users/change-display-name", userHeader, userBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task<dynamic> ChangeEmail(string newEmail, string verifyCode)
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var userBody = new
+                {
+                    refresh_token,
+                    new_email = newEmail,
+                    email_verify_code = verifyCode
+                };
+
+                return await _services.PutWithHeaderAndBodyAsync("api/users/change-email", userHeader, userBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async Task<bool> DeleteLogout()
+        {
+            try
+            {
+                var logoutBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token
+                };
+
+                await _services.DeleteWithBodyAsync("api/users/logout", logoutBody);
+
+                Properties.Settings.Default.access_token = "";
+                Properties.Settings.Default.refresh_token = "";
+                Properties.Settings.Default.Save();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        private async void Confirm_Click(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement element && element.Tag is string editModeName)
             {
                 if (editModeName == "DisplayNameEditMode")
                 {
-                    if (string.IsNullOrWhiteSpace(DisplayNameTextBox.Text))
+                    try
                     {
-                        _notificationService.ShowNotification("Lỗi", "Họ tên không được để trống", NotificationType.Warning);
-                        return;
+                        _circularLoadingControl.Visibility = Visibility.Visible;
+
+                        string displayName = DisplayNameTextBox.Text;
+
+                        if (string.IsNullOrWhiteSpace(displayName))
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin",
+                                NotificationType.Warning);
+                            return;
+                        }
+
+                        dynamic data = await ChangeDisplayName(displayName.Trim());
+
+                        if (data == null)
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                            data.message == "Refresh token không hợp lệ")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+
+                        if (data.message == "Lỗi dữ liệu đầu vào")
+                        {
+                            foreach (dynamic item in data.errors)
+                            {
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                                    NotificationType.Warning);
+                            }
+
+                            return;
+                        }
+
+                        if (data.message == "Thay đổi tên hiển thị thành công!")
+                        {
+                            _notificationService.ShowNotification("Thành công", (string)data.message,
+                                NotificationType.Success);
+                            //_mainViewModel.CurrentUserAccount.DisplayName = displayName;
+                            _display_name.Text = displayName;
+                        }
+                        else
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                        }
                     }
-                    DisplayName = DisplayNameTextBox.Text;
+                    catch (Exception ex)
+                    {
+                        _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
+                    }
+                    finally
+                    {
+                        _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    }
                 }
                 else if (editModeName == "EmailEditMode")
                 {
-                    if (string.IsNullOrWhiteSpace(EmailTextBox.Text))
+                    // EmailTextBox
+                    // EmailSendCodeButton
+                    // EmailConfirmationCodeTextBox
+                    //if (string.IsNullOrWhiteSpace(EmailTextBox.Text))
+                    //{
+                    //    _notificationService.ShowNotification("Lỗi", "Email không được để trống", NotificationType.Warning);
+                    //    return;
+                    //}
+
+                    //if (!IsValidEmail(EmailTextBox.Text))
+                    //{
+                    //    _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
+                    //    return;
+                    //}
+
+                    //if (EmailConfirmationCodeTextBox.Visibility == Visibility.Visible &&
+                    //    string.IsNullOrWhiteSpace(EmailConfirmationCodeTextBox.Text))
+                    //{
+                    //    _notificationService.ShowNotification("Lỗi", "Vui lòng nhập mã xác nhận", NotificationType.Warning);
+                    //    return;
+                    //}
+
+
+
+                    //Email = EmailTextBox.Text;
+
+                    try
                     {
-                        _notificationService.ShowNotification("Lỗi", "Email không được để trống", NotificationType.Warning);
-                        return;
-                    }
+                        _circularLoadingControl.Visibility = Visibility.Visible;
 
-                    if (!IsValidEmail(EmailTextBox.Text))
+                        string email = EmailTextBox.Text;
+                        string verifyCode = EmailConfirmationCodeTextBox.Text;
+
+                        if (string.IsNullOrWhiteSpace(email) ||
+                            EmailConfirmationCodeTextBox.Visibility == Visibility.Collapsed ||
+                            EmailConfirmationCodeTextBox.Visibility == Visibility.Hidden ||
+                            string.IsNullOrWhiteSpace(verifyCode))
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin",
+                                NotificationType.Warning);
+                            return;
+                        }
+
+                        dynamic data = await ChangeEmail(email.Trim(), verifyCode.Trim());
+
+                        if (data == null)
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                            data.message == "Refresh token không hợp lệ")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        Properties.Settings.Default.access_token = data.authenticate.access_token;
+                        Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                        Properties.Settings.Default.Save();
+
+                        if (data.message == "Lỗi dữ liệu đầu vào")
+                        {
+                            foreach (dynamic item in data.errors)
+                            {
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                                    NotificationType.Warning);
+                            }
+
+                            return;
+                        }
+
+                        if (data.message == "Thay đổi email thành công! Vui lòng đăng nhập lại")
+                        {
+                            _notificationService.ShowNotification("Thành công", (string)data.message,
+                                NotificationType.Success);
+
+                            await DeleteLogout();
+
+                            LoginView loginView = new LoginView();
+                            loginView.Show();
+                            _adminView.Close();
+                        }
+                        else
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
-                        return;
+                        _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
                     }
-
-                    if (EmailConfirmationCodeTextBox.Visibility == Visibility.Visible &&
-                        string.IsNullOrWhiteSpace(EmailConfirmationCodeTextBox.Text))
+                    finally
                     {
-                        _notificationService.ShowNotification("Lỗi", "Vui lòng nhập mã xác nhận", NotificationType.Warning);
-                        return;
+                        _circularLoadingControl.Visibility = Visibility.Collapsed;
                     }
-
-
-
-                    Email = EmailTextBox.Text;
                 }
                 else if (editModeName == "PhoneEditMode")
                 {

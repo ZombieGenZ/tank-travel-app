@@ -37,7 +37,7 @@ namespace TiketManagementV2.View
             LoadingControl.Visibility = Visibility.Hidden;
             _notificationService = new NotificationService();
             _user = user;
-            var viewModel = new MainViewModel(_notificationService, _user, LoadingControl);
+            var viewModel = new MainViewModel(_notificationService, _user, LoadingControl, display_name, this);
             DataContext = viewModel;
             _service = new ApiServices();
 

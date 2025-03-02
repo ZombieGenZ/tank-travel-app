@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -117,7 +118,7 @@ namespace TiketManagementV2.ViewModel
             {
                 return;
             }
-            CurrentView = new ProfileView(_user, _circularLoadingControl);
+            CurrentView = new ProfileView(_user, _circularLoadingControl, this, _display_name, _adminView);
         }
 
         private void ExecuteShowAccountView(object obj)
@@ -332,6 +333,67 @@ namespace TiketManagementV2.ViewModel
         {
             _service = new ApiServices();
 
+            _user = user;
+            _notificationService = notificationService;
+
+            _circularLoadingControl = loading;
+
+            CurrentUserAccount = new UserAccount
+            {
+                DisplayName = user.display_name,
+                Email = user.email,
+                Phone = user.phone
+            };
+            PathUser = user.avatar.url;
+
+            //Revenue = "0";
+            //_Deals = "0";
+
+            //LoadRevenue();
+
+            // Khởi tạo commands cho profile
+            SaveProfileCommand = new RelayCommand(ExecuteSaveProfile);
+            CancelProfileCommand = new RelayCommand(ExecuteCancelProfile);
+            ChangeProfileImageCommand = new RelayCommand(ExecuteChangeProfileImage);
+
+
+            // Khởi tạo commands
+            ShowHomeViewCommand = new RelayCommand(ExecuteShowHomeView);
+            ShowBankViewCommand = new RelayCommand(ExecuteShowBankView);
+            ShowProfileViewCommand = new RelayCommand(ExecuteShowProfileView);
+            ShowAccountViewCommand = new RelayCommand(ExecuteShowAccountView);
+            ShowTicketViewCommand = new RelayCommand(ExecuteShowTicketView);
+            ShowChartViewCommand = new RelayCommand(ExecuteShowChartView);
+            ShowLogViewCommand = new RelayCommand(ExecuteShowLogView);
+            ShowNotificationViewCommand = new RelayCommand(ExecuteShowNotificationView);
+            ShowBusCensorViewCommand = new RelayCommand(ExecuteShowBusCensorView);
+            ShowVehicleCensorViewCommand = new RelayCommand(ExecuteShowVehicleCensorView);
+            ShowVehicleManagementViewCommand = new RelayCommand(ExecuteShowVehicleManagementView);
+            ShowBusRouteViewCommand = new RelayCommand(ExecuteShowBusRouteView);
+            ShowMailViewCommand = new RelayCommand(ExecuteShowMailView);
+            ShowResetPasswordViewCommand = new RelayCommand(ExecuteShowResetPasswordView);
+            ShowGlobalViewCommand = new RelayCommand(ExecuteShowGlobalNotificationView);
+            //command bus
+            ShowHomeBusViewCommand = new RelayCommand(ExecuteShowHomeBusView);
+
+            // Set view mặc định
+            if (user.permission == 2)
+            {
+                ExecuteShowHomeView(null);
+            }
+            else if (user.permission == 1)
+            {
+                ExecuteShowHomeBusView(null);
+            }
+        }
+
+        private AdminView _adminView;
+        private TextBlock _display_name;
+        public MainViewModel(INotificationService notificationService, dynamic user, CircularLoadingControl loading, TextBlock display_name, AdminView adminView)
+        {
+            _service = new ApiServices();
+            _display_name = display_name;
+            _adminView = adminView;
             _user = user;
             _notificationService = notificationService;
 
