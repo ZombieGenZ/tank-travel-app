@@ -48,224 +48,554 @@
                     </Border>
                 </Grid>
             </Grid>
-            
+
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2.7*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                
-                <!-- Hiring Stats Cards Row -->
-                <Grid Grid.Row="0" Margin="25,10,25,15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                    </Grid.ColumnDefinitions>
+                    <!-- Hiring Stats Cards Row -->
+                    <Grid Grid.Row="0" Grid.Column="0" Margin="25,10,25,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Technical Hiring Stats -->
-                    <Border Grid.Column="0" 
-                            Background="#1B1464"
-                            CornerRadius="15"
-                            Margin="0,0,10,0"
-                            Padding="15">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="Hóa đơn" 
-                                       FontSize="20" 
-                                       FontWeight="Bold" 
-                                       Foreground="White"
-                                       HorizontalAlignment="Left"/>
-
-                            <TextBlock Grid.Row="1" 
-                          Text="Technical Hiring" 
-                          Foreground="#6A75CA"
-                          FontSize="14"
-                          Margin="0,5,0,0"/>
-
-                            <TextBlock Grid.Row="2" 
-                          Text="Average Days to Hire" 
-                          Foreground="White"
-                          FontSize="14"
-                          Margin="0,5,0,0"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- Non-Technical Hiring Stats -->
-                    <Border Grid.Column="1" 
-                            Background="#1B1464"
-                            CornerRadius="15"
-                            Margin="5,0"
-                            Padding="15">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="Vé đã đặt" 
-                                       FontSize="20" 
-                                       FontWeight="Bold" 
-                                       Foreground="White"
-                                       HorizontalAlignment="Left"/>
-
-                            <TextBlock Grid.Row="1" 
-                                       Text="Non-Technical Hiring" 
-                                       Foreground="#C76584"
-                                       FontSize="14"
-                                       Margin="0,5,0,0"/>
-
-                            <TextBlock Grid.Row="2" 
-                                       Text="Average Days to Hire" 
-                                       Foreground="White"
-                                       FontSize="14"
-                                       Margin="0,5,0,0"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- Technical Hiring Time to Fill -->
-                    <Border Grid.Column="2" 
-                            Background="#1B1464"
-                            CornerRadius="15"
-                            Margin="5,0"
-                            Padding="15">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="Doanh thu" 
-                                       FontSize="20" 
-                                       FontWeight="Bold" 
-                                       Foreground="White"
-                                       HorizontalAlignment="Left"/>
-
-                            <TextBlock Grid.Row="1" 
-                                       Text="Technical Hiring" 
-                                       Foreground="#6A75CA"
-                                       FontSize="14"
-                                       Margin="0,5,0,0"/>
-
-                            <TextBlock Grid.Row="2" 
-                                       Text="Average Days to Fill" 
-                                       Foreground="White"
-                                       FontSize="14"
-                                       Margin="0,5,0,0"/>
-                        </Grid>
-                    </Border>
-                </Grid>
-
-                <!-- Charts Row -->
-                <Grid Grid.Row="2" Margin="25,10,25,20">
-
-                    <!-- Hiring Sources Chart -->
-                    <Border Grid.Column="0" 
-                            Background="#1B1464"
-                            CornerRadius="15"
-                            Margin="0,0,10,0"
-                            Padding="15">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
+                        <!-- Hóa đơn Stats -->
+                        <Border Grid.Column="0" 
+                                Background="#1B1464"
+                                CornerRadius="15"
+                                Margin="0,0,10,0"
+                                Padding="15">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                <TextBlock Text="Doanh thu 7 ngày gần đây" 
-                                           FontSize="18" 
+                                <TextBlock Text="Hóa đơn" 
+                                           FontSize="20" 
                                            FontWeight="Bold" 
                                            Foreground="White"
-                                           Margin="0,0,0,10"/>
+                                           HorizontalAlignment="Left"/>
 
-                                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Border Background="#333C83" 
-                                            CornerRadius="3" 
-                                            Padding="8,2" 
-                                            Margin="0,0,10,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Width="10" 
-                                                   Height="10" 
-                                                   Background="#5E73EE" 
-                                                   CornerRadius="2" 
-                                                   Margin="0,0,5,0"/>
-                                            <TextBlock Text="Doanh thu" 
-                                                       VerticalAlignment="Center"
-                                                       Foreground="White" 
-                                                       FontSize="12"/>
-                                        </StackPanel>
-                                    </Border>
+                                <Grid Grid.Row="1" Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="+15.4%" 
+                                               Foreground="#4CAF50"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"/>
+                                    <Image Grid.Column="1" 
+                                           Source="/Images/increase.png" 
+                                           Width="16" 
+                                           Height="16" 
+                                           Margin="5,0,0,0"/>
+                                </Grid>
 
-                                    <fa:IconImage Icon="EllipsisVertical" 
-                                    Width="16" 
-                                    Height="16"
-                                    Foreground="White"/>
-                                </StackPanel>
+                                <TextBlock Grid.Row="2" 
+                                           Text="Average Days to Hire" 
+                                           Foreground="White"
+                                           FontSize="14"
+                                           Margin="0,5,0,0"/>
                             </Grid>
+                        </Border>
 
-                            <lvc:CartesianChart Grid.Row="1" 
-                                  DisableAnimations="False"
-                                  Hoverable="True">
-                                <lvc:CartesianChart.Series>
-                                    <lvc:LineSeries Values="{Binding HiringSources}" 
-                                                    StrokeThickness="3"
-                                                    Stroke="#5E73EE"
-                                                    LineSmoothness="0.5"
-                                                    PointGeometrySize="0">
-                                        <lvc:LineSeries.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,3" Opacity="0.7">
-                                                <GradientStop Color="#3A4298" Offset="0" />
-                                                <GradientStop Color="#00FBA1AA" Offset="1" />
-                                            </LinearGradientBrush>
-                                        </lvc:LineSeries.Fill>
-                                    </lvc:LineSeries>
-                                </lvc:CartesianChart.Series>
-                                <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Labels="{Binding SourceLabels}" 
-                                Foreground="White" 
-                                FontSize="12">
-                                        <lvc:Axis.Separator>
-                                            <lvc:Separator StrokeThickness="0.2" 
-                                             Stroke="#454B80" 
-                                             Step="1"/>
-                                        </lvc:Axis.Separator>
-                                    </lvc:Axis>
-                                </lvc:CartesianChart.AxisX>
-                                <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Foreground="White" 
-                                FontSize="12" 
-                                MinValue="0" 
-                                MaxValue="100">
-                                        <lvc:Axis.Separator>
-                                            <lvc:Separator StrokeThickness="0.2" 
-                                             Stroke="#454B80" 
-                                             Step="20"/>
-                                        </lvc:Axis.Separator>
-                                    </lvc:Axis>
-                                </lvc:CartesianChart.AxisY>
-                            </lvc:CartesianChart>
-                        </Grid>
-                    </Border>
+                        <!-- Vé đã đặt Stats -->
+                        <Border Grid.Column="1" 
+                                Background="#1B1464"
+                                CornerRadius="15"
+                                Margin="5,0"
+                                Padding="15">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
+                                <TextBlock Text="Vé đã đặt" 
+                                           FontSize="20" 
+                                           FontWeight="Bold" 
+                                           Foreground="White"
+                                           HorizontalAlignment="Left"/>
+
+                                <Grid Grid.Row="1" Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="-3.2%" 
+                                               Foreground="#F44336"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"/>
+                                    <Image Grid.Column="1" 
+                                           Source="/Images/decrease.png" 
+                                           Width="16" 
+                                           Height="16" 
+                                           Margin="5,0,0,0"/>
+                                </Grid>
+
+                                <TextBlock Grid.Row="2" 
+                                           Text="Average Days to Hire" 
+                                           Foreground="White"
+                                           FontSize="14"
+                                           Margin="0,5,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Doanh thu Stats -->
+                        <Border Grid.Column="2" 
+                                Background="#1B1464"
+                                CornerRadius="15"
+                                Margin="10,0,0,0"
+                                Padding="15">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Doanh thu" 
+                                           FontSize="20" 
+                                           FontWeight="Bold" 
+                                           Foreground="White"
+                                           HorizontalAlignment="Left"/>
+
+                                <Grid Grid.Row="1" Margin="0,5,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="+8.7%" 
+                                               Foreground="#4CAF50"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               VerticalAlignment="Center"/>
+                                    <Image Grid.Column="1" 
+                                           Source="/Images/increase.png" 
+                                           Width="16" 
+                                           Height="16" 
+                                           Margin="5,0,0,0"/>
+                                </Grid>
+
+                                <TextBlock Grid.Row="2" 
+                                           Text="Average Days to Fill" 
+                                           Foreground="White"
+                                           FontSize="14"
+                                           Margin="0,5,0,0"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+
+                    <!-- Charts Row -->
+                    <Grid Grid.Row="1" Grid.Column="0" Margin="25,10,25,20">
+                        <!-- Hiring Sources Chart -->
+                        <Border Grid.Column="0" 
+                                Background="#1B1464"
+                                CornerRadius="15"
+                                Margin="0,0,10,0"
+                                Padding="15">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Doanh thu 7 ngày gần đây" 
+                                               FontSize="18" 
+                                               FontWeight="Bold" 
+                                               Foreground="White"
+                                               Margin="0,0,0,10"/>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <Border Background="#333C83" 
+                                                CornerRadius="3" 
+                                                Padding="8,2" 
+                                                Margin="0,0,10,0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Width="10" 
+                                                        Height="10" 
+                                                        Background="#5E73EE" 
+                                                        CornerRadius="2" 
+                                                        Margin="0,0,5,0"/>
+                                                <TextBlock Text="Doanh thu" 
+                                                           VerticalAlignment="Center"
+                                                           Foreground="White" 
+                                                           FontSize="12"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <fa:IconImage Icon="EllipsisVertical" 
+                                                      Width="16" 
+                                                      Height="16"
+                                                      Foreground="White"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <lvc:CartesianChart Grid.Row="1" 
+                                                   DisableAnimations="False"
+                                                   Hoverable="True">
+                                    <lvc:CartesianChart.Series>
+                                        <lvc:LineSeries Values="{Binding HiringSources}" 
+                                                        StrokeThickness="3"
+                                                        Stroke="#5E73EE"
+                                                        LineSmoothness="0.5"
+                                                        PointGeometrySize="0">
+                                            <lvc:LineSeries.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,3" Opacity="0.7">
+                                                    <GradientStop Color="#3A4298" Offset="0" />
+                                                    <GradientStop Color="#00FBA1AA" Offset="1" />
+                                                </LinearGradientBrush>
+                                            </lvc:LineSeries.Fill>
+                                        </lvc:LineSeries>
+                                    </lvc:CartesianChart.Series>
+                                    <lvc:CartesianChart.AxisX>
+                                        <lvc:Axis Labels="{Binding SourceLabels}" 
+                                                 Foreground="White" 
+                                                 FontSize="12">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="0.2" 
+                                                              Stroke="#454B80" 
+                                                              Step="1"/>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisX>
+                                    <lvc:CartesianChart.AxisY>
+                                        <lvc:Axis Foreground="White" 
+                                                 FontSize="12" 
+                                                 MinValue="0" 
+                                                 MaxValue="100">
+                                            <lvc:Axis.Separator>
+                                                <lvc:Separator StrokeThickness="0.2" 
+                                                              Stroke="#454B80" 
+                                                              Step="20"/>
+                                            </lvc:Axis.Separator>
+                                        </lvc:Axis>
+                                    </lvc:CartesianChart.AxisY>
+                                </lvc:CartesianChart>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
+                <Border Grid.Column="1" 
+        Background="#1B1464"
+        CornerRadius="15"
+        Margin="0,10,25,20"
+        Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Bảng xếp hạng" 
+                  FontSize="22" 
+                  FontWeight="Bold" 
+                  Foreground="White"
+                  Margin="0,0,0,15"/>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="RankingList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,6" Padding="12" Height="74">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#2A246A"/>
+                                                    <Setter Property="CornerRadius" Value="12"/>
+                                                    <Style.Triggers>
+                                                        <!-- Top 1 - Vàng + Gradient -->
+                                                        <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                        <GradientStop Color="#FFD700" Offset="0"/>
+                                                                        <GradientStop Color="#FFA500" Offset="0.5"/>
+                                                                        <GradientStop Color="#FF8C00" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect BlurRadius="15" ShadowDepth="0" Color="#FFD700" Opacity="0.7"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+
+                                                        <!-- Top 2 - Màu bạc gradient -->
+                                                        <DataTrigger Binding="{Binding Rank}" Value="2">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                        <GradientStop Color="#E0E0E0" Offset="0"/>
+                                                                        <GradientStop Color="#C0C0C0" Offset="0.5"/>
+                                                                        <GradientStop Color="#A9A9A9" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#C0C0C0" Opacity="0.6"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+
+                                                        <!-- Top 3 - Màu đồng gradient -->
+                                                        <DataTrigger Binding="{Binding Rank}" Value="3">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                        <GradientStop Color="#CD7F32" Offset="0"/>
+                                                                        <GradientStop Color="#B87333" Offset="0.5"/>
+                                                                        <GradientStop Color="#A56E30" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#CD7F32" Opacity="0.5"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+
+                                            <Grid VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="50"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Medal for Top 3 -->
+                                                <Grid Grid.Column="0" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Grid.Style>
+                                                        <Style TargetType="Grid">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="3">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="4">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Grid.Style>
+
+                                                    <!-- Medal Design -->
+                                                    <Viewbox Stretch="Uniform">
+                                                        <Canvas Width="24" Height="24">
+                                                            <Path>
+                                                                <Path.Style>
+                                                                    <Style TargetType="Path">
+                                                                        <Style.Triggers>
+                                                                            <!-- Gold Medal -->
+                                                                            <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                                                <Setter Property="Fill" Value="#FFD700"/>
+                                                                                <Setter Property="Data" Value="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+                                                                            </DataTrigger>
+                                                                            <!-- Silver Medal -->
+                                                                            <DataTrigger Binding="{Binding Rank}" Value="2">
+                                                                                <Setter Property="Fill" Value="#E0E0E0"/>
+                                                                                <Setter Property="Data" Value="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+                                                                            </DataTrigger>
+                                                                            <!-- Bronze Medal -->
+                                                                            <DataTrigger Binding="{Binding Rank}" Value="3">
+                                                                                <Setter Property="Fill" Value="#CD7F32"/>
+                                                                                <Setter Property="Data" Value="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Path.Style>
+                                                            </Path>
+                                                        </Canvas>
+                                                    </Viewbox>
+
+                                                    <!-- Crown for Top 1 -->
+                                                    <Path Visibility="Collapsed" Fill="#FFC800" Data="M5,16L3,5L8.5,12L12,5L15.5,12L21,5L19,16H5M19,19A1,1 0 0,1 18,20H6A1,1 0 0,1 5,19V18H19V19Z">
+                                                        <Path.Style>
+                                                            <Style TargetType="Path">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Path.Style>
+                                                    </Path>
+
+                                                    <TextBlock Text="{Binding Rank}" 
+                                              FontWeight="ExtraBold"
+                                              FontSize="16"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Foreground" Value="#333333"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                                        <Setter Property="Foreground" Value="#5D4037"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Rank}" Value="2">
+                                                                        <Setter Property="Foreground" Value="#424242"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Rank}" Value="3">
+                                                                        <Setter Property="Foreground" Value="#3E2723"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+
+                                                <!-- Regular Rank Number (for ranks > 3) -->
+                                                <TextBlock Grid.Column="0" 
+                                         FontSize="16"
+                                         FontWeight="Bold"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding Rank}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="3">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+
+                                                <!-- Profile Image with Special Border -->
+                                                <Border Grid.Column="1" 
+                                       Width="50" 
+                                       Height="50" 
+                                       CornerRadius="25" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       ClipToBounds="True">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="BorderThickness" Value="2"/>
+                                                            <Setter Property="BorderBrush" Value="#3A3176"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="1">
+                                                                    <Setter Property="BorderThickness" Value="3"/>
+                                                                    <Setter Property="BorderBrush">
+                                                                        <Setter.Value>
+                                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                                <GradientStop Color="#FFD700" Offset="0"/>
+                                                                                <GradientStop Color="#FFA500" Offset="1"/>
+                                                                            </LinearGradientBrush>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                    <Setter Property="Effect">
+                                                                        <Setter.Value>
+                                                                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#FFD700" Opacity="0.7"/>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="2">
+                                                                    <Setter Property="BorderThickness" Value="3"/>
+                                                                    <Setter Property="BorderBrush">
+                                                                        <Setter.Value>
+                                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                                <GradientStop Color="#E0E0E0" Offset="0"/>
+                                                                                <GradientStop Color="#A9A9A9" Offset="1"/>
+                                                                            </LinearGradientBrush>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                    <Setter Property="Effect">
+                                                                        <Setter.Value>
+                                                                            <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#C0C0C0" Opacity="0.6"/>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Rank}" Value="3">
+                                                                    <Setter Property="BorderThickness" Value="3"/>
+                                                                    <Setter Property="BorderBrush">
+                                                                        <Setter.Value>
+                                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                                <GradientStop Color="#CD7F32" Offset="0"/>
+                                                                                <GradientStop Color="#A56E30" Offset="1"/>
+                                                                            </LinearGradientBrush>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+
+                                                    <!-- Ở đây bạn có thể thêm Image hoặc các control hiển thị avatar -->
+                                                    <Image Source="{Binding Avatar}" Stretch="UniformToFill"/>
+                                                </Border>
+
+                                                <!-- Thêm các trường thông tin người dùng ở đây như tên, điểm số... -->
+                                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="12,0,0,0">
+                                                    <TextBlock Text="{Binding Name}" 
+                                                              FontSize="16" 
+                                                              FontWeight="SemiBold" 
+                                                              Foreground="White"/>
+                                                    <TextBlock Text="{Binding Revenue, StringFormat='Doanh thu: {0}'}" 
+                                                              FontSize="14" 
+                                                              Foreground="#E0E0E0" 
+                                                              Margin="0,4,0,0"/>
+                                                </StackPanel>
+
+                                                <!-- Có thể thêm điểm số, icon huy hiệu ở cột thứ 4 -->
+                                                <TextBlock Grid.Column="3" 
+                                          Text="{Binding Points}" 
+                                          FontSize="18" 
+                                          FontWeight="Bold" 
+                                          Foreground="White" 
+                                          VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
             </Grid>
+            
         </Grid>
     </Border>
 </UserControl>

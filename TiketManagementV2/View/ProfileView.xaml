@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TiketManagementV2.View"
+             xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              xmlns:behaviors="clr-namespace:TiketManagementV2.Helpers"
 
              mc:Ignorable="d" 
@@ -306,18 +307,98 @@
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <!-- Password input -->
-                                            <PasswordBox x:Name="PasswordTextBox"
-                                                         Style="{StaticResource ModernPasswordBox}"
-                                                         Grid.Row="0"
+
+                                            <!-- Old Password input -->
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <PasswordBox x:Name="OldPasswordTextBox"
+                                                             Style="{StaticResource ModernPasswordBox}"
+                                                             Grid.Column="0"
+                                                             LostFocus="TextBox_LostFocus"/>
+                                                <Button x:Name="OldPasswordVisibilityButton"
+                                                        Grid.Column="1"
+                                                        Click="TogglePasswordVisibility_Click"
+                                                        Tag="OldPassword"
+                                                        Width="30"
+                                                        Height="30"
+                                                        Margin="5,0,0,0">
+                                                    <fa:IconBlock Icon="Eye" />
+                                                </Button>
+                                                <TextBox x:Name="OldPasswordVisibleTextBox"
+                                                         Style="{StaticResource ModernTextBox}"
+                                                         Grid.Column="0"
+                                                         Visibility="Collapsed"
                                                          LostFocus="TextBox_LostFocus"/>
+                                            </Grid>
+
+                                            <!-- New Password input -->
+                                            <Grid Grid.Row="1" Margin="0,5,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <PasswordBox x:Name="PasswordTextBox"
+                                                             Style="{StaticResource ModernPasswordBox}"
+                                                             Grid.Column="0"
+                                                             LostFocus="TextBox_LostFocus"
+                                                             PasswordChanged="PasswordTextBox_PasswordChanged"/>
+                                                <Button x:Name="PasswordVisibilityButton"
+                                                        Grid.Column="1"
+                                                        Click="TogglePasswordVisibility_Click"
+                                                        Tag="Password"
+                                                        Width="30"
+                                                        Height="30"
+                                                        Margin="5,0,0,0">
+                                                    <fa:IconBlock Icon="Eye" />
+                                                </Button>
+                                                <TextBox x:Name="PasswordVisibleTextBox"
+                                                         Style="{StaticResource ModernTextBox}"
+                                                         Grid.Column="0"
+                                                         Visibility="Collapsed"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="PasswordVisibleTextBox_TextChanged"/>
+                                            </Grid>
+
                                             <!-- Confirm password input -->
-                                            <PasswordBox x:Name="ConfirmPasswordTextBox"
-                                                         Style="{StaticResource ModernPasswordBox}"
-                                                         Grid.Row="1"
-                                                         Margin="0,5,0,0"
-                                                         LostFocus="TextBox_LostFocus"/>
+                                            <Grid Grid.Row="2" Margin="0,5,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <PasswordBox x:Name="ConfirmPasswordTextBox"
+                                                             Style="{StaticResource ModernPasswordBox}"
+                                                             Grid.Column="0"
+                                                             LostFocus="TextBox_LostFocus"
+                                                             PasswordChanged="ConfirmPasswordTextBox_PasswordChanged"/>
+                                                <Button x:Name="ConfirmPasswordVisibilityButton"
+                                                        Grid.Column="1"
+                                                        Click="TogglePasswordVisibility_Click"
+                                                        Tag="ConfirmPassword"
+                                                        Width="30"
+                                                        Height="30"
+                                                        Margin="5,0,0,0">
+                                                    <fa:IconBlock Icon="Eye" />
+                                                </Button>
+                                                <TextBox x:Name="ConfirmPasswordVisibleTextBox"
+                                                         Style="{StaticResource ModernTextBox}"
+                                                         Grid.Column="0"
+                                                         Visibility="Collapsed"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="ConfirmPasswordVisibleTextBox_TextChanged"/>
+                                            </Grid>
+
+                                            <!-- Password validation message -->
+                                            <TextBlock x:Name="PasswordValidationMessage"
+               Grid.Row="3"
+               Margin="0,5,0,0"
+               Foreground="Red"
+               TextWrapping="Wrap"
+               Visibility="Collapsed"/>
                                         </Grid>
                                         <!-- Edit buttons -->
                                         <StackPanel Grid.Column="2" 

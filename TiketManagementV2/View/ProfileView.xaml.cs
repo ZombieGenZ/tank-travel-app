@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TiketManagementV2.Model;
 using TiketManagementV2.ViewModel;
+using static MaterialDesignThemes.Wpf.Theme;
 
 namespace TiketManagementV2.View
 {
@@ -455,6 +456,34 @@ namespace TiketManagementV2.View
             }
         }
 
+        private async Task<dynamic> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var userBody = new
+                {
+                    refresh_token,
+                    password = oldPassword,
+                    new_password = newPassword,
+                    comform_new_password = confirmPassword
+                };
+
+                return await _services.PutWithHeaderAndBodyAsync("api/users/change-password", userHeader, userBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
         private async Task<bool> DeleteLogout()
         {
             try
@@ -724,20 +753,72 @@ namespace TiketManagementV2.View
                 }
                 else if (editModeName == "PasswordEditMode")
                 {
-                    // Validate password
-                    if (PasswordTextBox.Password.Length < 6)
+                    try
                     {
-                        _notificationService.ShowNotification("Lỗi", "Mật khẩu phải có ít nhất 6 ký tự", NotificationType.Warning);
-                        return;
-                    }
+                        _circularLoadingControl.Visibility = Visibility.Visible;
 
-                    if (PasswordTextBox.Password != ConfirmPasswordTextBox.Password)
+                        string oldPassword = OldPasswordTextBox.Password;
+                        string newPassword = PasswordTextBox.Password;
+                        string confirmPassword = ConfirmPasswordTextBox.Password;
+
+                        if (newPassword != confirmPassword)
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Xác nhận mật khẩu phải trùng khớp với mật khẩu",
+                                NotificationType.Warning);
+                            return;
+                        }
+
+                        dynamic data = await ChangePassword(oldPassword, newPassword, confirmPassword);
+
+                        if (data == null)
+                        {
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                            data.message == "Refresh token không hợp lệ")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                            return;
+                        }
+
+                        if (data.message == "Lỗi dữ liệu đầu vào")
+                        {
+                            foreach (dynamic item in data.errors)
+                            {
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                                    NotificationType.Warning);
+                            }
+                            return;
+                        }
+
+                        if (data.message == "Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại")
+                        {
+                            _notificationService.ShowNotification("Thành công", (string)data.message,
+                                NotificationType.Success);
+
+                            await DeleteLogout();
+                            LoginView loginView = new LoginView();
+                            loginView.Show();
+                            _adminView.Close();
+                        }
+                        else
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)data.message,
+                                NotificationType.Error);
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        _notificationService.ShowNotification("Lỗi", "Mật khẩu xác nhận không khớp", NotificationType.Warning);
-                        return;
+                        _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
                     }
-
-                    _password = PasswordTextBox.Password;
+                    finally
+                    {
+                        _circularLoadingControl.Visibility = Visibility.Collapsed;
+                    }
                 }
 
                 CloseEditMode(editModeName);
@@ -778,6 +859,33 @@ namespace TiketManagementV2.View
             }
         }
 
+        private bool _passwordsMatch = false;
+
+        private void ValidatePasswords()
+        {
+            string newPassword = PasswordTextBox.Visibility == Visibility.Visible ?
+                                 PasswordTextBox.Password :
+                                 PasswordVisibleTextBox.Text;
+
+            string confirmPassword = ConfirmPasswordTextBox.Visibility == Visibility.Visible ?
+                                     ConfirmPasswordTextBox.Password :
+                                     ConfirmPasswordVisibleTextBox.Text;
+
+            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
+            {
+                PasswordValidationMessage.Text = string.Empty;
+                PasswordValidationMessage.Visibility = Visibility.Collapsed;
+                _passwordsMatch = false;
+                return;
+            }
+
+            else
+            {
+                PasswordValidationMessage.Text = string.Empty;
+                PasswordValidationMessage.Visibility = Visibility.Collapsed;
+                _passwordsMatch = true;
+            }
+        }
         private bool IsValidEmail(string email)
         {
             try
@@ -796,6 +904,130 @@ namespace TiketManagementV2.View
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void TogglePasswordVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            // Cast sender to the correct button type
+            var toggleButton = sender as System.Windows.Controls.Button; // Sử dụng namespace đầy đủ
+            if (toggleButton == null) return;
+
+            // Find the icon within the button
+            var iconBlock = toggleButton.Content as FontAwesome.Sharp.IconBlock;
+
+            // Determine which password field pair this button is associated with
+            string targetId = toggleButton.Tag as string;
+
+            if (targetId == "Password")
+            {
+                if (PasswordTextBox.Visibility == System.Windows.Visibility.Visible)
+                {
+                    PasswordVisibleTextBox.Text = PasswordTextBox.Password;
+                    PasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    PasswordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                    if (iconBlock != null)
+                    {
+                        iconBlock.Icon = FontAwesome.Sharp.IconChar.EyeSlash;
+                    }
+                }
+                else
+                {
+                    PasswordTextBox.Password = PasswordVisibleTextBox.Text;
+                    PasswordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    PasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                    if (iconBlock != null)
+                    {
+                        iconBlock.Icon = FontAwesome.Sharp.IconChar.Eye;
+                    }
+                }
+            }
+            else if (targetId == "ConfirmPassword")
+            {
+                if (ConfirmPasswordTextBox.Visibility == System.Windows.Visibility.Visible)
+                {
+                    ConfirmPasswordVisibleTextBox.Text = ConfirmPasswordTextBox.Password;
+                    ConfirmPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    ConfirmPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                    if (iconBlock != null)
+                    {
+                        iconBlock.Icon = FontAwesome.Sharp.IconChar.EyeSlash;
+                    }
+                }
+                else
+                {
+                    ConfirmPasswordTextBox.Password = ConfirmPasswordVisibleTextBox.Text;
+                    ConfirmPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    ConfirmPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                    if (iconBlock != null)
+                    {
+                        iconBlock.Icon = FontAwesome.Sharp.IconChar.Eye;
+                    }
+                }
+            }
+            else if (targetId == "OldPassword")
+            {
+                if (OldPasswordTextBox.Visibility == System.Windows.Visibility.Visible)
+                {
+                    var visibleTextBox = FindName("OldPasswordVisibleTextBox") as System.Windows.Controls.TextBox;
+                    if (visibleTextBox != null)
+                    {
+                        visibleTextBox.Text = OldPasswordTextBox.Password;
+                        OldPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                        visibleTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                        if (iconBlock != null)
+                        {
+                            iconBlock.Icon = FontAwesome.Sharp.IconChar.EyeSlash;
+                        }
+                    }
+                }
+                else
+                {
+                    var visibleTextBox = FindName("OldPasswordVisibleTextBox") as System.Windows.Controls.TextBox;
+                    if (visibleTextBox != null)
+                    {
+                        OldPasswordTextBox.Password = visibleTextBox.Text;
+                        visibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                        OldPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                        if (iconBlock != null)
+                        {
+                            iconBlock.Icon = FontAwesome.Sharp.IconChar.Eye;
+                        }
+                    }
+                }
+            }
+
+            ValidatePasswords();
+        }
+
+
+        private void PasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ValidatePasswords();
+
+        }
+
+        private void PasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ValidatePasswords();
+
+        }
+
+        private void ConfirmPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ValidatePasswords();
+
+        }
+
+        private void ConfirmPasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ValidatePasswords();
+
         }
     }
 }
