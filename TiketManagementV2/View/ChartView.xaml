@@ -92,13 +92,13 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="+15.4%" 
-                                               Foreground="#4CAF50"
+                                    <TextBlock Foreground="#4CAF50"
                                                FontSize="14"
+                                               x:Name="txtHoaDon"
                                                FontWeight="Bold"
                                                VerticalAlignment="Center"/>
                                     <Image Grid.Column="1" 
-                                           Source="/Images/increase.png" 
+                                           x:Name="imgHoaDon"
                                            Width="16" 
                                            Height="16" 
                                            Margin="5,0,0,0"/>
@@ -136,14 +136,14 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="-3.2%" 
-                                               Foreground="#F44336"
+                                    <TextBlock  Foreground="#F44336"
                                                FontSize="14"
+                                               x:Name="txtVeDaDat"
                                                FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <Image Grid.Column="1" 
-                                           Source="/Images/decrease.png" 
+                                    <Image Grid.Column="1"  
                                            Width="16" 
+                                           x:Name="imgVeDaDat"
                                            Height="16" 
                                            Margin="5,0,0,0"/>
                                 </Grid>
@@ -180,13 +180,13 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="+8.7%" 
+                                    <TextBlock x:Name="txtDoanhThu"
                                                Foreground="#4CAF50"
                                                FontSize="14"
                                                FontWeight="Bold"
                                                VerticalAlignment="Center"/>
                                     <Image Grid.Column="1" 
-                                           Source="/Images/increase.png" 
+                                           x:Name="imgDoanhThu"
                                            Width="16" 
                                            Height="16" 
                                            Margin="5,0,0,0"/>
@@ -272,7 +272,7 @@
                                     </lvc:CartesianChart.Series>
                                     <lvc:CartesianChart.AxisX>
                                         <lvc:Axis Labels="{Binding SourceLabels}" 
-                                                 Foreground="White" 
+                                                 Foreground="White"
                                                  FontSize="12">
                                             <lvc:Axis.Separator>
                                                 <lvc:Separator StrokeThickness="0.2" 
@@ -283,13 +283,13 @@
                                     </lvc:CartesianChart.AxisX>
                                     <lvc:CartesianChart.AxisY>
                                         <lvc:Axis Foreground="White" 
-                                                 FontSize="12" 
-                                                 MinValue="0" 
-                                                 MaxValue="100">
+                                                  FontSize="12" 
+                                                  MinValue="0"
+                                                   LabelFormatter="{Binding YFormatter}">
                                             <lvc:Axis.Separator>
                                                 <lvc:Separator StrokeThickness="0.2" 
-                                                              Stroke="#454B80" 
-                                                              Step="20"/>
+                                                               Stroke="#454B80" 
+                                                               IsEnabled="True"/>
                                             </lvc:Axis.Separator>
                                         </lvc:Axis>
                                     </lvc:CartesianChart.AxisY>
@@ -564,7 +564,7 @@
                                                     </Border.Style>
 
                                                     <!-- Ở đây bạn có thể thêm Image hoặc các control hiển thị avatar -->
-                                                    <Image Source="{Binding Avatar}" Stretch="UniformToFill"/>
+                                                    <Image Source="{Binding ProfileImage}" Stretch="UniformToFill"/>
                                                 </Border>
 
                                                 <!-- Thêm các trường thông tin người dùng ở đây như tên, điểm số... -->
@@ -573,7 +573,7 @@
                                                               FontSize="16" 
                                                               FontWeight="SemiBold" 
                                                               Foreground="White"/>
-                                                    <TextBlock Text="{Binding Revenue, StringFormat='Doanh thu: {0}'}" 
+                                                    <TextBlock Text="{Binding Revenue}" 
                                                               FontSize="14" 
                                                               Foreground="#E0E0E0" 
                                                               Margin="0,4,0,0"/>

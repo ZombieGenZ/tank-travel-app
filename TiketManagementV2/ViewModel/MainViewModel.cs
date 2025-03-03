@@ -140,7 +140,7 @@ namespace TiketManagementV2.ViewModel
             {
                 return;
             }
-            CurrentView = new ChartView();
+            CurrentView = new ChartView(_circularLoadingControl);
         }
         private void ExecuteShowLogView(object obj)
         {
