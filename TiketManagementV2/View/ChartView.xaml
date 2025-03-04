@@ -506,57 +506,71 @@
 
                                                 <!-- Profile Image with Special Border -->
                                                 <Border Grid.Column="1" 
-                                       Width="50" 
-                                       Height="50" 
-                                       CornerRadius="25" 
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"
-                                       ClipToBounds="True">
+                                                       Width="50" 
+                                                       Height="50" 
+                                                       CornerRadius="25" 
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       ClipToBounds="True">
                                                     <Border.Style>
                                                         <Style TargetType="Border">
-                                                            <Setter Property="BorderThickness" Value="2"/>
-                                                            <Setter Property="BorderBrush" Value="#3A3176"/>
+                                                            <Setter Property="Background" Value="#2A246A"/>
+                                                            <Setter Property="BorderBrush" Value="#4A3A9A"/>
+                                                            <Setter Property="CornerRadius" Value="12"/>
                                                             <Style.Triggers>
+                                                                <!-- Top 1 - Gold Gradient -->
                                                                 <DataTrigger Binding="{Binding Rank}" Value="1">
-                                                                    <Setter Property="BorderThickness" Value="3"/>
-                                                                    <Setter Property="BorderBrush">
+                                                                    <Setter Property="Background">
                                                                         <Setter.Value>
                                                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                                                 <GradientStop Color="#FFD700" Offset="0"/>
-                                                                                <GradientStop Color="#FFA500" Offset="1"/>
+                                                                                <GradientStop Color="#FFA500" Offset="0.5"/>
+                                                                                <GradientStop Color="#FF8C00" Offset="1"/>
                                                                             </LinearGradientBrush>
                                                                         </Setter.Value>
                                                                     </Setter>
+                                                                    <Setter Property="BorderBrush" Value="#FFD700"/>
                                                                     <Setter Property="Effect">
                                                                         <Setter.Value>
-                                                                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#FFD700" Opacity="0.7"/>
+                                                                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="#FFD700" Opacity="0.7"/>
                                                                         </Setter.Value>
                                                                     </Setter>
                                                                 </DataTrigger>
+
+                                                                <!-- Top 2 - Silver Gradient -->
                                                                 <DataTrigger Binding="{Binding Rank}" Value="2">
-                                                                    <Setter Property="BorderThickness" Value="3"/>
-                                                                    <Setter Property="BorderBrush">
+                                                                    <Setter Property="Background">
                                                                         <Setter.Value>
                                                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                                                 <GradientStop Color="#E0E0E0" Offset="0"/>
+                                                                                <GradientStop Color="#C0C0C0" Offset="0.5"/>
                                                                                 <GradientStop Color="#A9A9A9" Offset="1"/>
                                                                             </LinearGradientBrush>
                                                                         </Setter.Value>
                                                                     </Setter>
+                                                                    <Setter Property="BorderBrush" Value="#C0C0C0"/>
                                                                     <Setter Property="Effect">
                                                                         <Setter.Value>
-                                                                            <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#C0C0C0" Opacity="0.6"/>
+                                                                            <DropShadowEffect BlurRadius="15" ShadowDepth="0" Color="#C0C0C0" Opacity="0.6"/>
                                                                         </Setter.Value>
                                                                     </Setter>
                                                                 </DataTrigger>
+
+                                                                <!-- Top 3 - Bronze Gradient -->
                                                                 <DataTrigger Binding="{Binding Rank}" Value="3">
-                                                                    <Setter Property="BorderThickness" Value="3"/>
-                                                                    <Setter Property="BorderBrush">
+                                                                    <Setter Property="Background">
                                                                         <Setter.Value>
                                                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                                                 <GradientStop Color="#CD7F32" Offset="0"/>
+                                                                                <GradientStop Color="#B87333" Offset="0.5"/>
                                                                                 <GradientStop Color="#A56E30" Offset="1"/>
                                                                             </LinearGradientBrush>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                    <Setter Property="BorderBrush" Value="#CD7F32"/>
+                                                                    <Setter Property="Effect">
+                                                                        <Setter.Value>
+                                                                            <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#CD7F32" Opacity="0.5"/>
                                                                         </Setter.Value>
                                                                     </Setter>
                                                                 </DataTrigger>

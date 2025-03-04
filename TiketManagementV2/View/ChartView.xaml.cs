@@ -674,9 +674,9 @@ namespace TiketManagementV2.View
                     return;
                 }
 
-                Deals.Text = $"{data.result.deals}";
-                Tickets.Text = $"{data.result.tickets}";
-                Revenue.Text = $"{data.result.revenue}";
+                Deals.Text = $" {data.result.deals}";
+                Tickets.Text = $" {data.result.tickets}";
+                Revenue.Text = $" {data.result.revenue}";
             }
             catch (Exception ex)
             {

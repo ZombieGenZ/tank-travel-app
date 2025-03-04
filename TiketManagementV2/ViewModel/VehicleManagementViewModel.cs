@@ -173,27 +173,27 @@ namespace TiketManagementV2.ViewModel
 
         public VehicleManagementViewModel(INotificationService notificationService)
         {
-            _notificationService = notificationService;
-            _managementSessionTime = DateTime.Now.ToString("o");
-            _service = new ApiServices();
+            //_notificationService = notificationService;
+            //_managementSessionTime = DateTime.Now.ToString("o");
+            //_service = new ApiServices();
 
-            ManagedVehicles = new ObservableCollection<Vehicle>();
-            ManagedFilteredVehicles = new ObservableCollection<Vehicle>(ManagedVehicles.Take(_managementItemsToLoad));
-            ManagementCanLoadMore = ManagedVehicles.Count > _managementItemsToLoad;
+            //ManagedVehicles = new ObservableCollection<Vehicle>();
+            //ManagedFilteredVehicles = new ObservableCollection<Vehicle>(ManagedVehicles.Take(_managementItemsToLoad));
+            //ManagementCanLoadMore = ManagedVehicles.Count > _managementItemsToLoad;
 
-            SearchCommand = new RelayCommandGeneric<Vehicle>(_ => FilterManagedVehicles());
-            EditCommand = new RelayCommandGeneric<Vehicle>(EditVehicle);
-            DeleteCommand = new RelayCommandGeneric<Vehicle>(DeleteVehicle);
-            LoadMoreCommand = new RelayCommandGeneric<Vehicle>(_ => LoadMoreManagedVehicles());
-            AddCommand = new RelayCommand(ExecuteAddCommand);
-            ImageCommand = new RelayCommandGeneric<Vehicle>(ShowVehicleImages);
+            //SearchCommand = new RelayCommandGeneric<Vehicle>(_ => FilterManagedVehicles());
+            //EditCommand = new RelayCommandGeneric<Vehicle>(EditVehicle);
+            //DeleteCommand = new RelayCommandGeneric<Vehicle>(DeleteVehicle);
+            //LoadMoreCommand = new RelayCommandGeneric<Vehicle>(_ => LoadMoreManagedVehicles());
+            //AddCommand = new RelayCommand(ExecuteAddCommand);
+            //ImageCommand = new RelayCommandGeneric<Vehicle>(ShowVehicleImages);
 
-            ManagedVehicles.CollectionChanged += (s, e) =>
-            {
-                OnPropertyChanged(nameof(ManagedVehicles));
-            };  
+            //ManagedVehicles.CollectionChanged += (s, e) =>
+            //{
+            //    OnPropertyChanged(nameof(ManagedVehicles));
+            //};  
 
-            LoadManagedVehicles();
+            //LoadManagedVehicles();
         }
         private void ExecuteAddCommand(object obj)
         {

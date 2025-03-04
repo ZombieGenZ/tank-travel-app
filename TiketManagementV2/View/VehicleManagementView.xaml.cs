@@ -189,7 +189,8 @@ namespace TiketManagementV2.View
                         Rules = item.rules,
                         SeatType = (string)item.seat_type,
                         Seats = (int)item.seats,
-                        VehicleType = (string)item.vehicle_type
+                        VehicleType = (string)item.vehicle_type,
+                        Status = item.status
                     });
                 }
 
@@ -701,6 +702,23 @@ namespace TiketManagementV2.View
         private int seats;
         private string rules;
         private string amenities;
+        private string status;
+
+        public string Status
+        {
+            get
+            {
+                if (status == "0") return "Đang chờ";
+                if (status == "1") return "Thành công";
+                if (status == "2") return "Từ chối";
+                return "Không xác định";
+            }
+            set
+            {
+                status = value;
+                OnPropertyChanged(nameof(Status));
+            }
+        }
 
         public string Id
         {

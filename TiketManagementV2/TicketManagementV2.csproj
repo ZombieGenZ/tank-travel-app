@@ -148,6 +148,7 @@
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\LogTypeToColorConverter.cs" />
     <Compile Include="Converters\LogTypeToIconConverter.cs" />
+    <Compile Include="Converters\RankBorderConverter.cs" />
     <Compile Include="Converters\StatusToColorConverter.cs" />
     <Compile Include="Helpers\PlaceholderTextBehavior.cs" />
     <Compile Include="Helpers\TimeValidationRule.cs" />

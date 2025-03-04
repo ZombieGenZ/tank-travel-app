@@ -8,7 +8,7 @@
              xmlns:Controls="clr-namespace:TiketManagementV2.Controls" 
              x:Class="TiketManagementV2.View.VehicleManagementView"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -163,20 +163,22 @@
                         <DataGridTextColumn Binding="{Binding Seats}" Header="Số ghế" Width="auto" MinWidth="70">
                             
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding Rules}" Header="Luật" MinWidth="140" MaxWidth="140">
+                        <DataGridTextColumn Binding="{Binding Rules}" Header="Luật" MinWidth="110" MaxWidth="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Binding="{Binding Amenities}" Header="Tiện nghi" MinWidth="140" MaxWidth="140">
+                        <DataGridTextColumn Binding="{Binding Amenities}" Header="Tiện nghi" MinWidth="110" MaxWidth="140">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Status}" Header="Tình trạng" MinWidth="100"/>
+
                         <!-- Thêm cột mới chứa các nút -->
                         <DataGridTemplateColumn Width="140">
                             <DataGridTemplateColumn.CellTemplate>

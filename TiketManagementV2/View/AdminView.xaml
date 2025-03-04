@@ -62,14 +62,6 @@
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color2}"
-                                 Command="{Binding ShowBankViewCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Bank" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Ngân hàng" Style="{StaticResource menuButtonText}"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource color3}"
                                  Command="{Binding ShowAccountViewCommand}">
                             <StackPanel Orientation="Horizontal">

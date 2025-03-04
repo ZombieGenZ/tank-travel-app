@@ -62,14 +62,6 @@
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color2}"
-                                 Command="{Binding ShowBankViewCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Bank" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Bank" Style="{StaticResource menuButtonText}"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource color9}"
                                  Command="{Binding ShowBusRouteViewCommand}">
                             <StackPanel Orientation="Horizontal">
