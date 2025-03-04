@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TiketManagementV2.Model;
 using TiketManagementV2.ViewModel;
-using static MaterialDesignThemes.Wpf.Theme;
 
 namespace TiketManagementV2.View
 {
@@ -65,6 +64,20 @@ namespace TiketManagementV2.View
             }
         }
 
+        private string Password;
+        public string password
+        {
+            get => Password;
+            set
+            {
+                if (Password != value)
+                {
+                    Password = value;
+                    OnPropertyChanged(nameof(password));
+                }
+            }
+        }
+
         private string _pathUser;
         public string PathUser
         {
@@ -83,7 +96,7 @@ namespace TiketManagementV2.View
         private string _originalEmail;
         private string _originalPhone;
         private string _originalPathUser;
-        private string _password; 
+        private string _password;
 
         // Commands
         public ICommand ChangeProfileImageCommand { get; private set; }
@@ -92,6 +105,7 @@ namespace TiketManagementV2.View
         private MainViewModel _mainViewModel;
         private TextBlock _display_name;
         private AdminView _adminView;
+
         public ProfileView(dynamic user, CircularLoadingControl circularLoadingControl, MainViewModel mainView, TextBlock display_name, AdminView adminView)
         {
             InitializeComponent();
@@ -102,12 +116,13 @@ namespace TiketManagementV2.View
             _user = user;
             _circularLoadingControl = circularLoadingControl;
             _notificationService = new NotificationService();
+
             try
             {
                 DisplayName = user.display_name;
                 Email = user.email;
                 Phone = user.phone;
-                PathUser = user.avatar?.url; // Sử dụng null conditional operator để tránh null reference
+                PathUser = user.avatar?.url;
             }
             catch (Exception ex)
             {
@@ -119,6 +134,15 @@ namespace TiketManagementV2.View
             ChangeProfileImageCommand = new RelayCommand(ExecuteChangeProfileImage);
 
             DataContext = this;
+
+            // Gắn sự kiện cho TextBox và PasswordBox
+            DisplayNameTextBox.TextChanged += DisplayNameTextBox_TextChanged;
+            EmailTextBox.TextChanged += EmailTextBox_TextChanged;
+            PhoneTextBox.TextChanged += PhoneTextBox_TextChanged;
+            EmailConfirmationCodeTextBox.TextChanged += EmailConfirmationCodeTextBox_TextChanged;
+            OldPasswordTextBox.PasswordChanged += OldPasswordTextBox_PasswordChanged;
+            PasswordTextBox.PasswordChanged += PasswordTextBox_PasswordChanged;
+            ConfirmPasswordTextBox.PasswordChanged += ConfirmPasswordTextBox_PasswordChanged;
         }
 
         private void StoreOriginalValues()
@@ -145,7 +169,7 @@ namespace TiketManagementV2.View
                 }
                 catch (Exception ex)
                 {
-                    _notificationService.ShowNotification("Lỗi", "Không thể thay đổi ảnh: {ex.Message}", NotificationType.Warning);
+                    _notificationService.ShowNotification("Lỗi", $"Không thể thay đổi ảnh: {ex.Message}", NotificationType.Warning);
                 }
             }
         }
@@ -171,182 +195,6 @@ namespace TiketManagementV2.View
             PasswordEditMode.Visibility = Visibility.Collapsed;
             PasswordButtons.Visibility = Visibility.Collapsed;
             PasswordEditButton.Visibility = Visibility.Visible;
-        }
-
-
-        private void TextBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is FrameworkElement element && element.Tag is string editModeName)
-            {
-                CloseAllEditModes();
-
-                var editModeElement = FindName(editModeName) as UIElement;
-                var readOnlyElement = sender as UIElement;
-
-                var buttonsName = editModeName.Replace("EditMode", "Buttons");
-                var buttonsElement = FindName(buttonsName) as UIElement;
-
-                if (editModeElement != null && readOnlyElement != null && buttonsElement != null)
-                {
-                    readOnlyElement.Visibility = Visibility.Collapsed;
-                    editModeElement.Visibility = Visibility.Visible;
-                    buttonsElement.Visibility = Visibility.Visible;
-
-                    if (editModeName == "DisplayNameEditMode")
-                    {
-                        DisplayNameTextBox.Focus();
-                        DisplayNameTextBox.SelectAll();
-                    }
-                    else if (editModeName == "EmailEditMode")
-                    {
-                        EmailTextBox.Focus();
-                        EmailTextBox.SelectAll();
-                    }
-                    else if (editModeName == "PhoneEditMode")
-                    {
-                        PhoneTextBox.Focus();
-                        PhoneTextBox.SelectAll();
-                    }
-                    else if (editModeName == "PasswordEditMode")
-                    {
-                        PasswordTextBox.Focus();
-                    }
-                }
-            }
-        }
-
-        private async Task<dynamic> SendCode(string email, bool type)
-        {
-            try
-            {
-                string access_token = Properties.Settings.Default.access_token;
-                string refresh_token = Properties.Settings.Default.refresh_token;
-
-                Dictionary<string, string> userHeader = new Dictionary<string, string>()
-                {
-                    { "Authorization", $"Bearer {access_token}" }
-                };
-                var userBody = new
-                {
-                    refresh_token,
-                    email
-                };
-
-                if (type)
-                {
-                    return await _services.PostWithHeaderAndBodyAsync("api/users/send-email-verify-change-email", userHeader, userBody);
-                }
-                else
-                {
-                    return await _services.PutWithHeaderAndBodyAsync("api/users/resend-email-verify-change-email", userHeader, userBody);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
-        }
-
-        private async void SendEmailCode_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                _circularLoadingControl.Visibility = Visibility.Visible;
-
-                string email = EmailTextBox.Text;
-                string btnContent = (string)EmailSendCodeButton.Content;
-
-                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(btnContent))
-                {
-                    _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin", NotificationType.Warning);
-                    return;
-                }
-
-                if (!IsValidEmail(email))
-                {
-                    _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
-                    return;
-                }
-
-                bool isSend = btnContent == "Send Code";
-
-                dynamic data = await SendCode(email.Trim(), isSend);
-
-                if (data == null)
-                {
-                    _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
-                        NotificationType.Error);
-                    return;
-                }
-
-                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
-                    data.message == "Refresh token không hợp lệ")
-                {
-                    _notificationService.ShowNotification("Lỗi", (string)data.message,
-                        NotificationType.Error);
-                    return;
-                }
-
-                Properties.Settings.Default.access_token = data.authenticate.access_token;
-                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
-                Properties.Settings.Default.Save();
-
-                if (data.message == "Lỗi dữ liệu đầu vào")
-                {
-                    foreach (dynamic item in data.errors)
-                    {
-                        if ((string)item.Value.msg == "Email đã được gửi, vui lòng kiểm tra hộp thư của bạn")
-                        {
-                            _notificationService.ShowNotification("Lỗi", (string)item.Value.msg,
-                                NotificationType.Warning);
-                            EmailSendCodeButton.Content = "Gửi lại?";
-                            return;
-                        }
-                        else if ((string)item.Value.msg == "Mã xác minh email chưa được gửi")
-                        {
-                            _notificationService.ShowNotification("Lỗi", (string)item.Value.msg,
-                                NotificationType.Warning);
-                            EmailSendCodeButton.Content = "Send Code";
-                            return;
-                        }
-
-                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
-                            NotificationType.Warning);
-                    }
-
-                    return;
-                }
-
-                if (data.message == "Mã xác minh email đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn" ||
-                    data.message == "Mã xác minh email đã được gửi lại thành công! Vui lòng kiểm tra hộp thư của bạn")
-                {
-                    _notificationService.ShowNotification("Thành công", (string)data.message,
-                        NotificationType.Success);
-
-                    EmailConfirmationCodeTextBox.Visibility = Visibility.Visible;
-
-                    EmailConfirmButton.Visibility = Visibility.Visible;
-
-                    EmailSendCodeButton.Content = "Gửi lại?";
-                }
-                else
-                {
-                    _notificationService.ShowNotification("Lỗi", (string)data.message,
-                        NotificationType.Error);
-                }
-            }
-            catch (Exception err)
-            {
-                _notificationService.ShowNotification("Lỗi", err.Message, NotificationType.Error);
-                _circularLoadingControl.Visibility = Visibility.Collapsed;
-                return;
-            }
-            finally
-            {
-                _circularLoadingControl.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -397,9 +245,131 @@ namespace TiketManagementV2.View
                     }
                     else if (editModeName == "PasswordEditMode")
                     {
-                        PasswordTextBox.Focus();
+                        OldPasswordTextBox.Focus();
                     }
                 }
+            }
+        }
+
+        private async Task<dynamic> SendCode(string email, bool type)
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> userHeader = new Dictionary<string, string>
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var userBody = new
+                {
+                    refresh_token,
+                    email
+                };
+
+                if (type)
+                {
+                    return await _services.PostWithHeaderAndBodyAsync("api/users/send-email-verify-change-email", userHeader, userBody);
+                }
+                else
+                {
+                    return await _services.PutWithHeaderAndBodyAsync("api/users/resend-email-verify-change-email", userHeader, userBody);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        private async void SendEmailCode_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _circularLoadingControl.Visibility = Visibility.Visible;
+
+                string email = EmailTextBox.Text;
+                string btnContent = (string)EmailSendCodeButton.Content;
+
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(btnContent))
+                {
+                    _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin", NotificationType.Warning);
+                    return;
+                }
+
+                if (!IsValidEmail(email))
+                {
+                    _notificationService.ShowNotification("Lỗi", "Email không hợp lệ", NotificationType.Warning);
+                    return;
+                }
+
+                bool isSend = btnContent == "Send Code";
+
+                dynamic data = await SendCode(email.Trim(), isSend);
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ", NotificationType.Error);
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
+                {
+                    _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
+                    return;
+                }
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        if ((string)item.Value.msg == "Email đã được gửi, vui lòng kiểm tra hộp thư của bạn")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)item.Value.msg, NotificationType.Warning);
+                            EmailSendCodeButton.Content = "Gửi lại?";
+                            return;
+                        }
+                        else if ((string)item.Value.msg == "Mã xác minh email chưa được gửi")
+                        {
+                            _notificationService.ShowNotification("Lỗi", (string)item.Value.msg, NotificationType.Warning);
+                            EmailSendCodeButton.Content = "Send Code";
+                            return;
+                        }
+
+                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg, NotificationType.Warning);
+                    }
+
+                    return;
+                }
+
+                if (data.message == "Mã xác minh email đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn" ||
+                    data.message == "Mã xác minh email đã được gửi lại thành công! Vui lòng kiểm tra hộp thư của bạn")
+                {
+                    _notificationService.ShowNotification("Thành công", (string)data.message, NotificationType.Success);
+
+                    EmailConfirmationCodeTextBox.Visibility = Visibility.Visible;
+                    EmailConfirmationCodePlaceholder.Visibility = Visibility.Visible; // Hiển thị placeholder khi TextBox hiển thị
+                    EmailConfirmButton.Visibility = Visibility.Visible;
+                    EmailSendCodeButton.Content = "Gửi lại?";
+                }
+                else
+                {
+                    _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
+                }
+            }
+            catch (Exception err)
+            {
+                _notificationService.ShowNotification("Lỗi", err.Message, NotificationType.Error);
+            }
+            finally
+            {
+                _circularLoadingControl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -410,7 +380,7 @@ namespace TiketManagementV2.View
                 string access_token = Properties.Settings.Default.access_token;
                 string refresh_token = Properties.Settings.Default.refresh_token;
 
-                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                Dictionary<string, string> userHeader = new Dictionary<string, string>
                 {
                     { "Authorization", $"Bearer {access_token}" }
                 };
@@ -436,7 +406,7 @@ namespace TiketManagementV2.View
                 string access_token = Properties.Settings.Default.access_token;
                 string refresh_token = Properties.Settings.Default.refresh_token;
 
-                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                Dictionary<string, string> userHeader = new Dictionary<string, string>
                 {
                     { "Authorization", $"Bearer {access_token}" }
                 };
@@ -463,7 +433,7 @@ namespace TiketManagementV2.View
                 string access_token = Properties.Settings.Default.access_token;
                 string refresh_token = Properties.Settings.Default.refresh_token;
 
-                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                Dictionary<string, string> userHeader = new Dictionary<string, string>
                 {
                     { "Authorization", $"Bearer {access_token}" }
                 };
@@ -515,7 +485,7 @@ namespace TiketManagementV2.View
                 string access_token = Properties.Settings.Default.access_token;
                 string refresh_token = Properties.Settings.Default.refresh_token;
 
-                Dictionary<string, string> userHeader = new Dictionary<string, string>()
+                Dictionary<string, string> userHeader = new Dictionary<string, string>
                 {
                     { "Authorization", $"Bearer {access_token}" }
                 };
@@ -548,8 +518,7 @@ namespace TiketManagementV2.View
 
                         if (string.IsNullOrWhiteSpace(displayName))
                         {
-                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin",
-                                NotificationType.Warning);
+                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin", NotificationType.Warning);
                             return;
                         }
 
@@ -557,16 +526,13 @@ namespace TiketManagementV2.View
 
                         if (data == null)
                         {
-                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ", NotificationType.Error);
                             return;
                         }
 
-                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
-                            data.message == "Refresh token không hợp lệ")
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                             return;
                         }
 
@@ -578,24 +544,19 @@ namespace TiketManagementV2.View
                         {
                             foreach (dynamic item in data.errors)
                             {
-                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
-                                    NotificationType.Warning);
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg, NotificationType.Warning);
                             }
-
                             return;
                         }
 
                         if (data.message == "Thay đổi tên hiển thị thành công!")
                         {
-                            _notificationService.ShowNotification("Thành công", (string)data.message,
-                                NotificationType.Success);
-                            //_mainViewModel.CurrentUserAccount.DisplayName = displayName;
+                            _notificationService.ShowNotification("Thành công", (string)data.message, NotificationType.Success);
                             _display_name.Text = displayName;
                         }
                         else
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                         }
                     }
                     catch (Exception ex)
@@ -621,8 +582,7 @@ namespace TiketManagementV2.View
                             EmailConfirmationCodeTextBox.Visibility == Visibility.Hidden ||
                             string.IsNullOrWhiteSpace(verifyCode))
                         {
-                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin",
-                                NotificationType.Warning);
+                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin", NotificationType.Warning);
                             return;
                         }
 
@@ -630,16 +590,13 @@ namespace TiketManagementV2.View
 
                         if (data == null)
                         {
-                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ", NotificationType.Error);
                             return;
                         }
 
-                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
-                            data.message == "Refresh token không hợp lệ")
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                             return;
                         }
 
@@ -651,17 +608,14 @@ namespace TiketManagementV2.View
                         {
                             foreach (dynamic item in data.errors)
                             {
-                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
-                                    NotificationType.Warning);
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg, NotificationType.Warning);
                             }
-
                             return;
                         }
 
                         if (data.message == "Thay đổi email thành công! Vui lòng đăng nhập lại")
                         {
-                            _notificationService.ShowNotification("Thành công", (string)data.message,
-                                NotificationType.Success);
+                            _notificationService.ShowNotification("Thành công", (string)data.message, NotificationType.Success);
 
                             await DeleteLogout();
 
@@ -671,8 +625,7 @@ namespace TiketManagementV2.View
                         }
                         else
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                         }
                     }
                     catch (Exception ex)
@@ -694,8 +647,7 @@ namespace TiketManagementV2.View
 
                         if (string.IsNullOrWhiteSpace(phone))
                         {
-                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin",
-                                NotificationType.Warning);
+                            _notificationService.ShowNotification("Lỗi", "Vui lòng điền đầy đủ thông tin", NotificationType.Warning);
                             return;
                         }
 
@@ -703,16 +655,13 @@ namespace TiketManagementV2.View
 
                         if (data == null)
                         {
-                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ", NotificationType.Error);
                             return;
                         }
 
-                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
-                            data.message == "Refresh token không hợp lệ")
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                             return;
                         }
 
@@ -724,22 +673,18 @@ namespace TiketManagementV2.View
                         {
                             foreach (dynamic item in data.errors)
                             {
-                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
-                                    NotificationType.Warning);
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg, NotificationType.Warning);
                             }
-
                             return;
                         }
 
                         if (data.message == "Thay đổi số điện thoại thành công!")
                         {
-                            _notificationService.ShowNotification("Thành công", (string)data.message,
-                                NotificationType.Success);
+                            _notificationService.ShowNotification("Thành công", (string)data.message, NotificationType.Success);
                         }
                         else
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                         }
                     }
                     catch (Exception ex)
@@ -763,8 +708,7 @@ namespace TiketManagementV2.View
 
                         if (newPassword != confirmPassword)
                         {
-                            _notificationService.ShowNotification("Lỗi", "Xác nhận mật khẩu phải trùng khớp với mật khẩu",
-                                NotificationType.Warning);
+                            _notificationService.ShowNotification("Lỗi", "Xác nhận mật khẩu phải trùng khớp với mật khẩu", NotificationType.Warning);
                             return;
                         }
 
@@ -772,16 +716,13 @@ namespace TiketManagementV2.View
 
                         if (data == null)
                         {
-                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ", NotificationType.Error);
                             return;
                         }
 
-                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
-                            data.message == "Refresh token không hợp lệ")
+                        if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" || data.message == "Refresh token không hợp lệ")
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                             return;
                         }
 
@@ -789,16 +730,14 @@ namespace TiketManagementV2.View
                         {
                             foreach (dynamic item in data.errors)
                             {
-                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
-                                    NotificationType.Warning);
+                                _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg, NotificationType.Warning);
                             }
                             return;
                         }
 
                         if (data.message == "Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại")
                         {
-                            _notificationService.ShowNotification("Thành công", (string)data.message,
-                                NotificationType.Success);
+                            _notificationService.ShowNotification("Thành công", (string)data.message, NotificationType.Success);
 
                             await DeleteLogout();
                             LoginView loginView = new LoginView();
@@ -807,8 +746,7 @@ namespace TiketManagementV2.View
                         }
                         else
                         {
-                            _notificationService.ShowNotification("Lỗi", (string)data.message,
-                                NotificationType.Error);
+                            _notificationService.ShowNotification("Lỗi", (string)data.message, NotificationType.Error);
                         }
                     }
                     catch (Exception ex)
@@ -830,13 +768,17 @@ namespace TiketManagementV2.View
             if (sender is FrameworkElement element && element.Tag is string editModeName)
             {
                 CloseEditMode(editModeName);
+
+                // Khôi phục giá trị gốc nếu cần
+                if (editModeName == "DisplayNameEditMode") DisplayName = _originalDisplayName;
+                else if (editModeName == "EmailEditMode") Email = _originalEmail;
+                else if (editModeName == "PhoneEditMode") Phone = _originalPhone;
             }
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Không tự động đóng chế độ chỉnh sửa khi hộp văn bản mất tiêu điểm
-            // Điều này cho phép nhấp vào các nút xác nhận/hủy
+            // Không tự động đóng chế độ chỉnh sửa khi mất tiêu điểm
         }
 
         private void CloseEditMode(string editModeName)
@@ -856,6 +798,81 @@ namespace TiketManagementV2.View
                 readOnlyElement.Visibility = Visibility.Visible;
                 buttonsElement.Visibility = Visibility.Collapsed;
                 editButtonElement.Visibility = Visibility.Visible;
+
+                // Đặt lại trạng thái cho EmailEditMode
+                if (editModeName == "EmailEditMode")
+                {
+                    EmailConfirmationCodeTextBox.Visibility = Visibility.Collapsed;
+                    EmailConfirmationCodePlaceholder.Visibility = Visibility.Collapsed; // Ẩn placeholder khi TextBox ẩn
+                    EmailSendCodeButton.Content = "Send Code";
+                    EmailSendCodeButton.Visibility = Visibility.Visible;
+                    EmailConfirmButton.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void DisplayNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DisplayNamePlaceholder.Visibility = string.IsNullOrWhiteSpace(DisplayNameTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void EmailTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            EmailPlaceholder.Visibility = string.IsNullOrWhiteSpace(EmailTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PhoneTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            PhonePlaceholder.Visibility = string.IsNullOrWhiteSpace(PhoneTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void EmailConfirmationCodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            EmailConfirmationCodePlaceholder.Visibility = string.IsNullOrWhiteSpace(EmailConfirmationCodeTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void OldPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            OldPasswordPlaceholder.Visibility = string.IsNullOrWhiteSpace(OldPasswordTextBox.Password) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            PasswordPlaceholder.Visibility = string.IsNullOrWhiteSpace(PasswordTextBox.Password) ? Visibility.Visible : Visibility.Collapsed;
+            ValidatePasswords();
+        }
+
+        private void ConfirmPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ConfirmPasswordPlaceholder.Visibility = string.IsNullOrWhiteSpace(ConfirmPasswordTextBox.Password) ? Visibility.Visible : Visibility.Collapsed;
+            ValidatePasswords();
+        }
+
+        private void OldPasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            OldPasswordTextBox.Password = (sender as TextBox)?.Text;
+            OldPasswordPlaceholder.Visibility = string.IsNullOrWhiteSpace(OldPasswordVisibleTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            PasswordTextBox.Password = (sender as TextBox)?.Text;
+            PasswordPlaceholder.Visibility = string.IsNullOrWhiteSpace(PasswordVisibleTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+            ValidatePasswords();
+        }
+
+        private void ConfirmPasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ConfirmPasswordTextBox.Password = (sender as TextBox)?.Text;
+            ConfirmPasswordPlaceholder.Visibility = string.IsNullOrWhiteSpace(ConfirmPasswordVisibleTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+            ValidatePasswords();
+        }
+
+        private void UpdatePlaceholderVisibility(TextBlock placeholder, string text)
+        {
+            if (placeholder != null)
+            {
+                placeholder.Visibility = string.IsNullOrEmpty(text) ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -863,13 +880,8 @@ namespace TiketManagementV2.View
 
         private void ValidatePasswords()
         {
-            string newPassword = PasswordTextBox.Visibility == Visibility.Visible ?
-                                 PasswordTextBox.Password :
-                                 PasswordVisibleTextBox.Text;
-
-            string confirmPassword = ConfirmPasswordTextBox.Visibility == Visibility.Visible ?
-                                     ConfirmPasswordTextBox.Password :
-                                     ConfirmPasswordVisibleTextBox.Text;
+            string newPassword = PasswordTextBox.Visibility == Visibility.Visible ? PasswordTextBox.Password : (FindName("PasswordVisibleTextBox") as TextBox)?.Text;
+            string confirmPassword = ConfirmPasswordTextBox.Visibility == Visibility.Visible ? ConfirmPasswordTextBox.Password : (FindName("ConfirmPasswordVisibleTextBox") as TextBox)?.Text;
 
             if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
             {
@@ -879,6 +891,12 @@ namespace TiketManagementV2.View
                 return;
             }
 
+            if (newPassword != confirmPassword)
+            {
+                PasswordValidationMessage.Text = "Xác nhận mật khẩu không khớp!";
+                PasswordValidationMessage.Visibility = Visibility.Visible;
+                _passwordsMatch = false;
+            }
             else
             {
                 PasswordValidationMessage.Text = string.Empty;
@@ -886,6 +904,7 @@ namespace TiketManagementV2.View
                 _passwordsMatch = true;
             }
         }
+
         private bool IsValidEmail(string email)
         {
             try
@@ -908,23 +927,23 @@ namespace TiketManagementV2.View
 
         private void TogglePasswordVisibility_Click(object sender, RoutedEventArgs e)
         {
-            // Cast sender to the correct button type
-            var toggleButton = sender as System.Windows.Controls.Button; // Sử dụng namespace đầy đủ
+            var toggleButton = sender as Button;
             if (toggleButton == null) return;
 
-            // Find the icon within the button
             var iconBlock = toggleButton.Content as FontAwesome.Sharp.IconBlock;
 
-            // Determine which password field pair this button is associated with
             string targetId = toggleButton.Tag as string;
 
-            if (targetId == "Password")
+            if (targetId == "OldPassword")
             {
-                if (PasswordTextBox.Visibility == System.Windows.Visibility.Visible)
+                var oldPasswordTextBox = FindName("OldPasswordTextBox") as PasswordBox;
+                var oldPasswordVisibleTextBox = FindName("OldPasswordVisibleTextBox") as TextBox;
+
+                if (oldPasswordTextBox.Visibility == System.Windows.Visibility.Visible)
                 {
-                    PasswordVisibleTextBox.Text = PasswordTextBox.Password;
-                    PasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
-                    PasswordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
+                    oldPasswordVisibleTextBox.Text = oldPasswordTextBox.Password;
+                    oldPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    oldPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
 
                     if (iconBlock != null)
                     {
@@ -933,9 +952,37 @@ namespace TiketManagementV2.View
                 }
                 else
                 {
-                    PasswordTextBox.Password = PasswordVisibleTextBox.Text;
-                    PasswordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
-                    PasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+                    oldPasswordTextBox.Password = oldPasswordVisibleTextBox.Text;
+                    oldPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    oldPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                    if (iconBlock != null)
+                    {
+                        iconBlock.Icon = FontAwesome.Sharp.IconChar.Eye;
+                    }
+                }
+            }
+            else if (targetId == "Password")
+            {
+                var passwordTextBox = FindName("PasswordTextBox") as PasswordBox;
+                var passwordVisibleTextBox = FindName("PasswordVisibleTextBox") as TextBox;
+
+                if (passwordTextBox.Visibility == System.Windows.Visibility.Visible)
+                {
+                    passwordVisibleTextBox.Text = passwordTextBox.Password;
+                    passwordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    passwordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
+
+                    if (iconBlock != null)
+                    {
+                        iconBlock.Icon = FontAwesome.Sharp.IconChar.EyeSlash;
+                    }
+                }
+                else
+                {
+                    passwordTextBox.Password = passwordVisibleTextBox.Text;
+                    passwordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    passwordTextBox.Visibility = System.Windows.Visibility.Visible;
 
                     if (iconBlock != null)
                     {
@@ -945,11 +992,14 @@ namespace TiketManagementV2.View
             }
             else if (targetId == "ConfirmPassword")
             {
-                if (ConfirmPasswordTextBox.Visibility == System.Windows.Visibility.Visible)
+                var confirmPasswordTextBox = FindName("ConfirmPasswordTextBox") as PasswordBox;
+                var confirmPasswordVisibleTextBox = FindName("ConfirmPasswordVisibleTextBox") as TextBox;
+
+                if (confirmPasswordTextBox.Visibility == System.Windows.Visibility.Visible)
                 {
-                    ConfirmPasswordVisibleTextBox.Text = ConfirmPasswordTextBox.Password;
-                    ConfirmPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
-                    ConfirmPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
+                    confirmPasswordVisibleTextBox.Text = confirmPasswordTextBox.Password;
+                    confirmPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    confirmPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Visible;
 
                     if (iconBlock != null)
                     {
@@ -958,9 +1008,9 @@ namespace TiketManagementV2.View
                 }
                 else
                 {
-                    ConfirmPasswordTextBox.Password = ConfirmPasswordVisibleTextBox.Text;
-                    ConfirmPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
-                    ConfirmPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
+                    confirmPasswordTextBox.Password = confirmPasswordVisibleTextBox.Text;
+                    confirmPasswordVisibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
+                    confirmPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
 
                     if (iconBlock != null)
                     {
@@ -968,66 +1018,8 @@ namespace TiketManagementV2.View
                     }
                 }
             }
-            else if (targetId == "OldPassword")
-            {
-                if (OldPasswordTextBox.Visibility == System.Windows.Visibility.Visible)
-                {
-                    var visibleTextBox = FindName("OldPasswordVisibleTextBox") as System.Windows.Controls.TextBox;
-                    if (visibleTextBox != null)
-                    {
-                        visibleTextBox.Text = OldPasswordTextBox.Password;
-                        OldPasswordTextBox.Visibility = System.Windows.Visibility.Collapsed;
-                        visibleTextBox.Visibility = System.Windows.Visibility.Visible;
-
-                        if (iconBlock != null)
-                        {
-                            iconBlock.Icon = FontAwesome.Sharp.IconChar.EyeSlash;
-                        }
-                    }
-                }
-                else
-                {
-                    var visibleTextBox = FindName("OldPasswordVisibleTextBox") as System.Windows.Controls.TextBox;
-                    if (visibleTextBox != null)
-                    {
-                        OldPasswordTextBox.Password = visibleTextBox.Text;
-                        visibleTextBox.Visibility = System.Windows.Visibility.Collapsed;
-                        OldPasswordTextBox.Visibility = System.Windows.Visibility.Visible;
-
-                        if (iconBlock != null)
-                        {
-                            iconBlock.Icon = FontAwesome.Sharp.IconChar.Eye;
-                        }
-                    }
-                }
-            }
 
             ValidatePasswords();
-        }
-
-
-        private void PasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            ValidatePasswords();
-
-        }
-
-        private void PasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ValidatePasswords();
-
-        }
-
-        private void ConfirmPasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            ValidatePasswords();
-
-        }
-
-        private void ConfirmPasswordVisibleTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ValidatePasswords();
-
         }
     }
 }

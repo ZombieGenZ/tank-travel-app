@@ -65,6 +65,7 @@ namespace TiketManagementV2.View
             LogItems.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(LogItems));
+                OnPropertyChanged(nameof(HasLogItems));
             };
             InitializeSocketIO();
         }
@@ -105,6 +106,7 @@ namespace TiketManagementV2.View
                                 Message = content,
                                 Timestamp = time
                             });
+                            OnPropertyChanged(nameof(LogItems));
                         }
                         catch (Exception ex)
                         {

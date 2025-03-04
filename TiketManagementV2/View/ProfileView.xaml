@@ -6,28 +6,23 @@
              xmlns:local="clr-namespace:TiketManagementV2.View"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
              xmlns:behaviors="clr-namespace:TiketManagementV2.Helpers"
-
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-    </UserControl.Resources>
 
     <Border Grid.Column="1"
-        Grid.RowSpan="2"
-        Margin="10,20,20,20"
-        Background="#200F53"
-        CornerRadius="20">
+            Grid.RowSpan="2"
+            Margin="10,20,20,20"
+            Background="#200F53"
+            CornerRadius="20">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Header with Profile Summary -->
             <Border Background="#1a0d45" 
-                CornerRadius="20,20,0,0"
-                Padding="30,20">
+                    CornerRadius="20,20,0,0"
+                    Padding="30,20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -46,36 +41,34 @@
                     </Button>
 
                     <StackPanel Grid.Column="1" 
-                          Margin="20,0,0,0"
-                          VerticalAlignment="Center">
+                                Margin="20,0,0,0"
+                                VerticalAlignment="Center">
                         <TextBlock Text="Cài đặt tài khoản" 
-                             FontSize="24" 
-                             FontWeight="Bold" 
-                             Foreground="#E0E1F1"/>
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="#E0E1F1"/>
                         <TextBlock Text="Cập nhật thông tin cá nhân của bạn" 
-                             FontSize="14" 
-                             Foreground="#8A8D9F"
-                             Margin="0,5,0,0"/>
+                                   FontSize="14" 
+                                   Foreground="#8A8D9F"
+                                   Margin="0,5,0,0"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- Form Content -->
             <ScrollViewer Grid.Row="1" 
                           Padding="30"
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <!-- Personal Information Section -->
                     <Border Background="#251361" 
                             CornerRadius="15"
                             Padding="25"
                             Margin="0,0,0,20">
                         <StackPanel>
                             <TextBlock Text="Thông tin cá nhân" 
-                                     FontSize="18" 
-                                     FontWeight="SemiBold"
-                                     Foreground="#E0E1F1"
-                                     Margin="0,0,0,20"/>
+                                       FontSize="18" 
+                                       FontWeight="SemiBold"
+                                       Foreground="#E0E1F1"
+                                       Margin="0,0,0,20"/>
 
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -85,7 +78,6 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <!-- Display Name -->
                                 <StackPanel Grid.Row="0" Margin="0,0,0,20">
                                     <TextBlock Text="Họ tên"
                                                Style="{StaticResource FieldLabel}"/>
@@ -96,15 +88,20 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Read-only view -->
                                         <Border x:Name="DisplayNameReadOnly" 
-                                                Background="#2d1873" 
-                                                CornerRadius="8">
+                                                Background="Transparent"
+                                                BorderBrush="#E0E1F1"
+                                                BorderThickness="0,0,0,1"
+                                                CornerRadius="0">
                                             <TextBlock Text="{Binding DisplayName}"
-                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                                       Style="{StaticResource ReadOnlyTextBlock}"
+                                                       Foreground="#E0E1F1"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"
+                                                       Margin="5,0,0,0"
+                                                       TextWrapping="NoWrap"/>
                                         </Border>
 
-                                        <!-- Edit button -->
                                         <Button Grid.Column="1" 
                                                 x:Name="DisplayNameEditButton"
                                                 Content="✏️" 
@@ -114,15 +111,32 @@
                                                 Click="EditButton_Click"
                                                 Tag="DisplayNameEditMode"/>
 
-                                        <!-- Edit mode -->
                                         <Grid x:Name="DisplayNameEditMode" Grid.Column="0" Visibility="Collapsed">
-                                            <TextBox x:Name="DisplayNameTextBox"
-                                                     Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                                     Style="{StaticResource ModernTextBox}"
-                                                     LostFocus="TextBox_LostFocus"/>
+                                            <Grid>
+                                                <TextBox x:Name="DisplayNameTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="DisplayNameTextBox_TextChanged"/>
+
+                                                <TextBlock x:Name="DisplayNamePlaceholder"
+                                                           Text="Nhập họ tên..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                            </Grid>
                                         </Grid>
 
-                                        <!-- Edit buttons -->
                                         <StackPanel Grid.Column="2" 
                                                     Orientation="Horizontal" 
                                                     Margin="8,0,0,0"
@@ -143,7 +157,6 @@
                                     </Grid>
                                 </StackPanel>
 
-                                <!-- Email -->
                                 <StackPanel Grid.Row="1" Margin="0,0,0,20">
                                     <TextBlock Text="Email"
                                                Style="{StaticResource FieldLabel}"/>
@@ -153,14 +166,19 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <!-- Read-only view -->
                                         <Border x:Name="EmailReadOnly" 
-                                                Background="#2d1873" 
-                                                CornerRadius="8">
+                                                Background="Transparent"
+                                                BorderBrush="#E0E1F1"
+                                                BorderThickness="0,0,0,1"
+                                                CornerRadius="0">
                                             <TextBlock Text="{Binding Email}"
-                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                                       Style="{StaticResource ReadOnlyTextBlock}"
+                                                       Foreground="#E0E1F1"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"
+                                                       Margin="5,0,0,0"
+                                                       TextWrapping="NoWrap"/>
                                         </Border>
-                                        <!-- Edit button -->
                                         <Button Grid.Column="1" 
                                                 x:Name="EmailEditButton"
                                                 Content="✏️" 
@@ -169,26 +187,58 @@
                                                 Margin="8,0,0,0"
                                                 Click="EditButton_Click"
                                                 Tag="EmailEditMode"/>
-                                        <!-- Edit mode -->
                                         <Grid x:Name="EmailEditMode" Grid.Column="0" Visibility="Collapsed">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-                                            <!-- Email input -->
-                                            <TextBox x:Name="EmailTextBox"
-                                                     Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                                     Style="{StaticResource ModernTextBox}"
-                                                     Grid.Row="0"
-                                                     LostFocus="TextBox_LostFocus"/>
-                                            <!-- Confirmation code input -->
-                                            <TextBox x:Name="EmailConfirmationCodeTextBox"
-                                                     Style="{StaticResource ModernTextBox}"
-                                                     Grid.Row="1"
-                                                     Margin="0,5,0,0"
-                                                     Visibility="Collapsed"/>
+                                            <Grid Grid.Row="0">
+                                                <TextBox x:Name="EmailTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="EmailTextBox_TextChanged"/>
+
+                                                <TextBlock x:Name="EmailPlaceholder"
+                                                           Text="Nhập email..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                            </Grid>
+                                            <Grid Grid.Row="1" Margin="0,5,0,0">
+                                                <TextBox x:Name="EmailConfirmationCodeTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Visibility="Collapsed"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="EmailConfirmationCodeTextBox_TextChanged"/>
+
+                                                <TextBlock x:Name="EmailConfirmationCodePlaceholder"
+                                                           Text="Nhập mã xác nhận..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                            </Grid>
                                         </Grid>
-                                        <!-- Edit buttons -->
                                         <StackPanel Grid.Column="2" 
                                                     Orientation="Horizontal" 
                                                     Margin="8,0,0,0"
@@ -218,7 +268,6 @@
                                     </Grid>
                                 </StackPanel>
 
-                                <!-- Phone -->
                                 <StackPanel Grid.Row="2" Margin="0,0,0,20">
                                     <TextBlock Text="Số điện thoại"
                                                Style="{StaticResource FieldLabel}"/>
@@ -229,15 +278,20 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Read-only view -->
                                         <Border x:Name="PhoneReadOnly" 
-                                                Background="#2d1873" 
-                                                CornerRadius="8">
+                                                Background="Transparent"
+                                                BorderBrush="#E0E1F1"
+                                                BorderThickness="0,0,0,1"
+                                                CornerRadius="0">
                                             <TextBlock Text="{Binding Phone}"
-                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                                       Style="{StaticResource ReadOnlyTextBlock}"
+                                                       Foreground="#E0E1F1"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"
+                                                       Margin="5,0,0,0"
+                                                       TextWrapping="NoWrap"/>
                                         </Border>
 
-                                        <!-- Edit button -->
                                         <Button Grid.Column="1" 
                                                 x:Name="PhoneEditButton"
                                                 Content="✏️" 
@@ -247,15 +301,32 @@
                                                 Click="EditButton_Click"
                                                 Tag="PhoneEditMode"/>
 
-                                        <!-- Edit mode -->
                                         <Grid x:Name="PhoneEditMode" Grid.Column="0" Visibility="Collapsed">
-                                            <TextBox x:Name="PhoneTextBox"
-                                                     Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"
-                                                     Style="{StaticResource ModernTextBox}"
-                                                     LostFocus="TextBox_LostFocus"/>
+                                            <Grid>
+                                                <TextBox x:Name="PhoneTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="PhoneTextBox_TextChanged"/>
+
+                                                <TextBlock x:Name="PhonePlaceholder"
+                                                           Text="Nhập số điện thoại..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                            </Grid>
                                         </Grid>
 
-                                        <!-- Edit buttons -->
                                         <StackPanel Grid.Column="2" 
                                                     Orientation="Horizontal" 
                                                     Margin="8,0,0,0"
@@ -276,8 +347,7 @@
                                     </Grid>
                                 </StackPanel>
 
-                                <!--Password-->
-                                <StackPanel Grid.Row="4" Margin="0,0,0,20">
+                                <StackPanel Grid.Row="3" Margin="0,0,0,20">
                                     <TextBlock Text="Password"
                                                Style="{StaticResource FieldLabel}"/>
                                     <Grid>
@@ -286,14 +356,19 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <!-- Read-only view -->
                                         <Border x:Name="PasswordReadOnly" 
-                                                Background="#2d1873" 
-                                                CornerRadius="8">
-                                            <TextBlock Text="************"
-                                                       Style="{StaticResource ReadOnlyTextBlock}"/>
+                                                Background="Transparent"
+                                                BorderBrush="#E0E1F1"
+                                                BorderThickness="0,0,0,1"
+                                                CornerRadius="0">
+                                            <TextBlock Text="***************"
+                                                       Style="{StaticResource ReadOnlyTextBlock}"
+                                                       Foreground="#E0E1F1"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"
+                                                       Margin="5,0,0,0"
+                                                       TextWrapping="NoWrap"/>
                                         </Border>
-                                        <!-- Edit button -->
                                         <Button Grid.Column="1" 
                                                 x:Name="PasswordEditButton"
                                                 Content="✏️" 
@@ -302,7 +377,6 @@
                                                 Margin="8,0,0,0"
                                                 Click="EditButton_Click"
                                                 Tag="PasswordEditMode"/>
-                                        <!-- Edit mode -->
                                         <Grid x:Name="PasswordEditMode" Grid.Column="0" Visibility="Collapsed">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
@@ -310,16 +384,42 @@
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
 
-                                            <!-- Old Password input -->
                                             <Grid Grid.Row="0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <PasswordBox x:Name="OldPasswordTextBox"
-                                                             Style="{StaticResource ModernPasswordBox}"
-                                                             Grid.Column="0"
-                                                             LostFocus="TextBox_LostFocus"/>
+                                                             Width="Auto"
+                                                             Height="24"
+                                                             FontSize="13"
+                                                             Background="Transparent"
+                                                             Foreground="#E0E1F1"
+                                                             BorderBrush="#E0E1F1"
+                                                             BorderThickness="0,0,0,1"
+                                                             VerticalContentAlignment="Center"
+                                                             LostFocus="TextBox_LostFocus"
+                                                             PasswordChanged="OldPasswordTextBox_PasswordChanged"/>
+                                                <TextBlock x:Name="OldPasswordPlaceholder"
+                                                           Text="Nhập mật khẩu cũ..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                                <TextBox x:Name="OldPasswordVisibleTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Visibility="Collapsed"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="OldPasswordVisibleTextBox_TextChanged"/>
                                                 <Button x:Name="OldPasswordVisibilityButton"
                                                         Grid.Column="1"
                                                         Click="TogglePasswordVisibility_Click"
@@ -329,24 +429,44 @@
                                                         Margin="5,0,0,0">
                                                     <fa:IconBlock Icon="Eye" />
                                                 </Button>
-                                                <TextBox x:Name="OldPasswordVisibleTextBox"
-                                                         Style="{StaticResource ModernTextBox}"
-                                                         Grid.Column="0"
-                                                         Visibility="Collapsed"
-                                                         LostFocus="TextBox_LostFocus"/>
                                             </Grid>
 
-                                            <!-- New Password input -->
                                             <Grid Grid.Row="1" Margin="0,5,0,0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <PasswordBox x:Name="PasswordTextBox"
-                                                             Style="{StaticResource ModernPasswordBox}"
-                                                             Grid.Column="0"
+                                                             Width="Auto"
+                                                             Height="24"
+                                                             FontSize="13"
+                                                             Background="Transparent"
+                                                             Foreground="#E0E1F1"
+                                                             BorderBrush="#E0E1F1"
+                                                             BorderThickness="0,0,0,1"
+                                                             VerticalContentAlignment="Center"
                                                              LostFocus="TextBox_LostFocus"
                                                              PasswordChanged="PasswordTextBox_PasswordChanged"/>
+                                                <TextBlock x:Name="PasswordPlaceholder"
+                                                           Text="Nhập mật khẩu mới..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                                <TextBox x:Name="PasswordVisibleTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Visibility="Collapsed"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="PasswordVisibleTextBox_TextChanged"/>
                                                 <Button x:Name="PasswordVisibilityButton"
                                                         Grid.Column="1"
                                                         Click="TogglePasswordVisibility_Click"
@@ -356,25 +476,44 @@
                                                         Margin="5,0,0,0">
                                                     <fa:IconBlock Icon="Eye" />
                                                 </Button>
-                                                <TextBox x:Name="PasswordVisibleTextBox"
-                                                         Style="{StaticResource ModernTextBox}"
-                                                         Grid.Column="0"
-                                                         Visibility="Collapsed"
-                                                         LostFocus="TextBox_LostFocus"
-                                                         TextChanged="PasswordVisibleTextBox_TextChanged"/>
                                             </Grid>
 
-                                            <!-- Confirm password input -->
                                             <Grid Grid.Row="2" Margin="0,5,0,0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <PasswordBox x:Name="ConfirmPasswordTextBox"
-                                                             Style="{StaticResource ModernPasswordBox}"
-                                                             Grid.Column="0"
+                                                             Width="Auto"
+                                                             Height="24"
+                                                             FontSize="13"
+                                                             Background="Transparent"
+                                                             Foreground="#E0E1F1"
+                                                             BorderBrush="#E0E1F1"
+                                                             BorderThickness="0,0,0,1"
+                                                             VerticalContentAlignment="Center"
                                                              LostFocus="TextBox_LostFocus"
                                                              PasswordChanged="ConfirmPasswordTextBox_PasswordChanged"/>
+                                                <TextBlock x:Name="ConfirmPasswordPlaceholder"
+                                                           Text="Xác nhận mật khẩu..."
+                                                           Foreground="Gray"
+                                                           VerticalAlignment="Center"
+                                                           Margin="5,0,0,0"
+                                                           IsHitTestVisible="False"
+                                                           Panel.ZIndex="-1"
+                                                           Visibility="Visible"/>
+                                                <TextBox x:Name="ConfirmPasswordVisibleTextBox"
+                                                         Width="Auto"
+                                                         Height="24"
+                                                         FontSize="13"
+                                                         Background="Transparent"
+                                                         Foreground="#E0E1F1"
+                                                         BorderBrush="#E0E1F1"
+                                                         BorderThickness="0,0,0,1"
+                                                         VerticalContentAlignment="Center"
+                                                         Visibility="Collapsed"
+                                                         LostFocus="TextBox_LostFocus"
+                                                         TextChanged="ConfirmPasswordVisibleTextBox_TextChanged"/>
                                                 <Button x:Name="ConfirmPasswordVisibilityButton"
                                                         Grid.Column="1"
                                                         Click="TogglePasswordVisibility_Click"
@@ -384,23 +523,15 @@
                                                         Margin="5,0,0,0">
                                                     <fa:IconBlock Icon="Eye" />
                                                 </Button>
-                                                <TextBox x:Name="ConfirmPasswordVisibleTextBox"
-                                                         Style="{StaticResource ModernTextBox}"
-                                                         Grid.Column="0"
-                                                         Visibility="Collapsed"
-                                                         LostFocus="TextBox_LostFocus"
-                                                         TextChanged="ConfirmPasswordVisibleTextBox_TextChanged"/>
                                             </Grid>
 
-                                            <!-- Password validation message -->
                                             <TextBlock x:Name="PasswordValidationMessage"
-               Grid.Row="3"
-               Margin="0,5,0,0"
-               Foreground="Red"
-               TextWrapping="Wrap"
-               Visibility="Collapsed"/>
+                                                       Grid.Row="3"
+                                                       Margin="0,5,0,0"
+                                                       Foreground="Red"
+                                                       TextWrapping="Wrap"
+                                                       Visibility="Collapsed"/>
                                         </Grid>
-                                        <!-- Edit buttons -->
                                         <StackPanel Grid.Column="2" 
                                                     Orientation="Horizontal" 
                                                     Margin="8,0,0,0"

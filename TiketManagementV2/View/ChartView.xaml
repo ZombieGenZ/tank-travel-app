@@ -105,7 +105,7 @@
                                 </Grid>
 
                                 <TextBlock Grid.Row="2" 
-                                           Text="Average Days to Hire" 
+                                           x:Name="Deals"
                                            Foreground="White"
                                            FontSize="14"
                                            Margin="0,5,0,0"/>
@@ -149,7 +149,7 @@
                                 </Grid>
 
                                 <TextBlock Grid.Row="2" 
-                                           Text="Average Days to Hire" 
+                                           x:Name="Tickets"
                                            Foreground="White"
                                            FontSize="14"
                                            Margin="0,5,0,0"/>
@@ -193,7 +193,7 @@
                                 </Grid>
 
                                 <TextBlock Grid.Row="2" 
-                                           Text="Average Days to Fill" 
+                                           x:Name="Revenue"
                                            Foreground="White"
                                            FontSize="14"
                                            Margin="0,5,0,0"/>
@@ -299,10 +299,10 @@
                     </Grid>
                 </Grid>
                 <Border Grid.Column="1" 
-        Background="#1B1464"
-        CornerRadius="15"
-        Margin="0,10,25,20"
-        Padding="15">
+                        Background="#1B1464"
+                        CornerRadius="15"
+                        Margin="0,10,25,20"
+                        Padding="15">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -310,10 +310,11 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Text="Bảng xếp hạng" 
-                  FontSize="22" 
-                  FontWeight="Bold" 
-                  Foreground="White"
-                  Margin="0,0,0,15"/>
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   Margin="0,0,0,15"/>
 
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                             <ItemsControl x:Name="RankingList">
@@ -564,7 +565,17 @@
                                                     </Border.Style>
 
                                                     <!-- Ở đây bạn có thể thêm Image hoặc các control hiển thị avatar -->
-                                                    <Image Source="{Binding ProfileImage}" Stretch="UniformToFill"/>
+                                                    <Border Grid.Column="1" 
+                                                            Width="50" 
+                                                            Height="50" 
+                                                            CornerRadius="25" 
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Center"
+                                                            ClipToBounds="True">
+
+                                                        <Image Source="{Binding ProfileImage}" 
+                                                               Stretch="UniformToFill"/>
+                                                    </Border>
                                                 </Border>
 
                                                 <!-- Thêm các trường thông tin người dùng ở đây như tên, điểm số... -->
