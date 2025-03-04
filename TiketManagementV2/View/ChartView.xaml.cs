@@ -97,7 +97,8 @@ namespace TiketManagementV2.View
                     LoadCompareDeals(),
                     LoadCompareTicket(),
                     LoadCompareRevenue(),
-                    LoadRankingData()
+                    LoadRankingData(),
+                    LoadOverview()
                 };
 
                 await Task.WhenAll(tasks);
@@ -113,6 +114,31 @@ namespace TiketManagementV2.View
             finally
             {
                 _circularLoadingControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async Task<dynamic> GetOverviewData()
+        {
+            try
+            {
+                string access_token = Properties.Settings.Default.access_token;
+                string refresh_token = Properties.Settings.Default.refresh_token;
+
+                Dictionary<string, string> statisticalHeader = new Dictionary<string, string>()
+                {
+                    { "Authorization", $"Bearer {access_token}" }
+                };
+                var getVehicleDataBody = new
+                {
+                    refresh_token
+                };
+
+                return await _service.PostWithHeaderAndBodyAsync("api/statistical/overview", statisticalHeader, getVehicleDataBody);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
             }
         }
 
@@ -602,6 +628,59 @@ namespace TiketManagementV2.View
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tải dữ liệu bảng xếp hạng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task LoadOverview()
+        {
+            try
+            {
+                dynamic data = await GetOverviewData();
+
+                if (data == null)
+                {
+                    _notificationService.ShowNotification("Lỗi", "Không thể kết nối đến máy chủ",
+                        NotificationType.Error);
+                    return;
+                }
+
+                if (data.message == "Bạn phải đăng nhập bỏ sử dụng chức năng này" ||
+                    data.message == "Refresh token không hợp lệ" ||
+                    data.message == "Bạn không có quyền thực hiện hành động này")
+                {
+                    _notificationService.ShowNotification("Lỗi", (string)data.message,
+                        NotificationType.Error);
+                    return;
+                }
+
+                Properties.Settings.Default.access_token = data.authenticate.access_token;
+                Properties.Settings.Default.refresh_token = data.authenticate.refresh_token;
+                Properties.Settings.Default.Save();
+
+                if (data.message == "Lỗi dữ liệu đầu vào")
+                {
+                    foreach (dynamic item in data.errors)
+                    {
+                        _notificationService.ShowNotification("Lỗi dữ liệu đầu vào", (string)item.Value.msg,
+                            NotificationType.Warning);
+                    }
+
+                    return;
+                }
+
+                if (data.message == "Lấy thông tin thống kê thất bại")
+                {
+                    _notificationService.ShowNotification("Error", (string)data.message, NotificationType.Warning);
+                    return;
+                }
+
+                Deals.Text = $"{data.result.deals}";
+                Tickets.Text = $"{data.result.tickets}";
+                Revenue.Text = $"{data.result.revenue}";
+            }
+            catch (Exception ex)
+            {
+                _notificationService.ShowNotification("Error", ex.Message, NotificationType.Error);
             }
         }
     }
