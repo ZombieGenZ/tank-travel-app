@@ -261,21 +261,22 @@ namespace TiketManagementV2.View
                     return;
                 }
 
+                if (data.message == "Vui lòng thay đổi mật khẩu tạm thời trước khi đăng nhập")
+                {
+                    LoadingControl.Visibility = Visibility.Collapsed;
+                    ChangePasswordView view = new ChangePasswordView(txtUser.Text, txtPass.Password);
+                    view.ShowDialog();
+
+                    txtUser.Text = "";
+                    txtPass.Password = "";
+
+                    return;
+                }
+
                 if (data.message == "Lỗi dữ liệu đầu vào")
                 {
                     foreach (dynamic item in data.errors)
                     {
-                       if (item.Value.msg == "Vui lòng thay đổi mật khẩu tạm thời trước khi đăng nhập")
-                       {
-                            LoadingControl.Visibility = Visibility.Collapsed;
-                            ChangePasswordView view = new ChangePasswordView(txtUser.Text, txtPass.Password);
-                            view.ShowDialog();
-
-                            txtUser.Text = "";
-                            txtPass.Password = "";
-
-                            return;
-                       }
                        notificationService.ShowNotification(
                             "Lỗi kiểu dử liệu đầu vào",
                             (string)item.Value.msg,
