@@ -42,16 +42,13 @@ namespace TiketManagementV2.Model
 
         public ApiServices()
         {
-            _baseUrl = Properties.Settings.Default.host;
+            // Lấy _baseUrl trực tiếp từ settings mà không ép buộc HTTPS
+            _baseUrl = Properties.Settings.Default.host.TrimEnd('/'); // Loại bỏ ký tự '/' cuối nếu có
 
-            // Đảm bảo URL cơ sở sử dụng HTTPS
-            if (_baseUrl.StartsWith("http://"))
+            // Đảm bảo _baseUrl không rỗng
+            if (string.IsNullOrEmpty(_baseUrl))
             {
-                _baseUrl = _baseUrl.Replace("http://", "https://");
-            }
-            else if (!_baseUrl.StartsWith("https://"))
-            {
-                _baseUrl = "https://" + _baseUrl;
+                throw new ArgumentException("Base URL cannot be empty. Please check the configuration.");
             }
 
             // Sử dụng HttpClient được chia sẻ
