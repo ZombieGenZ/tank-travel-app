@@ -325,7 +325,7 @@ namespace TiketManagementV2.ViewModel
             }
             else if(user.permission == 1)
             {
-                ExecuteShowHomeBusView(null);
+                ExecuteShowChartView(null);
             }
         }
 
@@ -383,7 +383,7 @@ namespace TiketManagementV2.ViewModel
             }
             else if (user.permission == 1)
             {
-                ExecuteShowLogView(null);
+                ExecuteShowChartView(null);
             }
         }
 

@@ -55,7 +55,7 @@
                         <RadioButton Style="{StaticResource menuButton}"
                                  Tag="{StaticResource color1}"
                                  IsChecked="True"
-                                 Command="{Binding ShowHomeBusViewCommand}">
+                                 Command="{Binding ShowChartViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"/>
@@ -83,14 +83,6 @@
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="TicketAlt" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Vehicle Management" Style="{StaticResource menuButtonText}"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton Style="{StaticResource menuButton}"
-                                 Tag="{StaticResource color6}"
-                                 Command="{Binding ShowChartViewCommand}">
-                            <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="ChartLine" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Chart" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
 

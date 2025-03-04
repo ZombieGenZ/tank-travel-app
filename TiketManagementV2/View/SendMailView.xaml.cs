@@ -73,7 +73,7 @@ namespace TiketManagementV2.View
         {
             try
             {
-                //_circularLoadingControl.Visibility = Visibility.Visible;
+                LoadingControl.Visibility = Visibility.Visible;
 
                 string message = txtMessage.Text;
 
@@ -93,7 +93,7 @@ namespace TiketManagementV2.View
                         "Không thể kết nối đến máy chủ",
                         NotificationType.Warning
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -105,7 +105,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Warning
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -120,7 +120,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Warning
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -138,7 +138,7 @@ namespace TiketManagementV2.View
                             NotificationType.Warning
                         );
                     }
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    LoadingControl.Visibility = Visibility.Collapsed;
                     return;
                 }
 
@@ -154,7 +154,7 @@ namespace TiketManagementV2.View
                         NotificationType.Success
                     );
                     Close();
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    LoadingControl.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
@@ -167,7 +167,7 @@ namespace TiketManagementV2.View
                         (string)data.message,
                         NotificationType.Error
                     );
-                    //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                    LoadingControl.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
@@ -177,12 +177,12 @@ namespace TiketManagementV2.View
                     ex.Message,
                     NotificationType.Error
                 );
-                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                LoadingControl.Visibility = Visibility.Collapsed;
                 throw;
             }
             finally
             {
-                //_circularLoadingControl.Visibility = Visibility.Collapsed;
+                LoadingControl.Visibility = Visibility.Collapsed;
             }
         }
     }
