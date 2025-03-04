@@ -142,7 +142,7 @@ namespace TiketManagementV2.View
                 return;
             }
 
-            if (data.message == "Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại")
+            if (data.message == "Thay đổi mật khẩu tạm thời thành công! Vui lòng đăng nhập lại")
             {
                 notificationService.ShowNotification(
                     "Thành công",
