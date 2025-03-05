@@ -56,10 +56,10 @@ Tank Travel là ứng dụng desktop quản lý và đặt vé xe khách/tàu h�
 
 ## 👥 Nhóm Phát Triển
 
-| Tên                        | Vai Trò              | Icon |
-|----------------------------|----------------------|------|
-| Nguyễn Đặng Thành Thái     | Quản Lý Dự Án        | 👨‍💼 |
-| Ngô Gia Bảo                | Chuyên viên Testing  | 🧪 |
-| Nguyễn Đình Nam            | Lập Trình Frontend   | 💻 |
-| Nguyễn Đức Anh             | Lập Trình Frontend   | 💻 |
-| Bùi Đăng Khoa              | Lập Trình Frontend   | 💻 |
+| Tên                        | Vai Trò                  |
+|----------------------------|------------------------- |
+| Nguyễn Đặng Thành Thái     | 👨‍💼 Quản Lý Dự Án         |
+| Ngô Gia Bảo                | 🧪 Chuyên viên Testing   |
+| Nguyễn Đình Nam            | 💻 Lập Trình Frontend    |
+| Nguyễn Đức Anh             | 💻 Lập Trình Frontend    |
+| Bùi Đăng Khoa              | 💻 Lập Trình Frontend    |
