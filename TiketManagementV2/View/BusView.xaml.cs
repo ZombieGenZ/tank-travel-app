@@ -134,8 +134,34 @@ namespace TiketManagementV2.View
             WindowState = WindowState.Minimized;
         }
 
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        private async Task<bool> DeleteLogout()
         {
+            try
+            {
+                var logoutBody = new
+                {
+                    refresh_token = Properties.Settings.Default.refresh_token
+                };
+
+                await _service.DeleteWithBodyAsync("api/users/logout", logoutBody);
+
+                Properties.Settings.Default.access_token = "";
+                Properties.Settings.Default.refresh_token = "";
+                Properties.Settings.Default.Save();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        private async void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            await DeleteLogout();
+
             LoginView loginView = new LoginView();
             loginView.Show();
             this.Close();
