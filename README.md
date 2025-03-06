@@ -62,4 +62,4 @@ Tank Travel là ứng dụng desktop quản lý và đặt vé xe khách/tàu h�
 | Ngô Gia Bảo                | 🧪 Chuyên viên Testing   |
 | Nguyễn Đình Nam            | 💻 Lập Trình Frontend    |
 | Nguyễn Đức Anh             | 💻 Lập Trình Frontend    |
-| Bùi Đăng Khoa              | 💻 Lập Trình Frontend    |
+| Bùi Đăng Khoa              | 💻 Lập Trình Backend    |
